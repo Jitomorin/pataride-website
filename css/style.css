@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  /* body {
     @apply relative z-10 bg-whiten font-satoshi text-base font-normal text-body;
-  }
+  } */
 }
 
 @layer components {
