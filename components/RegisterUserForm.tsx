@@ -48,6 +48,7 @@ const EnlistForm = styled.div<{ theme: any }>`
     margin-bottom: 2.3rem;
   }
   form select {
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-color: ${(props) =>
