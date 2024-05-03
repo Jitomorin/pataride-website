@@ -12,9 +12,7 @@ const Wrapper = styled.section<{ theme: any }>`
 function BasicChartPage() {
   return (
     <DefaultLayout>
-      <Wrapper>
-        <Chart />
-      </Wrapper>
+      <Wrapper>{/* <Chart /> */}</Wrapper>
     </DefaultLayout>
   );
 }
