@@ -168,7 +168,11 @@ export default function carSlugRoute(props: CarProps) {
       console.log("Links: ", res);
       setLinks(res);
     }
-    fetchLinks();
+    if (loading) return;
+    if (!user) router.push("/login");
+    else {
+      fetchLinks();
+    }
   }, []);
 
   return (
@@ -324,12 +328,12 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
     },
   };
 };
-export const getStaticPaths = async () => {
-  const slugs = await getAllRentalSlugs();
-  console.log("Slugs: ", slugs);
+// export const getStaticPaths = async () => {
+//   const slugs = await getAllRentalSlugs();
+//   console.log("Slugs: ", slugs);
 
-  return {
-    paths: slugs?.map(({ slug }) => `dashboard/rentals/${slug}`) || [],
-    fallback: true,
-  };
-};
+//   return {
+//     paths: slugs?.map(({ slug }) => `dashboard/rentals/${slug}`) || [],
+//     fallback: true,
+//   };
+// };

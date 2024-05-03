@@ -126,7 +126,7 @@ function CartPage() {
       }
     };
 
-    fetchCartData();
+    // fetchCartData();
   }, []);
 
   const calculateSubtotal = (cart: any) => {

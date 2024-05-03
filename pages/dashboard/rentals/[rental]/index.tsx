@@ -45,7 +45,7 @@ function Rental(props: any) {
       });
     };
 
-    fetchCartData();
+    // fetchCartData();
   }, [user]);
 
   if (loading) {

@@ -93,7 +93,7 @@ const Header = (props: {
 
             {/* <!-- Notification Menu Area --> */}
             <DropdownNotification />
-            <Cart />
+            {/* <Cart /> */}
             {/* <!-- Notification Menu Area --> */}
 
             {/* <!-- Chat Notification Area --> */}

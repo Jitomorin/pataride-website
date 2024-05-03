@@ -34,7 +34,7 @@ const Cart = () => {
       });
     };
 
-    fetchCartData();
+    // fetchCartData();
     const clickHandler = ({ target }: MouseEvent) => {
       if (!dropdown.current) return;
       if (
