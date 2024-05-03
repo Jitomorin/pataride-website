@@ -9,6 +9,9 @@ import Banner from "@/components/Banner";
 import ChooseUs from "@/components/ChooseUs";
 import Testimonials from "@/components/Testimonials";
 import RestAPI from "@/components/RestAPI";
+import { useEffect } from "react";
+import { auth } from "@/utils/firebase/config";
+import { sendEmailVerification } from "firebase/auth";
 
 const client = getClient();
 

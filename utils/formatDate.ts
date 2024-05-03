@@ -34,3 +34,12 @@ export function DateFormat(dateString: string): string {
 
   return formattedDate;
 }
+export const getNumberOfDays = (startDate: any, endDate: any) => {
+  const start = new Date(startDate.seconds * 1000);
+  const end = new Date(endDate.seconds * 1000);
+
+  const diffInTime = end.getTime() - start.getTime();
+  const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
+
+  return diffInDays;
+};

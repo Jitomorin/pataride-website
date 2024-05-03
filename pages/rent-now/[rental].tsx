@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import service from "@/sanity/schemas/service";
 import Page from "@/components/Page";
 import { RentNowProps } from ".";
-import { getDocument } from "@/utils/firebase/firestore";
+import { getAllRentalSlugs, getDocument } from "@/utils/firebase/firestore";
 import { Car } from "@/components/CarData";
 import HeroPages from "@/components/HeroPages";
 import Loading from "@/components/Loading";
@@ -33,6 +33,8 @@ import ImageSliderComponent from "@/components/ImageSliderComponent";
 // }
 interface CarProps extends SharedPageProps {
   car: Car;
+  draftMode: boolean;
+  token: string;
 }
 
 interface Query {
@@ -300,7 +302,7 @@ export default function carSlugRoute(props: CarProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<CarProps, Query> = async (
+export const getServerSideProps: GetServerSideProps<any, Query> = async (
   ctx
 ) => {
   const { draftMode = false, params = {} } = ctx;
@@ -322,11 +324,12 @@ export const getServerSideProps: GetServerSideProps<CarProps, Query> = async (
     },
   };
 };
-// export const getStaticPaths = async () => {
-//   const slugs = await getAllServiceSlugs();
+export const getStaticPaths = async () => {
+  const slugs = await getAllRentalSlugs();
+  console.log("Slugs: ", slugs);
 
-//   return {
-//     paths: slugs?.map(({ slug }) => `/services/${slug}`) || [],
-//     fallback: true,
-//   };
-// };
+  return {
+    paths: slugs?.map(({ slug }) => `dashboard/rentals/${slug}`) || [],
+    fallback: true,
+  };
+};

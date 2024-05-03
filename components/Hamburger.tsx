@@ -17,8 +17,8 @@ const Container = styled.div`
 `;
 
 const StyledSvg = styled.svg`
-  stroke-width: 6.5;
-  stroke-linecap: round;
+  strokewidth: 6.5;
+  strokelinecap: round;
 
   path:nth-child(1) {
     transform-origin: 36% 40%;

@@ -5,11 +5,9 @@ import styled from "styled-components";
 import ColorSwitcher from "./ColorSwitcher";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useTheme } from "./Theme";
-import { logout } from "@/utils/firebase/authentication";
 import { media } from "@/utils/media";
-import Avatar from "./Avatar";
-import ProfileMenu from "./ProfileMenu";
 import { useProfileModalContext } from "@/contexts/profile-modal.context";
+import Image from "next/image";
 
 const ColorSwitcherContainer = styled.div`
   width: 4rem;
@@ -234,9 +232,9 @@ function Navbar() {
               height="24"
               fill="none"
               stroke={theme === "dark" ? "#fff" : "#000"}
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -249,7 +247,7 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <Link onClick={openNav} href="/rent-now">
+              <Link onClick={openNav} href="/dashboard/rentals">
                 Hire now
               </Link>
             </li>
@@ -277,9 +275,15 @@ function Navbar() {
                 >
                   {/* <ProfileMenu /> */}
                   <div>
-                    <Avatar
-                      size="40px"
-                      image="https://wisdomexperience.org/wp-content/uploads/2019/10/blank-profile-picture-973460_960_720.png"
+                    <Image
+                      className="rounded-full"
+                      width={40}
+                      height={40}
+                      src={
+                        user?.profileUrl === ""
+                          ? "/images/profile.png"
+                          : user?.profileUrl
+                      }
                       alt="avatar"
                     />
                   </div>
@@ -341,7 +345,7 @@ function Navbar() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/rent-now">Hire now</Link>
+              <Link href="/dashboard/rentals">Hire now</Link>
             </li>
             <li>
               <Link href="/seller">Become a host</Link>
@@ -359,13 +363,18 @@ function Navbar() {
               <li>
                 {/* <ProfileMenu /> */}
                 <div
+                  className="w-14 h-14 rounded-full cursor-pointer overflow-hidden"
                   onClick={() => {
                     setIsProfileModalOpened(true);
                   }}
                 >
-                  <Avatar
-                    size="40px"
-                    image="https://wisdomexperience.org/wp-content/uploads/2019/10/blank-profile-picture-973460_960_720.png"
+                  <img
+                    className=" object-cover"
+                    src={
+                      user?.profileUrl === ""
+                        ? "/images/profile.png"
+                        : user?.profileUrl
+                    }
                     alt="avatar"
                   />
                 </div>
@@ -400,9 +409,9 @@ function Navbar() {
               height="28"
               fill="none"
               stroke={theme === "dark" ? "#fff" : "#000"}
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <rect x="3" y="3" width="16" height="1" rx="1" ry="1" />
               <rect x="3" y="9" width="20" height="1" rx="1" ry="1" />

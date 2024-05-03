@@ -1,14 +1,21 @@
 import {
+  deleteObject,
   getDownloadURL,
   getStorage,
+  listAll,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
 import { storage } from "./config";
 import { v4 as uuidv4 } from "uuid";
-import { addRental } from "./firestore";
+import {
+  addRental,
+  updateUserCoverPicture,
+  updateUserProfilePicture,
+} from "./firestore";
 
 export const uploadRentalImage = async (
+  userID: any,
   file: any[],
   rentalUid: any,
   {
@@ -21,6 +28,9 @@ export const uploadRentalImage = async (
     carDescription,
     carFuel,
     carNumberPlate,
+    addressLine1,
+    addressLine2,
+    category,
   }: any
 ) => {
   const storageUID = uuidv4();
@@ -38,43 +48,7 @@ export const uploadRentalImage = async (
       UrlList.push(downloadURL);
       console.log("File available at", downloadURL);
     }
-    // file.forEach(async (file: any) => {
-    //   const uploadTask = await uploadBytesResumable(storageRef, file);
-    //   const downloadURL = await getDownloadURL(uploadTask.ref);
-    //   UrlList.push(downloadURL);
-    //   console.log("File available at", downloadURL);
-    //   // uploadTask.on(
-    //   //   "state_changed",
-    //   //   (snapshot) => {
-    //   //     const progress =
-    //   //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //   //     console.log("Upload is " + progress + "% done");
-    //   //   },
-    //   //   (error) => {
-    //   //     console.log(error);
-    //   //   },
-    //   //   async () => {
-    //   //     // Handle successful uploads on complete
-    //   //     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-    //   //     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-    //   //       console.log("File available at", downloadURL);
-    //   //       UrlList.push(downloadURL);
-    //   //     });
-    //   //     //  await addRental(
-    //   //     //    rentalUid,
-    //   //     //    carName,
-    //   //     //    carPrice,
-    //   //     //    UrlList,
-    //   //     //    carModel,
-    //   //     //    carYear.toString(),
-    //   //     //    carMake,
-    //   //     //    carSeats.toString(),
-    //   //     //    carDescription,
-    //   //     //    carFuel
-    //   //     //  );
-    //   //   }
-    //   // );
-    // });
+
     console.log("UrlList: ", UrlList);
     await addRental(
       rentalUid,
@@ -87,44 +61,80 @@ export const uploadRentalImage = async (
       carSeats.toString(),
       carDescription,
       carFuel,
-      carNumberPlate
+      carNumberPlate,
+      addressLine1,
+      addressLine2,
+      userID,
+      category
     );
-    // const uploadTask = uploadBytesResumable(storageRef, file);
 
-    // uploadTask.on(
-    //   "state_changed",
-    //   (snapshot) => {
-    //     const progress =
-    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //     console.log("Upload is " + progress + "% done");
-    //   },
-    //   (error) => {
-    //     console.log(error);
-    //   },
-    //   async() => {
-    //     // Handle successful uploads on complete
-    //     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-    //     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-    //       console.log("File available at", downloadURL);
-    //      UrlList.push(downloadURL);
-    //     });
-    //      await addRental(
-    //        rentalUid,
-    //        carName,
-    //        carPrice,
-    //        UrlList,
-    //        carModel,
-    //        carYear.toString(),
-    //        carMake,
-    //        carSeats.toString(),
-    //        carDescription,
-    //        carFuel
-    //      );
-    //   }
-    // );
     return true;
   }
   return false;
 
   // ... existing code ...
+};
+export const uploadProfileImage = async (file: any, userID: any) => {
+  const storage = getStorage();
+  const storageRef = ref(storage, `${userID}/profile/${file.name}`);
+  const uploadTask = await uploadBytesResumable(storageRef, file);
+  const downloadURL = await getDownloadURL(uploadTask.ref);
+  console.log("File available at", downloadURL);
+
+  return await updateUserProfilePicture(userID, downloadURL);
+};
+export const uploadCoverImage = async (file: any, userID: any) => {
+  const storage = getStorage();
+  const storageRef = ref(storage, `${userID}/cover/${file.name}`);
+  const uploadTask = await uploadBytesResumable(storageRef, file);
+  const downloadURL = await getDownloadURL(uploadTask.ref);
+  console.log("File available at", downloadURL);
+
+  return await updateUserCoverPicture(userID, downloadURL);
+};
+export const deleteProfileDirectory = async (userID: any) => {
+  const storage = getStorage();
+  const directoryRef = ref(storage, `${userID}/profile`);
+
+  try {
+    const res = await listAll(directoryRef);
+    res.items.forEach((fileRef) => {
+      deleteObject(fileRef);
+    });
+    updateUserProfilePicture(userID, "");
+    console.log("Profile picture deleted successfully");
+    return {
+      status: "success",
+      message: "Profile picture deleted successfully.",
+    };
+  } catch (error) {
+    console.error("Error deleting profile directory: ", error);
+    return {
+      status: "error",
+      message: "Error deleting profile directory.",
+    };
+  }
+};
+export const deleteCoverImageDirectory = async (userID: any) => {
+  const storage = getStorage();
+  const directoryRef = ref(storage, `${userID}/cover`);
+
+  try {
+    const res = await listAll(directoryRef);
+    res.items.forEach((fileRef) => {
+      deleteObject(fileRef);
+    });
+    updateUserProfilePicture(userID, "");
+    console.log("Cover picture deleted successfully");
+    return {
+      status: "success",
+      message: "Cover picture deleted successfully.",
+    };
+  } catch (error) {
+    console.error("Error deleting cover directory: ", error);
+    return {
+      status: "error",
+      message: "Error deleting cover directory.",
+    };
+  }
 };

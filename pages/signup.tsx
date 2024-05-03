@@ -6,13 +6,17 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { logout, signup } from "@/utils/firebase/authentication";
-import { addData, addUser } from "@/utils/firebase/firestore";
+import { addData, addNewCart, addUser } from "@/utils/firebase/firestore";
 import { set } from "sanity";
-import { signOut } from "firebase/auth";
+import {
+  sendEmailVerification,
+  sendSignInLinkToEmail,
+  signOut,
+} from "firebase/auth";
 import Snackbar from "@/components/Snackbar";
 import styled from "styled-components";
 import { useTheme } from "@/components/Theme";
-import { firebaseAuthErrors } from "@/utils/firebase/config";
+import { auth, firebaseAuthErrors } from "@/utils/firebase/config";
 
 const Wrapper = styled.section<{ theme: any }>`
   background-color: ${(props) =>
@@ -150,6 +154,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(0);
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
@@ -180,6 +185,11 @@ function SignUp() {
   };
   const fullNameCheck = () => {
     return fullName !== "";
+  };
+  const phoneNumberCheck = () => {
+    // make sure number is 10 digits
+
+    return phoneNumber.toString().length === 10;
   };
 
   const isFormValid = () => {
@@ -213,15 +223,38 @@ function SignUp() {
             setSnackbarMessage("Error creating account");
             setSnackbarOpen(true);
           } else {
-            setSnackbarMessage("Redirecting to login page");
-            setSnackbarOpen(true);
             const uid = userCredential.user?.uid;
-            addUser({ uid, email, fullName, isHost: false }).then(() => {
-              console.log("User added successfully");
-              logout().then(() => {
-                console.log("User logged out");
+            addUser({
+              uid,
+              email,
+              fullName,
+              role: "client",
+              bio: "",
+              profileUrl: "",
+              coverImageURL: "",
+              phoneNumber,
+            }).then((res) => {
+              addNewCart(uid).then((res) => {
+                sendEmailVerification(userCredential, {
+                  handleCodeInApp: true,
+                  url: "http://localhost:3000/login",
+                }).then(() => {
+                  setSnackbarMessage(
+                    "Email verification link sent to your email"
+                  );
+                  setSnackbarOpen(true);
+                  logout().then(() => {
+                    console.log("User logged out");
 
-                router.push("/login");
+                    // sendSignInLinkToEmail(auth, email, {
+                    //   handleCodeInApp: true,
+                    //   url: "http://localhost:3000/login",
+                    // }).then((res: any) => {
+                    //   console.log(res);
+                    //   router.push("/login");
+                    // });
+                  });
+                });
               });
             });
           }

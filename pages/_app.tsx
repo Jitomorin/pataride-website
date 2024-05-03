@@ -1,4 +1,5 @@
 import "tailwindcss/tailwind.css";
+import "regenerator-runtime";
 
 import "swiper/css";
 import "swiper/css/bundle";

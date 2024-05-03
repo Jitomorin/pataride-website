@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import PlanTrip from "../components/PlanTrip";
 import Team from "./Team";
 import { useEffect, useState } from "react";
-import { getAllData } from "@/utils/firebase/firestore";
+import { getAllData, getData } from "@/utils/firebase/firestore";
 import styled from "styled-components";
 import { useTheme } from "@/components/Theme";
 import Container from "@/components/Container";
@@ -149,7 +149,7 @@ function About() {
   useEffect(() => {
     const client = getClient();
     const fetchRentals = async () => {
-      const data = await getAllData("rentals");
+      const data = await getData("rentals");
       setNumberOfRentals(data.length);
     };
     const fetchAboutText = async () => {
