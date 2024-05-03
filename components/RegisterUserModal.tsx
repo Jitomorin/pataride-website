@@ -2,7 +2,7 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import RegisterCarForm from "./RegisterCarForm";
-import RegisterUserForm from "./RegisteruserForm";
+import RegisterUserForm from "./RegisterUserForm";
 
 export default function RegisterUserModal({
   open,

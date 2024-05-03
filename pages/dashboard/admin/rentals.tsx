@@ -20,7 +20,6 @@ import { set } from "sanity";
 import RentalsTable from "@/components/RentalsTable";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import AdminUsersTable from "@/components/AdminUsersTable";
 import AdminRentalsTable from "@/components/AdminRentalsTable";
 
 const tabs = [
@@ -79,7 +78,9 @@ function AdminRentals() {
                 id="tabs"
                 name="tabs"
                 className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                defaultValue={tabs.find((tab) => getUrl() === tab.name)}
+                defaultValue={tabs
+                  .find((tab) => getUrl() === tab.name)!
+                  .toString()}
               >
                 {tabs.map((tab) => (
                   <option key={tab.name}>{tab.name}</option>
