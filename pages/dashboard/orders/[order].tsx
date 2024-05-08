@@ -87,6 +87,7 @@ function Order(props: any) {
   const [additionalNotesDropoff, setAdditionalNotesDropoff] = useState("");
   // const [t, setT] = useState<any>(true);
   // const [cart, setCart] = useState<any>({});
+  console.log(order);
   const [address, setAddress] = useState(
     "Kala Pattar Ascent Trail, Khumjung 56000, Nepal"
   );

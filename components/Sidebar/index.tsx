@@ -132,13 +132,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           "bg-[#F8D521] dark:bg-meta-4"
                         }`}
                       >
-                        <Image
-                          width={18}
-                          height={18}
-                          src={"/images/logo/dashboard_logo.svg"}
-                          alt="logo-img"
-                          priority
-                        />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#fff"
+                          className="w-8 h-8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"
+                          />
+                        </svg>
                         Dashboard
                         {/* <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current text-white ${
@@ -191,23 +198,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <Link
-                  href="/dashboard/bookings"
+                  href="/dashboard/bookings/all-bookings"
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    pathname!.includes("bookings") &&
+                    "/dashboard/bookings/all-bookings" === router.pathname &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/booking_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 22 22"
+                    strokeWidth={1.5}
+                    stroke="#ffffff"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
+                    />
+                  </svg>
                   Bookings
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/dashboard/orders"
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
@@ -231,10 +245,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Orders
                 </Link>
-              </li>
+              </li> */}
               {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Forms --> */}
+              <li>
+                <Link
+                  href={`/dashboard/chats`}
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                    pathname!.includes("chats") && "bg-[#F8D521] "
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="#fff"
+                    className="w-7 h-7"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z"
+                    />
+                  </svg>
+                  Messages
+                </Link>
+              </li>
               <li>
                 <Link
                   href={`/dashboard/profile/${user?.uid}`}
@@ -260,65 +298,35 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Profile
                 </Link>
               </li>
-              <li>
-                <Link
-                  href={`/dashboard/admin`}
-                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    pathname!.includes("admin") && "bg-[#F8D521] dark:bg-meta-4"
-                  }`}
-                >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/user_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
-                  Admin
-                </Link>
-              </li>
+              {user?.role === "admin" && (
+                <li>
+                  <Link
+                    href={`/dashboard/admin`}
+                    className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                      pathname!.includes("admin") &&
+                      "bg-[#F8D521] dark:bg-meta-4"
+                    }`}
+                  >
+                    <Image
+                      width={18}
+                      height={18}
+                      src={"/images/logo/user_logo.svg"}
+                      alt="logo-img"
+                      priority
+                    />
+                    Admin
+                  </Link>
+                </li>
+              )}
               {/* <!-- Menu Item Forms --> */}
 
               {/* <!-- Menu Item Tables --> */}
               <li>
                 <Link
                   href="/dashboard/settings"
-                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
                     pathname!.includes("settings") &&
                     "bg-[#F8D521] dark:bg-meta-4"
-                  }`}
-                >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/settings_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
-                  Settings
-                </Link>
-              </li>
-              {/* <!-- Menu Item Tables --> */}
-
-              {/* <!-- Menu Item Settings --> */}
-
-              {/* <!-- Menu Item Settings --> */}
-            </ul>
-          </div>
-
-          {/* <!-- Others Group --> */}
-          <div>
-            <Divider />
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-white">
-              Payment
-            </h3>
-
-            <ul className="mb-6 flex flex-col gap-1.5">
-              <li>
-                <Link
-                  href="/dashboard/cart"
-                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    pathname!.includes("cart") && "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
                   <svg
@@ -332,42 +340,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                      d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                     />
                   </svg>
-                  {/* <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/booking_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  /> */}
-                  Cart
+                  Settings
                 </Link>
               </li>
-              {/* <!-- Menu Item Chart --> */}
-              {/* <li>
-                <Link
-                  href="/chart"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                    pathname!.includes("chart") && "bg-[#F8D521] dark:bg-meta-4"
-                  }`}
-                >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/payment_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
-                  Payment Details
-                </Link>
-              </li> */}
-              {/* <!-- Menu Item Chart --> */}
+              {/* <!-- Menu Item Tables --> */}
 
-              {/* <!-- Menu Item Auth Pages --> */}
+              {/* <!-- Menu Item Settings --> */}
+
+              {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
+
+          {/* <!-- Others Group --> */}
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

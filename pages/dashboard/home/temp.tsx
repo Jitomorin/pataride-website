@@ -12,74 +12,147 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import {
-  Bars3CenterLeftIcon,
+  AcademicCapIcon,
+  BanknotesIcon,
+  Bars3Icon,
   BellIcon,
+  CheckBadgeIcon,
   ClockIcon,
-  CogIcon,
-  CreditCardIcon,
-  DocumentChartBarIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  ScaleIcon,
-  ShieldCheckIcon,
-  UserGroupIcon,
+  ReceiptRefundIcon,
+  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import {
-  BanknotesIcon,
-  BuildingOfficeIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
+const userrr = {
+  name: "Chelsea Hagon",
+  email: "chelsea.hagon@example.com",
+  role: "Human Resources Manager",
+  imageUrl:
+    "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+};
 const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
-  { name: "History", href: "#", icon: ClockIcon, current: false },
-  { name: "Balances", href: "#", icon: ScaleIcon, current: false },
-  { name: "Cards", href: "#", icon: CreditCardIcon, current: false },
-  { name: "Recipients", href: "#", icon: UserGroupIcon, current: false },
-  { name: "Reports", href: "#", icon: DocumentChartBarIcon, current: false },
+  { name: "Home", href: "#", current: true },
+  { name: "Profile", href: "#", current: false },
+  { name: "Resources", href: "#", current: false },
+  { name: "Company Directory", href: "#", current: false },
+  { name: "Openings", href: "#", current: false },
 ];
-const secondaryNavigation = [
-  { name: "Settings", href: "#", icon: CogIcon },
-  { name: "Help", href: "#", icon: QuestionMarkCircleIcon },
-  { name: "Privacy", href: "#", icon: ShieldCheckIcon },
+const userNavigation = [
+  { name: "Your Profile", href: "#" },
+  { name: "Settings", href: "#" },
+  { name: "Sign out", href: "#" },
 ];
-const cards = [
-  { name: "Account balance", href: "#", icon: ScaleIcon, amount: "$30,659.45" },
-  // More items...
+export const stats = [
+  { label: "Rentals", value: 12 },
+  { label: "Bookings", value: 4 },
 ];
-const transactions = [
+export const actions = [
+  {
+    icon: ClockIcon,
+    name: "Request time off",
+    href: "#",
+    iconForeground: "text-teal-700",
+    iconBackground: "bg-teal-50",
+  },
+  {
+    icon: CheckBadgeIcon,
+    name: "Benefits",
+    href: "#",
+    iconForeground: "text-purple-700",
+    iconBackground: "bg-purple-50",
+  },
+  {
+    icon: UsersIcon,
+    name: "Schedule a one-on-one",
+    href: "#",
+    iconForeground: "text-sky-700",
+    iconBackground: "bg-sky-50",
+  },
+  {
+    icon: BanknotesIcon,
+    name: "Payroll",
+    href: "#",
+    iconForeground: "text-yellow-700",
+    iconBackground: "bg-yellow-50",
+  },
+  {
+    icon: ReceiptRefundIcon,
+    name: "Submit an expense",
+    href: "#",
+    iconForeground: "text-rose-700",
+    iconBackground: "bg-rose-50",
+  },
+  {
+    icon: AcademicCapIcon,
+    name: "Training",
+    href: "#",
+    iconForeground: "text-indigo-700",
+    iconBackground: "bg-indigo-50",
+  },
+];
+export const recentHires = [
+  {
+    name: "Leonard Krasner",
+    handle: "leonardkrasner",
+    imageUrl:
+      "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    href: "#",
+  },
+  {
+    name: "Floyd Miles",
+    handle: "floydmiles",
+    imageUrl:
+      "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    href: "#",
+  },
+  {
+    name: "Emily Selman",
+    handle: "emilyselman",
+    imageUrl:
+      "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    href: "#",
+  },
+  {
+    name: "Kristin Watson",
+    handle: "kristinwatson",
+    imageUrl:
+      "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    href: "#",
+  },
+];
+export const announcements = [
   {
     id: 1,
-    name: "Payment to Molly Sanders",
+    title: "Office closed on July 2nd",
     href: "#",
-    amount: "$20,000",
-    currency: "USD",
-    status: "success",
-    date: "July 11, 2020",
-    datetime: "2020-07-11",
+    preview:
+      "Cum qui rem deleniti. Suscipit in dolor veritatis sequi aut. Vero ut earum quis deleniti. Ut a sunt eum cum ut repudiandae possimus. Nihil ex tempora neque cum consectetur dolores.",
   },
-  // More transactions...
+  {
+    id: 2,
+    title: "New password policy",
+    href: "#",
+    preview:
+      "Alias inventore ut autem optio voluptas et repellendus. Facere totam quaerat quam quo laudantium cumque eaque excepturi vel. Accusamus maxime ipsam reprehenderit rerum id repellendus rerum. Culpa cum vel natus. Est sit autem mollitia.",
+  },
+  {
+    id: 3,
+    title: "Office closed on July 2nd",
+    href: "#",
+    preview:
+      "Tenetur libero voluptatem rerum occaecati qui est molestiae exercitationem. Voluptate quisquam iure assumenda consequatur ex et recusandae. Alias consectetur voluptatibus. Accusamus a ab dicta et. Consequatur quis dignissimos voluptatem nisi.",
+  },
 ];
-const statusStyles = {
-  success: "bg-green-100 text-green-800",
-  processing: "bg-yellow-100 text-yellow-800",
-  failed: "bg-gray-100 text-gray-800",
-};
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Example() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <>
       {/*
@@ -91,589 +164,514 @@ export default function Example() {
         ```
       */}
       <div className="min-h-full">
-        <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-40 lg:hidden"
-            onClose={setSidebarOpen}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-            </Transition.Child>
+        <Popover
+          as="header"
+          className="bg-gradient-to-r from-sky-800 to-cyan-600 pb-24"
+        >
+          {({ open }) => (
+            <>
+              <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <div className="relative flex flex-wrap items-center justify-center lg:justify-between">
+                  {/* Logo */}
+                  <div className="absolute left-0 flex-shrink-0 py-5 lg:static">
+                    <a href="#">
+                      <span className="sr-only">Your Company</span>
+                      <img
+                        className="h-8 w-auto"
+                        src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=200"
+                        alt=""
+                      />
+                    </a>
+                  </div>
 
-            <div className="fixed inset-0 z-40 flex">
-              <Transition.Child
-                as={Fragment}
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
-                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-cyan-700 pb-4 pt-5">
+                  {/* Right section on desktop */}
+                  <div className="hidden lg:ml-4 lg:flex lg:items-center lg:py-5 lg:pr-0.5">
+                    <button
+                      type="button"
+                      className="relative flex-shrink-0 rounded-full p-1 text-cyan-200 hover:bg-white hover:bg-opacity-10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                    >
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
+
+                    {/* Profile dropdown */}
+                    <Menu as="div" className="relative ml-4 flex-shrink-0">
+                      <div>
+                        <Menu.Button className="relative flex rounded-full bg-white text-sm ring-2 ring-white ring-opacity-20 focus:outline-none focus:ring-opacity-100">
+                          <span className="absolute -inset-1.5" />
+                          <span className="sr-only">Open user menu</span>
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src={userrr.imageUrl}
+                            alt=""
+                          />
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute -right-2 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          {userNavigation.map((item) => (
+                            <Menu.Item key={item.name}>
+                              {({ active }) => (
+                                <a
+                                  href={item.href}
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  {item.name}
+                                </a>
+                              )}
+                            </Menu.Item>
+                          ))}
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+
+                  <div className="w-full py-5 lg:border-t lg:border-white lg:border-opacity-20">
+                    <div className="lg:grid lg:grid-cols-3 lg:items-center lg:gap-8">
+                      {/* Left nav */}
+                      <div className="hidden lg:col-span-2 lg:block">
+                        <nav className="flex space-x-4">
+                          {navigation.map((item) => (
+                            <a
+                              key={item.name}
+                              href={item.href}
+                              className={classNames(
+                                item.current ? "text-white" : "text-cyan-100",
+                                "rounded-md bg-white bg-opacity-0 px-3 py-2 text-sm font-medium hover:bg-opacity-10"
+                              )}
+                              aria-current={item.current ? "page" : undefined}
+                            >
+                              {item.name}
+                            </a>
+                          ))}
+                        </nav>
+                      </div>
+                      <div className="px-12 lg:px-0">
+                        {/* Search */}
+                        <div className="mx-auto w-full max-w-xs lg:max-w-md">
+                          <label htmlFor="search" className="sr-only">
+                            Search
+                          </label>
+                          <div className="relative text-white focus-within:text-gray-600">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                              <MagnifyingGlassIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </div>
+                            <input
+                              id="search"
+                              className="block w-full rounded-md border-0 bg-white/20 py-1.5 pl-10 pr-3 text-white placeholder:text-white focus:bg-white focus:text-gray-900 focus:ring-0 focus:placeholder:text-gray-500 sm:text-sm sm:leading-6"
+                              placeholder="Search"
+                              type="search"
+                              name="search"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu button */}
+                  <div className="absolute right-0 flex-shrink-0 lg:hidden">
+                    {/* Mobile menu button */}
+                    <Popover.Button className="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-cyan-200 hover:bg-white hover:bg-opacity-10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
+                      <span className="absolute -inset-0.5" />
+                      <span className="sr-only">Open main menu</span>
+                      {open ? (
+                        <XMarkIcon
+                          className="block h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <Bars3Icon
+                          className="block h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Popover.Button>
+                  </div>
+                </div>
+              </div>
+
+              <Transition.Root as={Fragment}>
+                <div className="lg:hidden">
                   <Transition.Child
                     as={Fragment}
-                    enter="ease-in-out duration-300"
+                    enter="duration-150 ease-out"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="ease-in-out duration-300"
+                    leave="duration-150 ease-in"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <div className="absolute right-0 top-0 -mr-12 pt-2">
-                      <button
-                        type="button"
-                        className="relative ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        <span className="absolute -inset-0.5" />
-                        <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon
-                          className="h-6 w-6 text-white"
-                          aria-hidden="true"
-                        />
-                      </button>
-                    </div>
+                    <Popover.Overlay className="fixed inset-0 z-20 bg-black bg-opacity-25" />
                   </Transition.Child>
-                  <div className="flex flex-shrink-0 items-center px-4">
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=300"
-                      alt="Easywire logo"
-                    />
-                  </div>
-                  <nav
-                    className="mt-5 h-full flex-shrink-0 divide-y divide-cyan-800 overflow-y-auto"
-                    aria-label="Sidebar"
+
+                  <Transition.Child
+                    as={Fragment}
+                    enter="duration-150 ease-out"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="duration-150 ease-in"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
                   >
-                    <div className="space-y-1 px-2">
-                      {navigation.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-cyan-800 text-white"
-                              : "text-cyan-100 hover:bg-cyan-600 hover:text-white",
-                            "group flex items-center rounded-md px-2 py-2 text-base font-medium"
-                          )}
-                          aria-current={item.current ? "page" : undefined}
+                    <Popover.Panel
+                      focus
+                      className="absolute inset-x-0 top-0 z-30 mx-auto w-full max-w-3xl origin-top transform p-2 transition"
+                    >
+                      <div className="divide-y divide-gray-200 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                        <div className="pb-2 pt-3">
+                          <div className="flex items-center justify-between px-4">
+                            <div>
+                              <img
+                                className="h-8 w-auto"
+                                src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=600"
+                                alt="Your Company"
+                              />
+                            </div>
+                            <div className="-mr-2">
+                              <Popover.Button className="relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500">
+                                <span className="absolute -inset-0.5" />
+                                <span className="sr-only">Close menu</span>
+                                <XMarkIcon
+                                  className="h-6 w-6"
+                                  aria-hidden="true"
+                                />
+                              </Popover.Button>
+                            </div>
+                          </div>
+                          <div className="mt-3 space-y-1 px-2">
+                            {navigation.map((item) => (
+                              <a
+                                key={item.name}
+                                href={item.href}
+                                className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                              >
+                                {item.name}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pb-2 pt-4">
+                          <div className="flex items-center px-5">
+                            <div className="flex-shrink-0">
+                              <img
+                                className="h-10 w-10 rounded-full"
+                                src={userrr.imageUrl}
+                                alt=""
+                              />
+                            </div>
+                            <div className="ml-3 min-w-0 flex-1">
+                              <div className="truncate text-base font-medium text-gray-800">
+                                {userrr.name}
+                              </div>
+                              <div className="truncate text-sm font-medium text-gray-500">
+                                {userrr.email}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className="relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
+                            >
+                              <span className="absolute -inset-1.5" />
+                              <span className="sr-only">
+                                View notifications
+                              </span>
+                              <BellIcon
+                                className="h-6 w-6"
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
+                          <div className="mt-3 space-y-1 px-2">
+                            {userNavigation.map((item) => (
+                              <a
+                                key={item.name}
+                                href={item.href}
+                                className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-800"
+                              >
+                                {item.name}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </Popover.Panel>
+                  </Transition.Child>
+                </div>
+              </Transition.Root>
+            </>
+          )}
+        </Popover>
+        <main className="-mt-24 pb-8">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+            <h1 className="sr-only">Profile</h1>
+            {/* Main 3 column grid */}
+            <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+              {/* Left column */}
+              <div className="grid grid-cols-1 gap-4 lg:col-span-2">
+                {/* Welcome panel */}
+                <section aria-labelledby="profile-overview-title">
+                  <div className="overflow-hidden rounded-lg bg-white shadow">
+                    <h2 className="sr-only" id="profile-overview-title">
+                      Profile Overview
+                    </h2>
+                    <div className="bg-white p-6">
+                      <div className="sm:flex sm:items-center sm:justify-between">
+                        <div className="sm:flex sm:space-x-5">
+                          <div className="flex-shrink-0">
+                            <img
+                              className="mx-auto h-20 w-20 rounded-full"
+                              src={userrr.imageUrl}
+                              alt=""
+                            />
+                          </div>
+                          <div className="mt-4 text-center sm:mt-0 sm:pt-1 sm:text-left">
+                            <p className="text-sm font-medium text-gray-600">
+                              Welcome back,
+                            </p>
+                            <p className="text-xl font-bold text-gray-900 sm:text-2xl">
+                              {userrr.name}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              {userrr.role}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-5 flex justify-center sm:mt-0">
+                          <a
+                            href={`/dashboard/profile/${user.uid}`}
+                            className="flex items-center justify-center rounded-md bg-primary hover:scale=[1.03] transition-all ease-in-out px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                          >
+                            View profile
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 divide-y divide-gray-200 border-t border-gray-200 bg-gray-50 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                      {stats.map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="px-6 py-5 text-center text-sm font-medium"
                         >
-                          <item.icon
-                            className="mr-4 h-6 w-6 flex-shrink-0 text-cyan-200"
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
+                          <span className="text-gray-900">{stat.value}</span>{" "}
+                          <span className="text-gray-600">{stat.label}</span>
+                        </div>
                       ))}
                     </div>
-                    <div className="mt-6 pt-6">
-                      <div className="space-y-1 px-2">
-                        {secondaryNavigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className="group flex items-center rounded-md px-2 py-2 text-base font-medium text-cyan-100 hover:bg-cyan-600 hover:text-white"
-                          >
-                            <item.icon
-                              className="mr-4 h-6 w-6 text-cyan-200"
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </nav>
-                </Dialog.Panel>
-              </Transition.Child>
-              <div className="w-14 flex-shrink-0" aria-hidden="true">
-                {/* Dummy element to force sidebar to shrink to fit close icon */}
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
-
-        {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-grow flex-col overflow-y-auto bg-cyan-700 pb-4 pt-5">
-            <div className="flex flex-shrink-0 items-center px-4">
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=cyan&shade=300"
-                alt="Easywire logo"
-              />
-            </div>
-            <nav
-              className="mt-5 flex flex-1 flex-col divide-y divide-cyan-800 overflow-y-auto"
-              aria-label="Sidebar"
-            >
-              <div className="space-y-1 px-2">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-cyan-800 text-white"
-                        : "text-cyan-100 hover:bg-cyan-600 hover:text-white",
-                      "group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6"
-                    )}
-                    aria-current={item.current ? "page" : undefined}
-                  >
-                    <item.icon
-                      className="mr-4 h-6 w-6 flex-shrink-0 text-cyan-200"
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-              <div className="mt-6 pt-6">
-                <div className="space-y-1 px-2">
-                  {secondaryNavigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="group flex items-center rounded-md px-2 py-2 text-sm font-medium leading-6 text-cyan-100 hover:bg-cyan-600 hover:text-white"
-                    >
-                      <item.icon
-                        className="mr-4 h-6 w-6 text-cyan-200"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </nav>
-          </div>
-        </div>
-
-        <div className="flex flex-1 flex-col lg:pl-64">
-          <div className="flex h-16 flex-shrink-0 border-b border-gray-200 bg-white lg:border-none">
-            <button
-              type="button"
-              className="border-r border-gray-200 px-4 text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500 lg:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <span className="sr-only">Open sidebar</span>
-              <Bars3CenterLeftIcon className="h-6 w-6" aria-hidden="true" />
-            </button>
-            {/* Search bar */}
-            <div className="flex flex-1 justify-between px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
-              <div className="flex flex-1">
-                <form className="flex w-full md:ml-0" action="#" method="GET">
-                  <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                    <div
-                      className="pointer-events-none absolute inset-y-0 left-0 flex items-center"
-                      aria-hidden="true"
-                    >
-                      <MagnifyingGlassIcon
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <input
-                      id="search-field"
-                      name="search-field"
-                      className="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 focus:border-transparent focus:outline-none focus:ring-0 sm:text-sm"
-                      placeholder="Search transactions"
-                      type="search"
-                    />
                   </div>
-                </form>
-              </div>
-              <div className="ml-4 flex items-center md:ml-6">
-                <button
-                  type="button"
-                  className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                </section>
 
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
-                  <div>
-                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 lg:rounded-md lg:p-2 lg:hover:bg-gray-50">
-                      <span className="absolute -inset-1.5 lg:hidden" />
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                      <span className="ml-3 hidden text-sm font-medium text-gray-700 lg:block">
-                        <span className="sr-only">Open user menu for </span>
-                        Emilia Birch
-                      </span>
-                      <ChevronDownIcon
-                        className="ml-1 hidden h-5 w-5 flex-shrink-0 text-gray-400 lg:block"
-                        aria-hidden="true"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Your Profile
-                          </a>
+                {/* Actions panel */}
+                <section aria-labelledby="quick-links-title">
+                  <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-gray-200 shadow sm:grid sm:grid-cols-2 sm:gap-px sm:divide-y-0">
+                    <h2 className="sr-only" id="quick-links-title">
+                      Quick links
+                    </h2>
+                    {actions.map((action, actionIdx) => (
+                      <div
+                        key={action.name}
+                        className={classNames(
+                          actionIdx === 0
+                            ? "rounded-tl-lg rounded-tr-lg sm:rounded-tr-none"
+                            : "",
+                          actionIdx === 1 ? "sm:rounded-tr-lg" : "",
+                          actionIdx === actions.length - 2
+                            ? "sm:rounded-bl-lg"
+                            : "",
+                          actionIdx === actions.length - 1
+                            ? "rounded-bl-lg rounded-br-lg sm:rounded-bl-none"
+                            : "",
+                          "group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-cyan-500"
                         )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Logout
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </Menu.Items>
-                  </Transition>
-                </Menu>
-              </div>
-            </div>
-          </div>
-          <main className="flex-1 pb-8">
-            {/* Page header */}
-            <div className="bg-white shadow">
-              <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
-                <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
-                  <div className="min-w-0 flex-1">
-                    {/* Profile */}
-                    <div className="flex items-center">
-                      <img
-                        className="hidden h-16 w-16 rounded-full sm:block"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                        alt=""
-                      />
-                      <div>
-                        <div className="flex items-center">
-                          <img
-                            className="h-16 w-16 rounded-full sm:hidden"
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                            alt=""
-                          />
-                          <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                            Good morning, Emilia Birch
-                          </h1>
-                        </div>
-                        <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
-                          <dt className="sr-only">Company</dt>
-                          <dd className="flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6">
-                            <BuildingOfficeIcon
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                              aria-hidden="true"
-                            />
-                            Duke street studio
-                          </dd>
-                          <dt className="sr-only">Account status</dt>
-                          <dd className="mt-3 flex items-center text-sm font-medium capitalize text-gray-500 sm:mr-6 sm:mt-0">
-                            <CheckCircleIcon
-                              className="mr-1.5 h-5 w-5 flex-shrink-0 text-green-400"
-                              aria-hidden="true"
-                            />
-                            Verified account
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-6 flex space-x-3 md:ml-4 md:mt-0">
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Add money
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
-                    >
-                      Send money
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-medium leading-6 text-gray-900">
-                  Overview
-                </h2>
-                <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {/* Card */}
-                  {cards.map((card) => (
-                    <div
-                      key={card.name}
-                      className="overflow-hidden rounded-lg bg-white shadow"
-                    >
-                      <div className="p-5">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0">
-                            <card.icon
-                              className="h-6 w-6 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </div>
-                          <div className="ml-5 w-0 flex-1">
-                            <dl>
-                              <dt className="truncate text-sm font-medium text-gray-500">
-                                {card.name}
-                              </dt>
-                              <dd>
-                                <div className="text-lg font-medium text-gray-900">
-                                  {card.amount}
-                                </div>
-                              </dd>
-                            </dl>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-gray-50 px-5 py-3">
-                        <div className="text-sm">
-                          <a
-                            href={card.href}
-                            className="font-medium text-cyan-700 hover:text-cyan-900"
-                          >
-                            View all
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <h2 className="mx-auto mt-8 max-w-6xl px-4 text-lg font-medium leading-6 text-gray-900 sm:px-6 lg:px-8">
-                Recent activity
-              </h2>
-
-              {/* Activity list (smallest breakpoint only) */}
-              <div className="shadow sm:hidden">
-                <ul
-                  role="list"
-                  className="mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden"
-                >
-                  {transactions.map((transaction) => (
-                    <li key={transaction.id}>
-                      <a
-                        href={transaction.href}
-                        className="block bg-white px-4 py-4 hover:bg-gray-50"
                       >
-                        <span className="flex items-center space-x-4">
-                          <span className="flex flex-1 space-x-2 truncate">
-                            <BanknotesIcon
-                              className="h-5 w-5 flex-shrink-0 text-gray-400"
+                        <div>
+                          <span
+                            className={classNames(
+                              action.iconBackground,
+                              action.iconForeground,
+                              "inline-flex rounded-lg p-3 ring-4 ring-white"
+                            )}
+                          >
+                            <action.icon
+                              className="h-6 w-6"
                               aria-hidden="true"
                             />
-                            <span className="flex flex-col truncate text-sm text-gray-500">
-                              <span className="truncate">
-                                {transaction.name}
-                              </span>
-                              <span>
-                                <span className="font-medium text-gray-900">
-                                  {transaction.amount}
-                                </span>{" "}
-                                {transaction.currency}
-                              </span>
-                              <time dateTime={transaction.datetime}>
-                                {transaction.date}
-                              </time>
-                            </span>
                           </span>
-                          <ChevronRightIcon
-                            className="h-5 w-5 flex-shrink-0 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-
-                <nav
-                  className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3"
-                  aria-label="Pagination"
-                >
-                  <div className="flex flex-1 justify-between">
-                    <a
-                      href="#"
-                      className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Previous
-                    </a>
-                    <a
-                      href="#"
-                      className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Next
-                    </a>
-                  </div>
-                </nav>
-              </div>
-
-              {/* Activity table (small breakpoint and up) */}
-              <div className="hidden sm:block">
-                <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-                  <div className="mt-2 flex flex-col">
-                    <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead>
-                          <tr>
-                            <th
-                              className="bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                              scope="col"
+                        </div>
+                        <div className="mt-8">
+                          <h3 className="text-lg font-medium">
+                            <a
+                              href={action.href}
+                              className="focus:outline-none"
                             >
-                              Transaction
-                            </th>
-                            <th
-                              className="bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900"
-                              scope="col"
-                            >
-                              Amount
-                            </th>
-                            <th
-                              className="hidden bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900 md:block"
-                              scope="col"
-                            >
-                              Status
-                            </th>
-                            <th
-                              className="bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900"
-                              scope="col"
-                            >
-                              Date
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
-                          {transactions.map((transaction) => (
-                            <tr key={transaction.id} className="bg-white">
-                              <td className="w-full max-w-0 whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                                <div className="flex">
-                                  <a
-                                    href={transaction.href}
-                                    className="group inline-flex space-x-2 truncate text-sm"
-                                  >
-                                    <BanknotesIcon
-                                      className="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                                      aria-hidden="true"
-                                    />
-                                    <p className="truncate text-gray-500 group-hover:text-gray-900">
-                                      {transaction.name}
-                                    </p>
-                                  </a>
-                                </div>
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                                <span className="font-medium text-gray-900">
-                                  {transaction.amount}
-                                </span>
-                                {transaction.currency}
-                              </td>
-                              <td className="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-500 md:block">
-                                <span
-                                  className={classNames(
-                                    statusStyles[transaction.status],
-                                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
-                                  )}
-                                >
-                                  {transaction.status}
-                                </span>
-                              </td>
-                              <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                                <time dateTime={transaction.datetime}>
-                                  {transaction.date}
-                                </time>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      {/* Pagination */}
-                      <nav
-                        className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
-                        aria-label="Pagination"
-                      >
-                        <div className="hidden sm:block">
-                          <p className="text-sm text-gray-700">
-                            Showing <span className="font-medium">1</span> to{" "}
-                            <span className="font-medium">10</span> of{" "}
-                            <span className="font-medium">20</span> results
+                              {/* Extend touch target to entire panel */}
+                              <span
+                                className="absolute inset-0"
+                                aria-hidden="true"
+                              />
+                              {action.name}
+                            </a>
+                          </h3>
+                          <p className="mt-2 text-sm text-gray-500">
+                            Doloribus dolores nostrum quia qui natus officia
+                            quod et dolorem. Sit repellendus qui ut at
+                            blanditiis et quo et molestiae.
                           </p>
                         </div>
-                        <div className="flex flex-1 justify-between gap-x-3 sm:justify-end">
-                          <a
-                            href="#"
-                            className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
+                        <span
+                          className="pointer-events-none absolute right-6 top-6 text-gray-300 group-hover:text-gray-400"
+                          aria-hidden="true"
+                        >
+                          <svg
+                            className="h-6 w-6"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            Previous
-                          </a>
-                          <a
-                            href="#"
-                            className="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
-                          >
-                            Next
-                          </a>
-                        </div>
-                      </nav>
+                            <path d="M20 4h1a1 1 0 00-1-1v1zm-1 12a1 1 0 102 0h-2zM8 3a1 1 0 000 2V3zM3.293 19.293a1 1 0 101.414 1.414l-1.414-1.414zM19 4v12h2V4h-2zm1-1H8v2h12V3zm-.707.293l-16 16 1.414 1.414 16-16-1.414-1.414z" />
+                          </svg>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+
+              {/* Right column */}
+              <div className="grid grid-cols-1 gap-4">
+                {/* Announcements */}
+                <section aria-labelledby="announcements-title">
+                  <div className="overflow-hidden rounded-lg bg-white shadow">
+                    <div className="p-6">
+                      <h2
+                        className="text-base font-medium text-gray-900"
+                        id="announcements-title"
+                      >
+                        Announcements
+                      </h2>
+                      <div className="mt-6 flow-root">
+                        <ul
+                          role="list"
+                          className="-my-5 divide-y divide-gray-200"
+                        >
+                          {announcements.map((announcement) => (
+                            <li key={announcement.id} className="py-5">
+                              <div className="relative focus-within:ring-2 focus-within:ring-cyan-500">
+                                <h3 className="text-sm font-semibold text-gray-800">
+                                  <a
+                                    href={announcement.href}
+                                    className="hover:underline focus:outline-none"
+                                  >
+                                    {/* Extend touch target to entire panel */}
+                                    <span
+                                      className="absolute inset-0"
+                                      aria-hidden="true"
+                                    />
+                                    {announcement.title}
+                                  </a>
+                                </h3>
+                                <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                                  {announcement.preview}
+                                </p>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mt-6">
+                        <a
+                          href="#"
+                          className="flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        >
+                          View all
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </section>
+
+                {/* Recent Hires */}
+                <section aria-labelledby="recent-hires-title">
+                  <div className="overflow-hidden rounded-lg bg-white shadow">
+                    <div className="p-6">
+                      <h2
+                        className="text-base font-medium text-gray-900"
+                        id="recent-hires-title"
+                      >
+                        Recent Hires
+                      </h2>
+                      <div className="mt-6 flow-root">
+                        <ul
+                          role="list"
+                          className="-my-5 divide-y divide-gray-200"
+                        >
+                          {recentHires.map((person) => (
+                            <li key={person.handle} className="py-4">
+                              <div className="flex items-center space-x-4">
+                                <div className="flex-shrink-0">
+                                  <img
+                                    className="h-8 w-8 rounded-full"
+                                    src={person.imageUrl}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-medium text-gray-900">
+                                    {person.name}
+                                  </p>
+                                  <p className="truncate text-sm text-gray-500">
+                                    {"@" + person.handle}
+                                  </p>
+                                </div>
+                                <div>
+                                  <a
+                                    href={person.href}
+                                    className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mt-6">
+                        <a
+                          href="#"
+                          className="flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        >
+                          View all
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </div>
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
+        <footer>
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+            <div className="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left">
+              <span className="block sm:inline">
+                &copy; 2021 Your Company, Inc.
+              </span>{" "}
+              <span className="block sm:inline">All rights reserved.</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );

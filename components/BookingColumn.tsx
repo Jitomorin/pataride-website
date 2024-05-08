@@ -1,10 +1,12 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { set } from "sanity";
 import {
   deleteDocument,
+  getDocument,
+  updateBookingInformation,
   updateRentalInformation,
   updateUserEmailAndPhone,
   updateUserRole,
@@ -14,37 +16,59 @@ import {
 import ImageSliderComponent from "./ImageSliderComponent";
 import { formatNumber } from "@/utils/formatNumber";
 import { useRouter } from "next/router";
+import { PaidPill } from "./PaidPill";
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function RentalColumn({
-  rental,
+export default function BookingColumn({
+  booking,
   open,
   setOpen,
   callSnackBar,
 }: {
-  rental: any;
+  booking: any;
   open: boolean;
   setOpen: any;
   callSnackBar: any;
 }) {
   //   const [open, setOpen] = useState(true);
-  const [make, setMake] = useState(rental.make);
-  const [model, setModel] = useState(rental.model);
-  const [name, setName] = useState(rental.name);
-  const [year, setYear] = useState(rental.year);
-  const [seats, setSeats] = useState(rental.seats);
-  const [addressLine1, setAddressLine1] = useState(
-    rental.location.addressLine1
-  );
-  const [addressLine2, setAddressLine2] = useState(
-    rental.location.addressLine2
-  );
-  const [numberPlate, setNumberPlate] = useState(rental.numberPlate);
-  const [description, setDescription] = useState(rental.description);
+  //   const [make, setMake] = useState(booking.rental.make);
+  //   const [model, setModel] = useState(booking.rental.model);
+  //   const [name, setName] = useState(booking.rental.name);
+  //   const [year, setYear] = useState(booking.rental.year);
+  //   const [seats, setSeats] = useState(booking.rental.seats);
+
+  //   const [numberPlate, setNumberPlate] = useState(booking.rental.numberPlate);
+  //   const [description, setDescription] = useState(booking.rental.description);
+  const patarideCut = 2000;
+  const make = booking.rental.make;
+  const model = booking.rental.model;
+  const name = booking.rental.name;
+  const year = booking.rental.year;
+  const seats = booking.rental.seats;
+  const [addressLine1, setAddressLine1] = useState(booking.address_1);
+  const [addressLine2, setAddressLine2] = useState(booking.address_2);
+  const numberPlate = booking.rental.numberPlate;
+  const description = booking.rental.description;
   const router = useRouter();
+  const [host, setHost]: any = useState({});
+  const [client, setClient]: any = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      await getDocument("users", booking.userID).then((clientRes: any) => {
+        setClient(clientRes);
+        // console.log("client", clientRes);
+        getDocument("users", booking.rental.userID).then((hostRes: any) => {
+          setHost(hostRes);
+          // console.log("host", hostRes);
+        });
+      });
+    };
+    fetchUserData();
+  }, [booking]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -71,7 +95,7 @@ export default function RentalColumn({
                           id="slide-over-heading"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          View Rental
+                          View Booking
                         </h2>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -92,7 +116,11 @@ export default function RentalColumn({
                         <div>
                           <div className="relative h-40 sm:h-56">
                             <img
-                              src={rental!.image[0] ? rental!.image[0] : ""}
+                              src={
+                                booking!.rental.image[0]
+                                  ? booking!.rental.image[0]
+                                  : ""
+                              }
                               alt=""
                               className="w-full h-full object-cover"
                             />
@@ -102,67 +130,32 @@ export default function RentalColumn({
                               <div>
                                 <div className="flex space-x-2 items-center">
                                   <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                                    {rental!.name}
+                                    {booking!.rental.name}
                                   </h3>
                                 </div>
                                 <div className="mt-1 flex items-center">
                                   <p className="text-sm font-medium text-gray-900">
-                                    {`${formatNumber(rental!.price)}Ksh`}
+                                    {`${formatNumber(
+                                      booking!.rental.price
+                                    )}Ksh`}
                                   </p>
                                   <p className="text-sm text-gray-500">/day</p>
                                 </div>
                                 <p className="text-sm text-gray-500">
-                                  {rental!.uid}
+                                  {`${booking!.rental.seats} seats`}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                  {rental!.numberPlate}
+                                  {booking!.rental.year}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {booking!.rental.numberPlate}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {`Booking uid: ${booking!.uid}`}
                                 </p>
                               </div>
-                              <div className="mt-5 flex flex-wrap space-y-3 sm:space-x-3 sm:space-y-0">
-                                {!rental!.isApproved ? (
-                                  <button
-                                    onClick={async () => {
-                                      await verifyRental(
-                                        rental!.uid,
-                                        true
-                                      ).then((res: any) => {
-                                        callSnackBar("Rental approved");
-                                      });
-                                    }}
-                                    type="button"
-                                    className="inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:scale-105 transition-all ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
-                                  >
-                                    Approve Rental
-                                  </button>
-                                ) : (
-                                  <button
-                                    onClick={async () => {
-                                      await verifyRental(
-                                        rental!.uid,
-                                        false
-                                      ).then((res: any) => {
-                                        callSnackBar("Rental approval removed");
-                                      });
-                                    }}
-                                    type="button"
-                                    className="inline-flex w-full flex-shrink-0 items-center justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:flex-1"
-                                  >
-                                    Remove Rental Approval
-                                  </button>
-                                )}
-
-                                {rental!.availability ? (
-                                  <></>
-                                ) : (
-                                  <button
-                                    onClick={async () => {}}
-                                    type="button"
-                                    className="inline-flex w-full flex-1 items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                  >
-                                    Change Role
-                                  </button>
-                                )}
-                                <div className="ml-3 inline-flex sm:ml-0">
+                              <div className="mt-5 flex  flex-wrap justify-end space-y-3 sm:space-x-3 sm:space-y-0">
+                                <div className="items-end  flex justify-end sm:ml-0">
                                   <Menu
                                     as="div"
                                     className="relative inline-block text-left"
@@ -188,11 +181,11 @@ export default function RentalColumn({
                                     >
                                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <div className="py-1">
-                                          <Menu.Item>
+                                          {/* <Menu.Item>
                                             {({ active }) => (
                                               <a
-                                                href={`/dashboard/rentals/${
-                                                  rental!.uid
+                                                href={`/dashboard/bookings/${
+                                                  booking!.uid
                                                 }`}
                                                 className={classNames(
                                                   active
@@ -201,10 +194,10 @@ export default function RentalColumn({
                                                   "block px-4 py-2 text-sm"
                                                 )}
                                               >
-                                                View rental
+                                                View booking
                                               </a>
                                             )}
-                                          </Menu.Item>
+                                          </Menu.Item> */}
                                           {/* <Menu.Item>
                                             {({ active }) => (
                                               <button
@@ -224,11 +217,11 @@ export default function RentalColumn({
                                               <button
                                                 onClick={async () => {
                                                   await deleteDocument(
-                                                    "rentals",
-                                                    rental!.uid
+                                                    "bookings",
+                                                    booking!.uid
                                                   ).then((res) => {
                                                     callSnackBar(
-                                                      "Rental deleted"
+                                                      "Booking deleted"
                                                     );
                                                   });
                                                 }}
@@ -236,10 +229,10 @@ export default function RentalColumn({
                                                   active
                                                     ? "bg-gray-100 text-red-900"
                                                     : "text-red-700",
-                                                  "block px-4 py-2 text-sm w-full font-semibold text-left"
+                                                  "block px-4 py-2 text-sm w-full text-left font-semibold"
                                                 )}
                                               >
-                                                Delete rental
+                                                Delete booking
                                               </button>
                                             )}
                                           </Menu.Item>
@@ -260,113 +253,143 @@ export default function RentalColumn({
                               Description:
                             </dt>
                             <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <textarea
-                                value={description}
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                onChange={(e) => {
-                                  setDescription(e.target.value);
-                                }}
-                              ></textarea>
+                              <p>{description}</p>
+                            </dd>
+                          </div>
+                          <div className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
+                            <dt className="text-lg font-semibold text-gray-700 sm:w-40 sm:flex-shrink-0">
+                              Additional Notes:
+                            </dt>
+                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
+                              <p>{booking.additionalNotes}</p>
                             </dd>
                           </div>
                           <div>
-                            <dt className="text-xl font-bold text-black sm:w-40 sm:flex-shrink-0">
+                            <dd className="mt-3 flex">
+                              <PaidPill isPaid={booking.transaction.paid} />
+                            </dd>
+                          </div>
+                          <dl className="grid grid-cols-1 gap-y-8 border-b border-gray-200 py-8 sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10">
+                            <div>
+                              <dt className="font-medium text-gray-900">
+                                Host
+                              </dt>
+                              <dd className="mt-3 space-y-3 text-gray-500">
+                                <div
+                                  className="flex space-x-2 cursor-pointer w-auto p-2 hover:scale-[1.03] transition-all ease-in-out rounded-lg"
+                                  onClick={() => {
+                                    router.push(
+                                      `/dashboard/profile/${host?.uid}`
+                                    );
+                                  }}
+                                >
+                                  {/* <div className="w-14 h-14 rounded-full  overflow-hidden">
+                                    <img
+                                      className=" object-cover"
+                                      src={
+                                        host?.profileUrl === ""
+                                          ? "/images/profile.png"
+                                          : host?.profileUrl
+                                      }
+                                      alt="avatar"
+                                    />
+                                  </div> */}
+                                  <div className="flex justify-center flex-col">
+                                    <p className="font-semibold">
+                                      {host.fullName}
+                                    </p>
+                                    <p>{host.email}</p>
+                                  </div>
+                                </div>
+
+                                {/* <div className="flex space-x-4">
+                                  <button
+                                    onClick={createChat}
+                                    type="button"
+                                    className="bg-primary rounded-lg font-semibold hover:scale-[1.03] transition-all ease-in-out text-white p-2"
+                                  >
+                                    Message Host
+                                  </button>
+                                </div> */}
+                              </dd>
+                            </div>
+                            <div>
+                              <dt className="font-medium text-gray-900">
+                                Client
+                              </dt>
+                              <dd className="mt-3 space-y-3 text-gray-500">
+                                <div
+                                  className="flex space-x-2 cursor-pointer w-auto p-2 hover:scale-[1.03] transition-all ease-in-out rounded-lg"
+                                  onClick={() => {
+                                    router.push(
+                                      `/dashboard/profile/${client?.uid}`
+                                    );
+                                  }}
+                                >
+                                  {/* <div className="w-14 h-14 rounded-full  overflow-hidden">
+                                    <img
+                                      className=" object-cover"
+                                      src={
+                                        client?.profileUrl === ""
+                                          ? "/images/profile.png"
+                                          : client?.profileUrl
+                                      }
+                                      alt="avatar"
+                                    />
+                                  </div> */}
+                                  <div className="flex justify-center flex-col">
+                                    <p className="font-semibold">
+                                      {client.fullName}
+                                    </p>
+                                    <p>{client.email}</p>
+                                  </div>
+                                </div>
+
+                                {/* <div className="flex space-x-4">
+                                 
+                                  <button
+                                    type="button"
+                                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                                  >
+                                    Edit Order
+                                  </button>
+                                </div> */}
+                              </dd>
+                            </div>
+                          </dl>
+                          <dl className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-7 lg:mt-0 lg:pr-8">
+                            <div className="flex items-center justify-between pb-4">
+                              <dt className="text-gray-600">Subtotal</dt>
+                              <dd className="font-medium text-gray-900">
+                                {`Ksh ${formatNumber(booking.rental.price)}`}
+                              </dd>
+                            </div>
+                            <div className="flex items-center justify-between py-4">
+                              <dt className="text-gray-600">Pata-ride cut</dt>
+                              <dd className="font-medium text-gray-900">{`Ksh ${formatNumber(
+                                patarideCut
+                              )}`}</dd>
+                            </div>
+                            {/* <div className="flex items-center justify-between py-4">
+                          <dt className="text-gray-600">Tax</dt>
+                          <dd className="font-medium text-gray-900">$6.16</dd>
+                        </div> */}
+                            <div className="flex items-center justify-between pt-4">
+                              <dt className="font-medium text-gray-900">
+                                Order total
+                              </dt>
+                              <dd className="font-semibold text-lg text-indigo-600">
+                                {`Ksh ${formatNumber(
+                                  booking.rental.price + patarideCut
+                                )}`}
+                              </dd>
+                            </div>
+                          </dl>
+                          <div>
+                            {/* <dt className="text-xl font-bold text-black sm:w-40 sm:flex-shrink-0">
                               Details:
-                            </dt>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Name:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.phoneNumber}
-                                value={name}
-                                onChange={(e) => {
-                                  //   user?.phone = e.target.value;
-                                  setName(e.target.value);
-                                }}
-                              />
-                            </dd>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Make:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.phoneNumber}
-                                value={make}
-                                onChange={(e) => {
-                                  //   user?.phone = e.target.value;
-                                  setMake(e.target.value);
-                                }}
-                              />
-                            </dd>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Model:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.phoneNumber}
-                                value={model}
-                                onChange={(e) => {
-                                  //   user?.phone = e.target.value;
-                                  setModel(e.target.value);
-                                }}
-                              />
-                            </dd>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Year:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.phoneNumber}
-                                value={year}
-                                onChange={(e: any) => {
-                                  //   user?.phone = e.target.value;
-                                  if (!isNaN(e.target.value)) {
-                                    setYear(e.target.value);
-                                  }
-                                }}
-                              />
-                            </dd>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Seats:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.phoneNumber}
-                                value={seats}
-                                onChange={(e: any) => {
-                                  //   user?.phone = e.target.value;
-                                  if (!isNaN(e.target.value)) {
-                                    setSeats(e.target.value);
-                                  }
-                                }}
-                              />{" "}
-                            </dd>
-                            <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
-                              <p className="text-gray-500 font-semibold">
-                                Number Plate:{" "}
-                              </p>
-                              <input
-                                type="text"
-                                className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-gray-300"
-                                // placeholder={user?.email}
-                                value={numberPlate}
-                                onChange={(e) => {
-                                  //   user?.phone = e.target.value;
-                                  setNumberPlate(e.target.value);
-                                }}
-                              />{" "}
-                            </dd>
+                            </dt> */}
+
                             <dd className="flex flex-col mt-1 text-sm text-gray-900 sm:col-span-2">
                               <p className="text-gray-500 font-semibold">
                                 Address Line 1:{" "}
@@ -402,15 +425,9 @@ export default function RentalColumn({
                             <dd className="mt-1 text-sm text-gray-900 sm:col-span-2">
                               <button
                                 onClick={async () => {
-                                  await updateRentalInformation(rental.uid, {
-                                    description,
-                                    make,
-                                    model,
-                                    numberPlate,
-                                    name,
-                                    seats,
-                                    year,
-                                    location: { addressLine1, addressLine2 },
+                                  await updateBookingInformation(booking.uid, {
+                                    address_2: addressLine2,
+                                    address_1: addressLine1,
                                   }).then((res) => {
                                     callSnackBar(res.message);
                                     router.reload();

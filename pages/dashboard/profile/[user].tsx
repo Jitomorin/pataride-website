@@ -1,3 +1,4 @@
+import AdminRentalsTable from "@/components/AdminRentalsTable";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Divider from "@/components/Divider";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
@@ -51,7 +52,7 @@ function Profile(props: any) {
     <DefaultLayout>
       <div className="mx-auto">
         <Breadcrumb pageName="Profile" />
-        <div className="overflow-hidden  rounded-md shadow-md bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="overflow-hidden  rounded-lg  bg-white shadow-lg ">
           {profile.coverImageURL === "" ? (
             <div className="relative w-full h-48 bg-gray-400">
               <h1 className="w-full p-4 text-xl">No Cover Image</h1>
@@ -164,24 +165,16 @@ function Profile(props: any) {
             </div>
           )}
           <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11">
-            <div className="relative z-30 mx-auto -mt-22 h-30 w-full max-w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:max-w-44 sm:p-3">
-              <div className="relative drop-shadow-2 bg-black rounded-full">
-                <Image
-                  className="rounded-full "
-                  src={
-                    profile!.profileUrl === ""
-                      ? "/images/profile.png"
-                      : profile!.profileUrl
-                  }
-                  width={160}
-                  height={160}
-                  style={{
-                    width: "auto",
-                    height: "auto",
-                  }}
-                  alt="profile"
-                />
-              </div>
+            <div className="relative  drop-shadow-2  rounded-full">
+              <img
+                className="rounded-full object-cover w-64 h-64"
+                src={
+                  profile!.profileUrl === ""
+                    ? "/images/profile.png"
+                    : profile!.profileUrl
+                }
+                alt="profile"
+              />
             </div>
             <div className="mt-4">
               <h3 className="mb-1 text-2xl font-semibold text-black dark:text-white">
@@ -231,7 +224,11 @@ function Profile(props: any) {
                     <Spinner />
                   </div>
                 ) : (
-                  <RentalsTable rentals={rentals} />
+                  <div className="h-full">
+                    <h1 className="font-semibold text-2xl">Owned Rentals</h1>
+                    <AdminRentalsTable rentals={rentals} />
+                  </div>
+                  // <RentalsTable rentals={rentals} />
                   // <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 
                   // </div>

@@ -20,18 +20,14 @@ export const AuthContextProvider = ({ children }: any) => {
   React.useEffect(() => {
     setLoading(true);
     const unsubscribe = onAuthStateChanged(auth, (user: any) => {
-      console.log("the user is loading", user);
       if (user) {
         getDocument("users", user.uid).then((data: any) => {
           setUser(data);
-          console.log(data);
           setLoading(false);
-          console.log("the user is loaded", user);
         });
       } else {
         setUser(null);
         setLoading(false);
-        console.log("not logged in", user);
       }
     });
 

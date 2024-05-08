@@ -40,9 +40,6 @@ const tabs = [
 ];
 
 function Admin() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([users]);
-  const [rentals, setRentals] = useState<any[]>([]);
   const router = useRouter();
 
   function classNames(...classes: any) {
@@ -56,18 +53,7 @@ function Admin() {
   // };
 
   useEffect(() => {
-    console.log("filtered data", users);
-    const fetchData = async () => {
-      await getAllData("users").then((res) => {
-        // setUsers(res);
-        setFilteredUsers(res);
-        getAllData("rentals").then((res) => {
-          setRentals(res);
-          console.log("rentals", rentals);
-        });
-      });
-    };
-    fetchData();
+    router.push("/dashboard/admin/users");
   }, []);
 
   return (

@@ -21,7 +21,7 @@ export default function DefaultLayout({
     if (!loading) {
       setIsLoading(false);
       if (user === null) router.push("/login");
-      console.log(auth.currentUser);
+      // console.log(auth.currentUser);
       if (auth.currentUser?.emailVerified === false) router.push("/");
     } else {
       setIsLoading(true);

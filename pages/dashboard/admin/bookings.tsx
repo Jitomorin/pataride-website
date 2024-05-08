@@ -20,7 +20,9 @@ import { set } from "sanity";
 import RentalsTable from "@/components/RentalsTable";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import AdminUsersTable from "@/components/AdminUsersTable";
+import AdminRentalsTable from "@/components/AdminRentalsTable";
+import { getUrl } from "@/utils/formatString";
+import AdminBookingsTable from "@/components/AdminBookingsTable";
 
 const tabs = [
   {
@@ -40,30 +42,21 @@ const tabs = [
   },
 ];
 
-function AdminUsers() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
-  const [rentals, setRentals] = useState<any[]>([]);
+function AdminBookings() {
+  const [bookings, setBookings] = useState<any[]>([]);
   const router = useRouter();
 
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
   }
-  const getUrl = () => {
-    const url = router.asPath;
-    const pathSegments = url.split("/");
-    const res = pathSegments[pathSegments.length - 1];
-    return res;
-  };
 
   useEffect(() => {
     const fetchData = async () => {
-      await getAllData("users").then((res) => {
-        // setUsers(res);
-        setFilteredUsers(res);
-        getAllData("rentals").then((res) => {
-          setRentals(res);
+      await getAllData("bookings").then((res) => {
+        res.sort((a: any, b: any) => {
+          return b.dateAdded - a.dateAdded;
         });
+        setBookings(res);
       });
     };
     fetchData();
@@ -85,7 +78,7 @@ function AdminUsers() {
                 name="tabs"
                 className="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500"
                 defaultValue={tabs
-                  .find((tab) => getUrl() === tab.name)
+                  .find((tab) => getUrl(router) === tab.name)
                   ?.toString()}
               >
                 {tabs.map((tab) => (
@@ -100,7 +93,7 @@ function AdminUsers() {
                     key={tab.name}
                     href={tab.href}
                     className={classNames(
-                      getUrl() === tab.name.toLowerCase()
+                      getUrl(router) === tab.name.toLowerCase()
                         ? "bg-primary-100 text-primary-700"
                         : "text-gray-500 hover:text-gray-700",
                       "rounded-md px-3 py-2 text-sm font-medium"
@@ -114,10 +107,10 @@ function AdminUsers() {
             </div>
           </div>
           {/* <UsersTable users={filteredUsers} /> */}
-          {filteredUsers.length <= 0 ? (
+          {bookings.length <= 0 ? (
             <></>
           ) : (
-            <AdminUsersTable users={[...filteredUsers]} />
+            <AdminBookingsTable bookings={bookings} />
           )}
         </div>
       </div>
@@ -125,7 +118,7 @@ function AdminUsers() {
   );
 }
 
-export default AdminUsers;
+export default AdminBookings;
 
 // export const getServerSideProps: GetServerSideProps<RentalProps> = async (
 //   ctx

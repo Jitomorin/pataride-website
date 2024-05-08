@@ -4,14 +4,15 @@ import {
   useGlobalFilter,
   useAsyncDebounce,
   usePagination,
-  useRowSelect,
 } from "react-table";
 import { useRowSelectColumn } from "@lineup-lite/hooks";
 import { Button, PageButton } from "../contexts/Button";
 import { classNames, customersData } from "../contexts/utils";
 import { DOTS, useCustomPagination } from "./useCustomPagination";
-import { faColumns } from "@fortawesome/free-solid-svg-icons";
 import ProfileColumn from "./ProfileColumn";
+import RentalColumn from "./RentalColumn";
+import { formatNumber } from "@/utils/formatNumber";
+import BookingColumn from "./BookingColumn";
 
 export function GlobalFilter({
   globalFilter,
@@ -44,17 +45,17 @@ export function GlobalFilter({
 }
 
 export function StatusPill({ value }: any) {
-  const isVerified = value ? value : false;
+  const isApproved = value ? value : false;
 
   return (
     <span
       className={classNames(
         "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
-        isVerified ? "bg-green-100 text-green-700" : null,
-        !isVerified ? "bg-red-100 text-red-700" : null
+        isApproved ? "bg-green-100 text-green-700" : null,
+        !isApproved ? "bg-red-100 text-red-700" : null
       )}
     >
-      {isVerified.toString()}
+      {isApproved.toString()}
     </span>
   );
 }
@@ -62,17 +63,8 @@ export function StatusPill({ value }: any) {
 export function AvatarCell({ value, column, row }: any) {
   return (
     <div className="flex items-center">
-      <div className="flex-shrink-0 h-10 w-10">
-        <img
-          className="h-10 w-10 rounded-full"
-          src={
-            row.original[column.imgAccessor] == "" ||
-            row.original[column.imgAccessor] == undefined
-              ? "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvectorified.com%2Fimages%2Fno-profile-picture-icon-24.jpg&f=1&nofb=1&ipt=415f7982d5addcfdad29c944a4e84a52a8ea24c0816674b835ab352b02a86deb&ipo=images"
-              : row.original[column.imgAccessor]
-          }
-          alt=""
-        />
+      <div className="flex-shrink-0 h-20 w-20">
+        <img className="h-20 w-20" src={row.original.rental.image[0]} alt="" />
       </div>
       <div className="ml-4">
         <div className="text-sm font-medium text-gray-900">{value}</div>
@@ -87,15 +79,15 @@ export function ActionCell({
   value,
   column,
   row,
-  setSelectedUser,
-  setOpenProfile,
+  setSelectedBooking,
+  setOpenBooking,
 }: any) {
   return (
     <div className="flex items-center">
       <button
         onClick={() => {
-          setSelectedUser(value.row.original);
-          setOpenProfile(true);
+          setSelectedBooking(value.row.original);
+          setOpenBooking(true);
         }}
         className="text-indigo-600 hover:text-indigo-900 hover:underline "
       >
@@ -105,45 +97,59 @@ export function ActionCell({
   );
 }
 
-const AdminUsersTable = ({ placeholder, users }: any) => {
-  const [openProfile, setOpenProfile] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<any>(users[0]);
+const AdminBookingsTable = ({ placeholder, bookings }: any) => {
+  const [openBooking, setOpenBooking] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any>(bookings[0]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
-  const data = useMemo(() => users, []);
+  const data = useMemo(() => bookings, []);
 
   const columns = useMemo(
     () => [
       {
-        Header: "Name",
-        accessor: "fullName",
+        Header: "Booking ID",
+        accessor: "rental.name",
         Cell: AvatarCell,
-        imgAccessor: "profileUrl",
-        numAccessor: "email",
+        imgAccessor: (value: any) => `${value.rental.image[0]}`,
+        numAccessor: "uid",
       },
       {
-        Header: "User ID",
-        accessor: "uid",
+        Header: "Payment Details",
+        accessor: (value: any) => `Ksh ${formatNumber(value.rental.price)}`,
       },
       {
-        Header: "Number",
-        accessor: "phoneNumber",
+        Header: "Location",
+        accessor: (value: any) => `${value.address_1}, ${value.address_2}`,
       },
       {
-        Header: "Role",
-        accessor: "role",
+        Header: "Excecution Time",
+        accessor: (value: any) => {
+          return `From ${new Date(
+            value.selectedDates[0].startDate.seconds * 1000
+          ).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })} To ${new Date(
+            value.selectedDates[0].endDate.seconds * 1000
+          ).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}`;
+        },
       },
       {
-        Header: "Verified",
-        accessor: "isVerified",
+        Header: "Paid",
+        accessor: "transaction.paid",
         Cell: StatusPill,
       },
       {
         Header: "Action",
         Cell: (value: any, row: any) => (
           <ActionCell
-            setOpenProfile={setOpenProfile}
-            setSelectedUser={setSelectedUser}
+            setOpenBooking={setOpenBooking}
+            setSelectedBooking={setSelectedBooking}
             value={value}
             row={row}
           />
@@ -182,7 +188,7 @@ const AdminUsersTable = ({ placeholder, users }: any) => {
     totalPageCount: pageCount,
     currentPage: pageIndex,
   });
-  console.log(paginationRange);
+  // console.log(paginationRange);
 
   useEffect(() => {
     setPageSize(5);
@@ -190,20 +196,20 @@ const AdminUsersTable = ({ placeholder, users }: any) => {
 
   return (
     <div>
-      <ProfileColumn
-        user={selectedUser}
-        open={openProfile}
-        setOpen={setOpenProfile}
-        callSnackBar={(message: string) => {
-          setSnackbarMessage(message);
-          setSnackbarOpen(true);
-        }}
-      />
       <GlobalFilter
         preGlobalFilteredRows={preGlobalFilteredRows}
         globalFilter={state.globalFilter}
         setGlobalFilter={setGlobalFilter}
         placeholder={placeholder}
+      />
+      <BookingColumn
+        booking={selectedBooking}
+        open={openBooking}
+        setOpen={setOpenBooking}
+        callSnackBar={(message: string) => {
+          setSnackbarMessage(message);
+          setSnackbarOpen(true);
+        }}
       />
       <div className="mt-2 flex flex-col">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
@@ -308,4 +314,4 @@ const AdminUsersTable = ({ placeholder, users }: any) => {
   );
 };
 
-export default AdminUsersTable;
+export default AdminBookingsTable;

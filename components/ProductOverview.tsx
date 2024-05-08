@@ -400,9 +400,9 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                 ) : (
                   <button
                     disabled
-                    className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-400 cursor-not-allowed"
+                    className="ml-0 inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-400 cursor-not-allowed"
                   >
-                    Add to cart
+                    Book now
                   </button>
                 )}
                 <h2

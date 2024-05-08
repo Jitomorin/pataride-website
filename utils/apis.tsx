@@ -31,7 +31,7 @@ export const createCheckout = async (
   return data;
 };
 
-export const checkPaymentStatus = async (
+export const checkTransactionStatus = async (
   bookingID: any,
   bookingSignature: any
 ) => {

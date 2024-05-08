@@ -8,10 +8,12 @@ import BookingsTable from "@/components/BookingsTable";
 import Conversation from "@/components/Conversation";
 import Messages from "@/components/Messages";
 import { useRouter } from "next/router";
+import { isEmpty } from "@/utils/formatString";
 
 function Chats() {
   const [chats, setChats] = useState([]);
   const [users, setUsers] = useState([]);
+  const [selectedChat, setSelectedChat] = useState({});
   const [dataLoading, setDataLoading] = useState(true);
   const [usersLoading, setUsersLoading] = useState(true);
   const { user, loading }: any = useAuthContext();
@@ -23,7 +25,7 @@ function Chats() {
   useEffect(() => {
     const fetchChatData = async () => {
       setDataLoading(true);
-      await getFilteredData("chats", "userID", "==", user.uid).then(
+      await getFilteredData("chats", "users", "array-contains", user.uid).then(
         (chatsRes: any) => {
           // sort by date in field called delivery_timestamp
           chatsRes.sort((a: any, b: any) => {
@@ -61,21 +63,18 @@ function Chats() {
           <div className="flex space-x-4">
             <div className="w-80 h-screen dark:bg-gray-800 bg-white shadow-lg rounded-lg p-2 hidden md:block">
               <div className="h-full overflow-y-auto">
-                <div className="search-chat flex p-3">
-                  <input
-                    className="p-2 w-full  border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    type="text"
-                    placeholder="Search Messages"
-                  />
-                </div>
                 <div className="text-lg font-semibol text-gray-600 dark:text-gray-200 p-3">
                   Recent
                 </div>
                 {!dataLoading && !usersLoading ? (
                   <Conversation
+                    router={router}
                     chats={chats}
                     users={users}
                     loading={dataLoading}
+                    selectedChat={selectedChat}
+                    setSelectedChat={setSelectedChat}
+                    currentUser={user}
                   />
                 ) : (
                   <></>
@@ -83,11 +82,21 @@ function Chats() {
               </div>
             </div>
             <div className="flex-grow  h-screen p-2 rounded-md">
-              {!dataLoading && !usersLoading ? (
-                <Messages chats={chats} users={users} loading={dataLoading} />
+              {/* {!dataLoading && !usersLoading ? (
+                <>
+                  {!isEmpty(selectedChat) && (
+                    <Messages
+                      setSelectedChat={setSelectedChat}
+                      selectedChat={selectedChat}
+                      users={users}
+                      loading={dataLoading}
+                      currentUser={user}
+                    />
+                  )}
+                </>
               ) : (
                 <></>
-              )}
+              )} */}
             </div>
           </div>
         </div>

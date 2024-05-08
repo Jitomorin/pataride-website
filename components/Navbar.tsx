@@ -8,6 +8,7 @@ import { useTheme } from "./Theme";
 import { media } from "@/utils/media";
 import { useProfileModalContext } from "@/contexts/profile-modal.context";
 import Image from "next/image";
+import DropdownUser from "./Header/DropdownUser";
 
 const ColorSwitcherContainer = styled.div`
   width: 4rem;
@@ -28,10 +29,12 @@ const MobileNavbarDiv = styled.div<{ nav: boolean; theme: any }>`
   transition: all 0.5s ease-in-out;
   ${(props) => (props.nav ? "left: 0;" : "")}
 `;
-const NavbarDiv = styled.div`
+const NavbarDiv = styled.header`
   max-width: 133rem;
+  position: sticky;
   width: 100%;
   height: auto;
+  max-height: 133px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -106,22 +109,25 @@ const NavLinks = styled.div<{ theme: any }>`
     display: inline-block;
     padding-bottom: 1rem;
   }
-  a:hover {
-    color: #f8d521;
+  &:not(:nth-last-child(-n + 2)) {
+    a:hover {
+      color: #f8d521;
+    }
+    a:hover::after {
+      width: 100%;
+    }
+    a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 3px;
+      background-color: #f8d521; /* Change the color as needed */
+      transition: width 0.3s ease; /* Add animation effect */
+    }
   }
-  a:hover::after {
-    width: 100%;
-  }
-  a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 3px;
-    background-color: #f8d521; /* Change the color as needed */
-    transition: width 0.3s ease; /* Add animation effect */
-  }
+
   ${media("<=tablet")} {
     display: none;
   }
@@ -147,6 +153,7 @@ const NavButtons = styled.div<{ theme: any }>`
   justify-content: center;
   align-items: center;
   gap: 2.7rem;
+  max-height: 65px;
   font-size: 2rem;
   font-family: "Oswald", sans-serif;
   font-weight: 500;
@@ -159,22 +166,22 @@ const NavButtons = styled.div<{ theme: any }>`
     display: inline-block;
     padding-bottom: 1rem;
   }
-  a::after {
+  /* a::after {
     content: "";
     position: absolute;
     left: 0;
     bottom: 0;
     width: 0;
     height: 3px;
-    background-color: #f8d521; /* Change the color as needed */
-    transition: width 0.3s ease; /* Add animation effect */
+    background-color: #f8d521;
+    transition: width 0.3s ease; 
   }
   a:hover {
     color: #f8d521;
   }
   a:hover::after {
     width: 100%;
-  }
+  } */
   div {
     color: ${(props) => (props.theme === "light" ? "#010103" : "#fff")};
     cursor: pointer;
@@ -183,22 +190,22 @@ const NavButtons = styled.div<{ theme: any }>`
     display: inline-block;
     padding-bottom: 1rem;
   }
-  div::after {
+  /* div::after {
     content: "";
     position: absolute;
     left: 0;
     bottom: 0;
     width: 0;
     height: 3px;
-    background-color: #f8d521; /* Change the color as needed */
-    transition: width 0.3s ease; /* Add animation effect */
+    background-color: #f8d521; 
+    transition: width 0.3s ease; 
   }
   div:hover {
     color: #f8d521;
   }
   div:hover::after {
     width: 100%;
-  }
+  } */
   li {
     display: flex;
     gap: 1rem;
@@ -268,25 +275,11 @@ function Navbar() {
             </li>
             {user != null ? (
               <>
-                <li
-                  onClick={() => {
-                    setIsProfileModalOpened(true);
-                  }}
-                >
+                <li>
                   {/* <ProfileMenu /> */}
-                  <div>
-                    <Image
-                      className="rounded-full"
-                      width={40}
-                      height={40}
-                      src={
-                        user?.profileUrl === ""
-                          ? "/images/profile.png"
-                          : user?.profileUrl
-                      }
-                      alt="avatar"
-                    />
-                  </div>
+                  <Link onClick={openNav} href="/dashboard/home">
+                    Dashboard
+                  </Link>
                 </li>
                 {/* <li>
                   <button
@@ -362,22 +355,8 @@ function Navbar() {
             <NavButtons theme={theme}>
               <li>
                 {/* <ProfileMenu /> */}
-                <div
-                  className="w-14 h-14 rounded-full cursor-pointer overflow-hidden"
-                  onClick={() => {
-                    setIsProfileModalOpened(true);
-                  }}
-                >
-                  <img
-                    className=" object-cover"
-                    src={
-                      user?.profileUrl === ""
-                        ? "/images/profile.png"
-                        : user?.profileUrl
-                    }
-                    alt="avatar"
-                  />
-                </div>
+                {/* <DropdownUser /> */}
+                <Link href="/dashboard/home">Dashboard</Link>
               </li>
               {/* <div
                 onClick={async () => {

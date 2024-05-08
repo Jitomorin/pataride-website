@@ -14,7 +14,10 @@ const Breadcrumb = ({ pageName, index }: BreadcrumbProps) => {
           <nav>
             <ol className="flex items-center gap-2">
               <li>
-                <Link className="font-medium" href="/dashboard/home">
+                <Link
+                  className="font-medium hover:text-[#f8d521] transition-all ease-in-out"
+                  href="/dashboard/home"
+                >
                   Dashboard /
                 </Link>
               </li>
@@ -30,13 +33,16 @@ const Breadcrumb = ({ pageName, index }: BreadcrumbProps) => {
           <nav>
             <ol className="flex items-center gap-2">
               <li>
-                <Link className="font-medium" href="/dashboard/home">
+                <Link
+                  className="font-medium hover:text-[#f8d521] transition-all ease-in-out"
+                  href="/dashboard/home"
+                >
                   Dashboard /
                 </Link>
               </li>
               <li>
                 <Link
-                  className="font-medium"
+                  className="font-medium hover:text-[#f8d521] transition-all ease-in-out"
                   href={`/dashboard/${index!.toLowerCase()}`}
                 >
                   {`${index} /`}

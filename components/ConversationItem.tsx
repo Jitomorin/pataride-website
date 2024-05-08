@@ -1,20 +1,27 @@
 import React from "react";
 
-const ConversationItem = ({ active, time, name, message }: any) => {
-  const _class = active ? "bg-gray-200" : "bg-white";
+const ConversationItem = ({
+  active,
+  pressFunction,
+  time,
+  name,
+  message,
+  profileURL,
+}: any) => {
+  const _class = active ? "bg-gray-100" : "bg-white";
   return (
     <div>
       <div
-        className={
-          "conversation-item p-1 dark:bg-gray-700 hover:bg-gray-200 m-1 rounded-md " +
-          _class
-        }
+        onClick={() => {
+          pressFunction();
+        }}
+        className={`conversation-item p-1  hover:bg-gray-150 m-1 rounded-md ${_class} hover:bg-gray-100 transition-all ease-in-out`}
       >
         <div className={"flex items-center p-2  cursor-pointer  "}>
           <div className="w-7 h-7 m-1">
             <img
               className="rounded-full"
-              src="https://cdn.pixabay.com/photo/2017/01/31/21/23/avatar-2027366_960_720.png"
+              src={profileURL === "" ? "/images/profile.png" : profileURL}
               alt="avatar"
             />
           </div>

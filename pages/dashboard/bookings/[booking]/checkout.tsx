@@ -8,6 +8,7 @@ import Spinner from "@/components/Spinner";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {
   addDataWithDocName,
+  deleteDocument,
   getAllRentalSlugs,
   getDocument,
   getFilteredData,
@@ -37,7 +38,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { CheckCircleIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
-import { checkPaymentStatus, createCheckout } from "@/utils/apis";
+import { checkTransactionStatus, createCheckout } from "@/utils/apis";
 
 const defaultPosition = {
   lat: 27.9878,
@@ -104,12 +105,12 @@ function BookingCheckout(props: any) {
     if (user) {
       // check if the other belongs to the user
       const checkOrderUser = async () => {
-        if (user.uid !== booking.userID) {
-          router.push("/dashboard/bookings");
+        if (user?.uid !== booking.userID) {
+          router.push("/dashboard/bookings/all-bookings");
         }
         if (booking.transactionID !== undefined) {
           setIsConfirmed(true);
-          await checkPaymentStatus(
+          await checkTransactionStatus(
             booking.transactionID,
             booking.transactionSignature
           )
@@ -120,6 +121,15 @@ function BookingCheckout(props: any) {
                 updateBookingInformation(booking.uid, {
                   transaction: result,
                   status: "confirmed",
+                }).then(() => {
+                  router.push(`/dashboard/bookings/${booking.uid}`);
+                });
+              } else if (!result!.paid) {
+                return;
+              } else {
+                // delete order if the transaction link has expired or transaction does not exist
+                deleteDocument("bookings", booking.uid).then(() => {
+                  alert("Transaction expired or does not exist");
                 });
               }
             })
@@ -212,10 +222,8 @@ function BookingCheckout(props: any) {
               paymentURL: transaction.url,
             })
               .then((res) => {
-                console.log("update result", res, booking.uid);
-                setSnackbarMessage(
-                  "Booking information updated, redirecting to payment screen..."
-                );
+                // console.log("update result", res, booking.uid);
+                setSnackbarMessage("Booking information updated");
                 setSnackbarOpen(true);
                 // router.push(transaction.url);
                 router.reload();
@@ -263,17 +271,12 @@ function BookingCheckout(props: any) {
       return (
         <DefaultLayout>
           <div className="mx-auto">
-            <Breadcrumb pageName={booking.uid} index="Orders" />
+            <Breadcrumb pageName={booking.uid} index="Bookings" />
 
             <div className="w-full h-screen flex justify-between flex-col md:flex-row">
               {/* <div className="shadow-md rounded-md flex w-full md:w-[49.5%] p-4 h-full bg-white">
                 Chat
               </div> */}
-              {isPaid && (
-                <div className="flex space-x-2">
-                  <h1>Booking paid succ</h1>
-                </div>
-              )}
               <form className="lg:grid lg:grid-cols-2 w-full lg:gap-x-12 xl:gap-x-16">
                 <div>
                   {isConfirmed ? (
@@ -680,15 +683,21 @@ function BookingCheckout(props: any) {
                             Confirm booking
                           </button>
                         ) : (
-                          <button
-                            type="submit"
-                            onClick={() => {
-                              window.open(booking.paymentURL, "_blank");
-                            }}
-                            className="w-full rounded-md border border-transparent bg-[#F8D521] px-4 py-3 text-base font-semibold text-white shadow-sm hover:scale-105 focus:outline-none focus:ring-0 transition-all ease-in-out"
-                          >
-                            Pay now
-                          </button>
+                          <>
+                            {booking.transaction.paid ? (
+                              <></>
+                            ) : (
+                              <button
+                                type="submit"
+                                onClick={() => {
+                                  window.open(booking.paymentURL, "_blank");
+                                }}
+                                className="w-full rounded-md border border-transparent bg-[#F8D521] px-4 py-3 text-base font-semibold text-white shadow-sm hover:scale-105 focus:outline-none focus:ring-0 transition-all ease-in-out"
+                              >
+                                Pay now
+                              </button>
+                            )}
+                          </>
                         )}
                       </div>
                     ) : (
@@ -720,6 +729,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const { params = {} } = ctx;
   //   console.log("params", params);
   const booking = await getDocument("bookings", params.booking);
+  console.log("booook", booking);
 
   if (!booking) {
     return {

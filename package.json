@@ -17,7 +17,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^0.0.0-insiders.f513614",
     "@heroicons/react": "^2.1.1",
     "@lineup-lite/hooks": "^1.7.0",
     "@n8tb1t/use-scroll-position": "^2.0.3",

@@ -10,10 +10,14 @@ import {
   updateDoc,
   orderBy,
   deleteDoc,
+  arrayUnion,
+  onSnapshot,
+  limit,
 } from "firebase/firestore";
 import { db } from "./config";
 import { v4 as uuidv4 } from "uuid";
 import { FirebaseError } from "firebase/app";
+import { isDateInRange } from "../formatString";
 
 // Function to fetch documents with filters
 export async function getFilteredData(
@@ -25,6 +29,22 @@ export async function getFilteredData(
   const q = query(
     collection(db, collectionName),
     where(field, operator, value)
+  );
+  const querySnapshot = await getDocs(q);
+  const data = querySnapshot.docs.map((doc: any) => doc.data());
+  return data;
+}
+export async function getFilteredDataWithLimit(
+  collectionName: string,
+  field: string,
+  operator: any,
+  value: any,
+  NumOfDocs: any
+) {
+  const q = query(
+    collection(db, collectionName),
+    where(field, operator, value),
+    limit(NumOfDocs)
   );
   const querySnapshot = await getDocs(q);
   const data = querySnapshot.docs.map((doc: any) => doc.data());
@@ -190,6 +210,69 @@ export async function removeAllProductsFromCart(userID: string) {
 //     email: newEmail,
 //   });
 // }
+export async function checkRentalAvailability(rentals: any[]) {
+  let result: any;
+  let data: any = [];
+  getAllData("bookings").then((bookingsData) => {
+    // console.log("booking data", bookingsData);
+    // console.log("rentals", rentals);
+    rentals.map((item) => {
+      bookingsData.map((booking: any) => {
+        // check to see if the rental is in the booking list
+        if (item.uid === booking.rental.uid) {
+          // check if booking is paid for and if todays date falls under the selected date range
+          if (
+            !booking.transaction.paid ||
+            !isDateInRange(
+              booking.selectedDates[0].startDate,
+              booking.selectedDates[0].endDate
+            )
+          ) {
+            // console.log("we got one", item);
+            data.push(item);
+            return item;
+          }
+        } else {
+          // console.log("we got one", item);
+          data.push(item);
+          return item;
+        }
+      });
+    });
+    // console.log("result with applied logic", data);
+  });
+}
+export async function AddMessageToChat(docId: string, element: any) {
+  const docRef = doc(db, "chats", docId);
+
+  try {
+    await updateDoc(docRef, {
+      chat: arrayUnion(element),
+    });
+    return {
+      status: "success",
+      message: "Sent.",
+    };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    return { status: "error", message: firebaseError.message };
+  }
+}
+
+export const startChatListener = (
+  docId: string,
+  callback: (data: any) => void
+) => {
+  const docRef = doc(db, "chats", docId);
+
+  // Listen to changes in the chat document
+  onSnapshot(docRef, (doc) => {
+    if (doc.exists()) {
+      const chatData = doc.data();
+      callback(chatData); // Call the callback function with updated chat data
+    }
+  });
+};
 export async function updateOrderStatus(orderId: string, status: any) {
   const orderRef = doc(db, "orders", orderId);
 
@@ -243,6 +326,7 @@ export async function updateOrderTransaction(
     return { status: "error", message: firebaseError.message };
   }
 }
+
 export async function updateUserProfile(
   userId: string,
   newEmail: string,
@@ -255,6 +339,26 @@ export async function updateUserProfile(
   try {
     await updateDoc(userRef, {
       email: newEmail,
+      fullName: newFullName,
+      phoneNumber: newPhoneNumber,
+      bio: newBio,
+    });
+    return { status: "success", message: "Profile updated successfully." };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    return { status: "error", message: firebaseError.message };
+  }
+}
+export async function updateUserProfileNoEmail(
+  userId: string,
+  newFullName: string,
+  newPhoneNumber: string,
+  newBio: string
+) {
+  const userRef = doc(db, "users", userId);
+
+  try {
+    await updateDoc(userRef, {
       fullName: newFullName,
       phoneNumber: newPhoneNumber,
       bio: newBio,
@@ -386,6 +490,22 @@ export async function verifyRental(userId: string, isApproved: boolean) {
   }
 }
 
+// Function to check if chat exists
+export async function checkIfChatExists(recieverUID: any, senderUID: any) {
+  let data: any = [];
+  const q = query(
+    collection(db, "chats"),
+    where("users", "array-contains", recieverUID)
+    // where("users", "array-contains", senderUID)
+  );
+  const querySnapshot = await getDocs(q);
+  data = querySnapshot.docs.map((doc: any) => doc.data());
+  data.filter((doc: any) => {
+    const usersArray = doc.users;
+    return usersArray.includes(recieverUID) && usersArray.includes(senderUID);
+  });
+  return data;
+}
 // Function to add user data
 export async function addData(collectionName: string, data: any) {
   const docRef = await addDoc(collection(db, collectionName), data);

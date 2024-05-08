@@ -14,6 +14,7 @@ import {
 } from "@/utils/firebase/storage";
 import Snackbar from "@/components/Snackbar";
 import { updateUserProfile } from "@/utils/firebase/firestore";
+import { useRouter } from "next/router";
 
 const SaveButton = styled.div`
   background-color: #f8d521;
@@ -45,6 +46,7 @@ function Settings() {
   const [bio, setBio] = useState(user?.bio);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [t, setT] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     console.log(user, loading);
@@ -72,6 +74,7 @@ function Settings() {
     if (result.status === "success") {
       setSnackbarMessage("Profile picture updated successfully");
       setSnackbarOpen(true);
+      router.reload();
     } else {
       setSnackbarMessage(result.message);
       setSnackbarOpen(true);

@@ -4,13 +4,11 @@ import {
   useGlobalFilter,
   useAsyncDebounce,
   usePagination,
-  useRowSelect,
 } from "react-table";
 import { useRowSelectColumn } from "@lineup-lite/hooks";
 import { Button, PageButton } from "../contexts/Button";
 import { classNames, customersData } from "../contexts/utils";
 import { DOTS, useCustomPagination } from "./useCustomPagination";
-import { faColumns } from "@fortawesome/free-solid-svg-icons";
 import ProfileColumn from "./ProfileColumn";
 import RentalColumn from "./RentalColumn";
 import { formatNumber } from "@/utils/formatNumber";
@@ -38,9 +36,9 @@ export function GlobalFilter({
         placeholder="Search for name, email, or uid..."
         type="search"
       />
-      <button className="bg-white rounded-xl p-4 border-1 cursor-pointer">
+      {/* <button className="bg-white rounded-xl p-4 border-1 cursor-pointer">
         Export
-      </button>
+      </button> */}
     </span>
   );
 }
@@ -64,12 +62,7 @@ export function StatusPill({ value }: any) {
 export function AvatarCell({ value, column, row }: any) {
   return (
     <div className="flex items-center">
-      <div
-        onClick={() => {
-          console.log(row.original);
-        }}
-        className="flex-shrink-0 h-20 w-20"
-      >
+      <div className="flex-shrink-0 h-20 w-20">
         <img className="h-20 w-20" src={row.original.image[0]} alt="" />
       </div>
       <div className="ml-4">
@@ -85,15 +78,15 @@ export function ActionCell({
   value,
   column,
   row,
-  setSelectedUser,
-  setOpenProfile,
+  setSelectedRental,
+  setOpenRental,
 }: any) {
   return (
     <div className="flex items-center">
       <button
         onClick={() => {
-          setSelectedUser(value.row.original);
-          setOpenProfile(true);
+          setSelectedRental(value.row.original);
+          setOpenRental(true);
         }}
         className="text-indigo-600 hover:text-indigo-900 hover:underline "
       >
@@ -141,8 +134,8 @@ const AdminRentalsTable = ({ placeholder, rentals }: any) => {
         Header: "Action",
         Cell: (value: any, row: any) => (
           <ActionCell
-            setOpenProfile={setOpenRental}
-            setSelectedUser={setSelectedRental}
+            setOpenRental={setOpenRental}
+            setSelectedRental={setSelectedRental}
             value={value}
             row={row}
           />
@@ -181,7 +174,7 @@ const AdminRentalsTable = ({ placeholder, rentals }: any) => {
     totalPageCount: pageCount,
     currentPage: pageIndex,
   });
-  console.log(paginationRange);
+  // console.log(paginationRange);
 
   useEffect(() => {
     setPageSize(5);

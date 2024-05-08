@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { GetServerSideProps } from "next";
 import { getClient } from "@/sanity/lib/client";
 import {
+  checkRentalAvailability,
   getAllData,
   getAllSortedData,
   getData,
@@ -19,15 +20,33 @@ import { Router, useRouter } from "next/router";
 import Pagination from "@/components/Pagination";
 import Loader from "@/components/Loading";
 import RentalsGrid from "@/components/RentalsGrid";
+import { isDateInRange } from "@/utils/formatString";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export interface RentalProps {
   cars: any[];
+  bookings: any[];
 }
 const filterOptions = ["Make", "Model", "Year", "Price", "Seats", "Fuel"]; // Add more options as needed
 
 function RentalsPage(props: RentalProps) {
-  let { cars } = props;
+  let { cars, bookings } = props;
+  const unavailableItems = bookings.filter((booking) => {
+    if (
+      isDateInRange(
+        booking.selectedDates[0].startDate.seconds * 1000,
+        booking.selectedDates[0].endDate.seconds * 1000
+      ) &&
+      booking.transaction.paid
+    ) {
+      // console.log(booking)
+      return "booking.rental.uid;";
+    }
+  });
+  // console.log("unavailable rentals", unavailableItems);
+  // console.log("cars", cars);
   const router = useRouter();
+  const { user, loading }: any = useAuthContext();
   const itemsPerPage = 4;
   const indexOfLastItem = 1 * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -46,16 +65,15 @@ function RentalsPage(props: RentalProps) {
     name: "Newest",
     value: "newest",
   });
-  const [openModal, setOpenModal] = useState(false);
-
-  // const handleFilterSelect = (filter: string) => {
-  //   setSelectedFilter(filter);
-  //   // Implement your filtering logic here based on the selected filter
-  //   // Update the filtered cars state accordingly
-  // };
 
   useEffect(() => {
     // setSelectedSort({ name: "Newest", value: "newest" });
+    console.log(
+      "woaajjjj",
+      cars.filter(
+        (car) => !unavailableItems.some((item) => item.rental.uid === car.uid)
+      )
+    );
     const sortData = (data: any, selectedSort: any, selectedCategory: any) => {
       let sortedRes = [];
       let filterValue = "";
@@ -109,12 +127,10 @@ function RentalsPage(props: RentalProps) {
       // });
       setFilteredCars(sortData(cars, selectedSort, selectedCategory));
       //
-
-      console.log("car data", carData);
-      console.log("filtered data", filteredCars);
     };
     fetchData();
-    console.log("selected category", selectedCategory);
+    checkRentalAvailability(cars).then((res: any) => {});
+    // console.log("selected category", selectedCategory);
   }, [selectedSort, selectedCategory]);
 
   return (
@@ -155,21 +171,31 @@ function RentalsPage(props: RentalProps) {
                   Search
                 </button>
               </div>
-              <button
-                type="button"
-                className="-m-2 ml-4 p-2 text-[#F8D521] font-bold transition-all ease-in-out hover:scale-105 sm:ml-6 rouded-md"
-                onClick={() => router.push("/dashboard/register-rentals")}
-              >
-                Upload Your Car +
-              </button>
+              {user.role === "host" ||
+                (user.role === "admin" && (
+                  <button
+                    type="button"
+                    className="-m-2 ml-4 p-2 text-[#F8D521] font-bold transition-all ease-in-out hover:scale-105 sm:ml-6 rouded-md"
+                    onClick={() => router.push("/dashboard/register-rentals")}
+                  >
+                    Upload Your Car +
+                  </button>
+                ))}
             </div>
             <>
               <div className="grid gap-4 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 p-10 text-center py-12 px-auto mx-auto">
                 {carData.length > 0 ? (
                   <>
-                    {carData.map((car: any) => {
-                      return <CarModelCardDashboard car={car} />;
-                    })}
+                    {carData
+                      .filter(
+                        (car) =>
+                          !unavailableItems.some(
+                            (item) => item.rental.uid === car.uid
+                          )
+                      )
+                      .map((car: any) => {
+                        return <CarModelCardDashboard car={car} />;
+                      })}
                   </>
                 ) : (
                   <div className="grid gap-4 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 p-10 text-center py-12 px-auto mx-auto">
@@ -205,6 +231,7 @@ export const getServerSideProps: GetServerSideProps<RentalProps> = async (
   const { draftMode = false, params = {} } = ctx;
   // const client = getClient(draftMode ? { token: readToken } : undefined);
   const cars = await getData("rentals");
+  const bookings = await getData("bookings");
   // console.log("Server Side Props: ", JSON.parse(JSON.stringify(cars)));
 
   if (!cars) {
@@ -216,6 +243,7 @@ export const getServerSideProps: GetServerSideProps<RentalProps> = async (
   return {
     props: {
       cars: JSON.parse(JSON.stringify(cars)),
+      bookings: JSON.parse(JSON.stringify(bookings)),
       draftMode,
       // token: draftMode ? readToken : "",
     },
