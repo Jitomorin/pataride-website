@@ -27,6 +27,13 @@ function Profile(props: any) {
   const [isRentalsLoading, setIsRentalsLoading] = useState(true);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const formObject = {
+    fields: {
+      Phone: profile.phoneNumber,
+      Email: profile.email,
+      Role: profile.role,
+    },
+  };
 
   useEffect(() => {
     if (loading) return;
@@ -51,199 +58,201 @@ function Profile(props: any) {
   return (
     <DefaultLayout>
       <div className="mx-auto">
-        <Breadcrumb pageName="Profile" />
-        <div className="overflow-hidden  rounded-lg  bg-white shadow-lg ">
-          {profile.coverImageURL === "" ? (
-            <div className="relative w-full h-48 bg-gray-400">
-              <h1 className="w-full p-4 text-xl">No Cover Image</h1>
-              <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
-                <label
-                  htmlFor="cover"
-                  className="flex cursor-pointer items-center justify-center gap-2 rounded bg-primary px-2 py-1 text-sm font-medium text-white hover:bg-opacity-80 xsm:px-4"
-                >
-                  <input
-                    type="file"
-                    name="cover"
-                    onChange={async (e: any) => {
-                      setNewCoverImage(e.target.files[0]);
-                      await uploadCoverImage(e.target.files[0], user.uid).then(
-                        (res) => {
-                          setSnackbarMessage(res.message);
-                          setSnackbarOpen(true);
-                        }
-                      );
-                    }}
-                    id="cover"
-                    className="sr-only"
-                  />
-                  <span>
-                    <svg
-                      className="fill-current"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M4.76464 1.42638C4.87283 1.2641 5.05496 1.16663 5.25 1.16663H8.75C8.94504 1.16663 9.12717 1.2641 9.23536 1.42638L10.2289 2.91663H12.25C12.7141 2.91663 13.1592 3.101 13.4874 3.42919C13.8156 3.75738 14 4.2025 14 4.66663V11.0833C14 11.5474 13.8156 11.9925 13.4874 12.3207C13.1592 12.6489 12.7141 12.8333 12.25 12.8333H1.75C1.28587 12.8333 0.840752 12.6489 0.512563 12.3207C0.184375 11.9925 0 11.5474 0 11.0833V4.66663C0 4.2025 0.184374 3.75738 0.512563 3.42919C0.840752 3.101 1.28587 2.91663 1.75 2.91663H3.77114L4.76464 1.42638ZM5.56219 2.33329L4.5687 3.82353C4.46051 3.98582 4.27837 4.08329 4.08333 4.08329H1.75C1.59529 4.08329 1.44692 4.14475 1.33752 4.25415C1.22812 4.36354 1.16667 4.51192 1.16667 4.66663V11.0833C1.16667 11.238 1.22812 11.3864 1.33752 11.4958C1.44692 11.6052 1.59529 11.6666 1.75 11.6666H12.25C12.4047 11.6666 12.5531 11.6052 12.6625 11.4958C12.7719 11.3864 12.8333 11.238 12.8333 11.0833V4.66663C12.8333 4.51192 12.7719 4.36354 12.6625 4.25415C12.5531 4.14475 12.4047 4.08329 12.25 4.08329H9.91667C9.72163 4.08329 9.53949 3.98582 9.4313 3.82353L8.43781 2.33329H5.56219Z"
-                        fill="white"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M6.99992 5.83329C6.03342 5.83329 5.24992 6.61679 5.24992 7.58329C5.24992 8.54979 6.03342 9.33329 6.99992 9.33329C7.96642 9.33329 8.74992 8.54979 8.74992 7.58329C8.74992 6.61679 7.96642 5.83329 6.99992 5.83329ZM4.08325 7.58329C4.08325 5.97246 5.38909 4.66663 6.99992 4.66663C8.61075 4.66663 9.91659 5.97246 9.91659 7.58329C9.91659 9.19412 8.61075 10.5 6.99992 10.5C5.38909 10.5 4.08325 9.19412 4.08325 7.58329Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </span>
-                  <span>Edit</span>
-                </label>
-              </div>
-            </div>
-          ) : (
-            <div className="relative w-full h-48">
-              <Image
-                src={profile!.coverImageURL}
-                alt="profile cover"
-                className="h-full w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
-                width={970}
-                height={260}
-                style={{
-                  width: "100%",
-                  height: "160px",
-                }}
-              />
-              <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
-                <label
-                  htmlFor="cover"
-                  className="flex cursor-pointer items-center justify-center gap-2 rounded bg-primary px-2 py-1 text-sm font-medium text-white hover:bg-opacity-80 xsm:px-4"
-                >
-                  <input
-                    type="file"
-                    name="cover"
-                    onChange={async (e: any) => {
-                      setNewCoverImage(e.target.files[0]);
-                      await uploadCoverImage(e.target.files[0], user.uid).then(
-                        (res) => {
-                          setSnackbarMessage(res.message);
-                          setSnackbarOpen(true);
-                        }
-                      );
-                    }}
-                    id="cover"
-                    className="sr-only"
-                  />
-                  <span>
-                    <svg
-                      className="fill-current"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M4.76464 1.42638C4.87283 1.2641 5.05496 1.16663 5.25 1.16663H8.75C8.94504 1.16663 9.12717 1.2641 9.23536 1.42638L10.2289 2.91663H12.25C12.7141 2.91663 13.1592 3.101 13.4874 3.42919C13.8156 3.75738 14 4.2025 14 4.66663V11.0833C14 11.5474 13.8156 11.9925 13.4874 12.3207C13.1592 12.6489 12.7141 12.8333 12.25 12.8333H1.75C1.28587 12.8333 0.840752 12.6489 0.512563 12.3207C0.184375 11.9925 0 11.5474 0 11.0833V4.66663C0 4.2025 0.184374 3.75738 0.512563 3.42919C0.840752 3.101 1.28587 2.91663 1.75 2.91663H3.77114L4.76464 1.42638ZM5.56219 2.33329L4.5687 3.82353C4.46051 3.98582 4.27837 4.08329 4.08333 4.08329H1.75C1.59529 4.08329 1.44692 4.14475 1.33752 4.25415C1.22812 4.36354 1.16667 4.51192 1.16667 4.66663V11.0833C1.16667 11.238 1.22812 11.3864 1.33752 11.4958C1.44692 11.6052 1.59529 11.6666 1.75 11.6666H12.25C12.4047 11.6666 12.5531 11.6052 12.6625 11.4958C12.7719 11.3864 12.8333 11.238 12.8333 11.0833V4.66663C12.8333 4.51192 12.7719 4.36354 12.6625 4.25415C12.5531 4.14475 12.4047 4.08329 12.25 4.08329H9.91667C9.72163 4.08329 9.53949 3.98582 9.4313 3.82353L8.43781 2.33329H5.56219Z"
-                        fill="white"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M6.99992 5.83329C6.03342 5.83329 5.24992 6.61679 5.24992 7.58329C5.24992 8.54979 6.03342 9.33329 6.99992 9.33329C7.96642 9.33329 8.74992 8.54979 8.74992 7.58329C8.74992 6.61679 7.96642 5.83329 6.99992 5.83329ZM4.08325 7.58329C4.08325 5.97246 5.38909 4.66663 6.99992 4.66663C8.61075 4.66663 9.91659 5.97246 9.91659 7.58329C9.91659 9.19412 8.61075 10.5 6.99992 10.5C5.38909 10.5 4.08325 9.19412 4.08325 7.58329Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </span>
-                  <span>Edit</span>
-                </label>
-              </div>
-            </div>
-          )}
-          <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11">
-            <div className="relative  drop-shadow-2  rounded-full">
-              <img
-                className="rounded-full object-cover w-64 h-64"
-                src={
-                  profile!.profileUrl === ""
-                    ? "/images/profile.png"
-                    : profile!.profileUrl
-                }
-                alt="profile"
-              />
-            </div>
-            <div className="mt-4">
-              <h3 className="mb-1 text-2xl font-semibold text-black dark:text-white">
-                {profile.fullName}
-              </h3>
-              {/* <p className="font-medium">Ui/Ux Designer</p> */}
-              <div className="mx-auto mb-5 mt-4 pb-4 grid max-w-94 grid-cols-3 rounded-md border-b-2 border-[#f8d421b7] py-2.5 shadow-1 dark:border-strokedark dark:bg-[#37404F]">
-                <div className="flex flex-col items-center justify-center gap-1 px-4 dark:border-strokedark xsm:flex-row">
-                  <span className="text-2xl font-semibold text-black dark:text-white">
-                    {rentals.length}
-                  </span>
-                  <span className="text-xl">Rentals</span>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-1 px-4 dark:border-strokedark xsm:flex-row">
-                  <span className="text-2xl font-semibold text-black dark:text-white">
-                    3,000Ksh
-                  </span>
-                  <span className="text-xl">Balance</span>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-1 px-4 xsm:flex-row">
-                  <span className="text-2xl font-semibold text-black dark:text-white">
-                    2K
-                  </span>
-                  <span className="text-xl">Following</span>
-                </div>
-              </div>
+        <div className="relative z-0 flex flex-1 overflow-hidden">
+          <main className="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last">
+            {/* Breadcrumb */}
+            {/* <nav
+              className="flex items-start px-4 py-3 sm:px-6 lg:px-8 xl:hidden"
+              aria-label="Breadcrumb"
+            >
+              <a
+                href="#"
+                className="inline-flex items-center space-x-3 text-lg font-medium text-gray-900"
+              >
+                <ChevronLeftIcon
+                  className="-ml-2 h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+                <span>Directory</span>
+              </a>
+            </nav> */}
 
-              <div className="mx-auto max-w-180 pt-10">
-                <h4 className="font-semibold text-3xl pb-4 text-black dark:text-white">
-                  About Me
-                </h4>
-                <p className="mt-4 text-xl">
-                  {profile!.bio === "" ? "No bio available" : profile!.bio}
-                </p>
-              </div>
-              <div className="mx-auto max-w-180 pt-4">
-                <Divider />
-              </div>
-
-              <div className="mt-10 text-left">
-                {/* <h4 className="mb-3 text-3xl font-semibold  text-black dark:text-white">
-                  Rentals
-                </h4> */}
-
-                {isRentalsLoading ? (
-                  <div className="mt-14 w-full h-full">
-                    <Spinner />
+            <article>
+              {/* Profile header */}
+              <div>
+                {profile.coverImageURL === "" ? (
+                  <div className="relative overflow-hidden">
+                    <img
+                      className="h-32 w-full object-cover lg:h-48 bg-gray-600"
+                      src={profile.coverImageURL}
+                      alt=""
+                    />
+                    {user.uid === profile.uid && (
+                      <label
+                        htmlFor="desktop-user-photo"
+                        className="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100"
+                      >
+                        <span>Change Cover Image</span>
+                        <span className="sr-only"> user photo</span>
+                        <input
+                          type="file"
+                          id="desktop-user-photo"
+                          name="user-photo"
+                          accept="image/*"
+                          className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
+                          onChange={async (e: any) => {
+                            setNewCoverImage(e.target.files[0]);
+                            console.log(e.target.files[0]);
+                            await uploadCoverImage(
+                              e.target.files[0],
+                              user.uid
+                            ).then((res) => {
+                              setSnackbarMessage(res.message);
+                              setSnackbarOpen(true);
+                              router.reload();
+                            });
+                          }}
+                        />
+                      </label>
+                    )}
                   </div>
                 ) : (
-                  <div className="h-full">
-                    <h1 className="font-semibold text-2xl">Owned Rentals</h1>
-                    <AdminRentalsTable rentals={rentals} />
+                  <div className="relative overflow-hidden">
+                    <img
+                      className="h-32 w-full object-cover lg:h-48"
+                      src={profile.coverImageURL}
+                      alt=""
+                    />
+                    {user.uid === profile.uid && (
+                      <label
+                        htmlFor="desktop-user-photo"
+                        className="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100"
+                      >
+                        <span>Change Cover Image</span>
+                        <span className="sr-only"> user photo</span>
+                        <input
+                          type="file"
+                          id="desktop-user-photo"
+                          name="user-photo"
+                          accept="image/*"
+                          className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
+                          onChange={async (e: any) => {
+                            setNewCoverImage(e.target.files[0]);
+                            console.log(e.target.files[0]);
+                            await uploadCoverImage(
+                              e.target.files[0],
+                              user.uid
+                            ).then((res) => {
+                              setSnackbarMessage(res.message);
+                              setSnackbarOpen(true);
+                              router.reload();
+                            });
+                          }}
+                        />
+                      </label>
+                    )}
                   </div>
-                  // <RentalsTable rentals={rentals} />
-                  // <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                )}
+                <div className="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
+                  <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+                    <div className="flex">
+                      <img
+                        className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32 z-30"
+                        src={
+                          profile?.profileUrl === ""
+                            ? "/images/profile.png"
+                            : profile?.profileUrl
+                        }
+                        alt=""
+                      />
+                    </div>
+                    <div className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
+                      <div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
+                        <h1 className="truncate text-2xl font-bold text-gray-900">
+                          {profile.name}
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
+                    <h1 className="truncate text-2xl font-bold text-gray-900">
+                      {profile.name}
+                    </h1>
+                  </div>
+                </div>
+              </div>
 
-                  // </div>
+              {/* Description list */}
+              <div className="mx-auto mt-6 max-w-full px-4 sm:px-6 lg:px-8">
+                <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+                  {Object.keys(formObject.fields).map((field) => (
+                    <div key={field} className="sm:col-span-1">
+                      <dt className="text-lg font-medium text-gray-500">
+                        {field}
+                      </dt>
+                      <dd className="mt-1 text-lg text-gray-900">
+                        {formObject.fields[field]}
+                      </dd>
+                    </div>
+                  ))}
+                  <div className="sm:col-span-2">
+                    <dt className="text-lg font-medium text-gray-500">Bio</dt>
+                    <dd
+                      className="mt-1 max-w-prose space-y-5 text-lg text-gray-900"
+                      dangerouslySetInnerHTML={{ __html: profile.bio }}
+                    />
+                  </div>
+                </dl>
+              </div>
+
+              {/* Rentals list */}
+              <div className="mx-auto mt-8 max-w-full px-4 pb-12 sm:px-6 lg:px-8">
+                <h2 className="text-lg font-medium text-gray-500">Rentals</h2>
+                {rentals.length === 0 ? (
+                  <div className="h-full w-full flex justify-center items-center">
+                    <h1 className="text-xl font-semibold text-gray-500">
+                      No Rentals Found
+                    </h1>
+                  </div>
+                ) : (
+                  <div className="mt-1 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {rentals.map((rental: any) => (
+                      <div
+                        onClick={() => {
+                          router.push(`/dashboard/rentals/${rental.uid}`);
+                        }}
+                        key={rental.uid}
+                        className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-offset-2 hover:border-gray-400"
+                      >
+                        <div className="flex-shrink-0">
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={rental.image[0]}
+                            alt=""
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <a href="#" className="focus:outline-none">
+                            <span
+                              className="absolute inset-0"
+                              aria-hidden="true"
+                            />
+                            <p className="text-lg font-medium text-gray-900">
+                              {rental.name}
+                            </p>
+                            <p className="truncate text-lg text-gray-500">
+                              {`${rental.location.addressLine1}, ${rental.location.addressLine2}`}
+                            </p>
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
-            </div>
-          </div>
+            </article>
+          </main>
         </div>
-        <Snackbar
-          message={snackbarMessage}
-          isVisible={snackbarOpen}
-          onClose={() => {
-            setSnackbarOpen(false);
-          }}
-        />
       </div>
     </DefaultLayout>
   );

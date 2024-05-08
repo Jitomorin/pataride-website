@@ -53,10 +53,10 @@ interface Query {
 
 function Chat(props: any) {
   const { user, loading }: any = useAuthContext();
-  const { chat, users, pathName }: any = props;
+  const { chat, users, pathName, settings }: any = props;
   const [transaction, setTransaction] = useState<any>({});
   const router = useRouter();
-  const patarideCut = 2000;
+  const patarideCut = parseInt(settings.companyCut);
   const [chats, setChats] = useState();
   const [activeProduct, setActiveProduct] = useState("");
   const [chatLoading, setChatLoading] = useState(true);
@@ -196,7 +196,8 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const users = await getData("users");
   //   console.log("useeeers", users);
   const chat = await getDocument("chats", params.chat);
-  console.log("chaaaat", chat);
+  const settings = await getDocument("settings", "admin");
+
   const pathName = params.chat;
 
   if (!chat) {
@@ -209,6 +210,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
     props: {
       chat: JSON.parse(JSON.stringify(chat)),
       users: JSON.parse(JSON.stringify(users)),
+      settings: JSON.parse(JSON.stringify(settings)),
       pathName,
     },
   };

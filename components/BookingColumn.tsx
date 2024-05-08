@@ -23,11 +23,13 @@ function classNames(...classes: any[]) {
 }
 
 export default function BookingColumn({
+  cut,
   booking,
   open,
   setOpen,
   callSnackBar,
 }: {
+  cut: any;
   booking: any;
   open: boolean;
   setOpen: any;
@@ -42,7 +44,7 @@ export default function BookingColumn({
 
   //   const [numberPlate, setNumberPlate] = useState(booking.rental.numberPlate);
   //   const [description, setDescription] = useState(booking.rental.description);
-  const patarideCut = 2000;
+  const patarideCut = cut;
   const make = booking.rental.make;
   const model = booking.rental.model;
   const name = booking.rental.name;

@@ -1,3 +1,5 @@
+const {nextui} = require("@nextui-org/theme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -5,6 +7,7 @@ module.exports = {
     './intro-template/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './plugins/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     fontFamily: {
@@ -205,7 +208,9 @@ module.exports = {
       },
     },
   },
+   darkMode: "class",
   plugins: [
     require('@tailwindcss/forms'),
+    nextui(),
   ],
 }

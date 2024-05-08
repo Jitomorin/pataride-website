@@ -39,6 +39,7 @@ import Link from "next/link";
 import { StatusPill } from "@/components/StatusPill";
 import ProgressBar from "@/components/ProgressBar";
 import { PaidPill } from "@/components/PaidPill";
+import BookingColumn from "@/components/BookingColumn";
 
 const defaultPosition = {
   lat: 27.9878,
@@ -51,11 +52,12 @@ interface Query {
 
 function Booking(props: any) {
   const { user, loading }: any = useAuthContext();
-  const { booking }: any = props;
+  const { booking, settings }: any = props;
   const [transaction, setTransaction] = useState<any>({});
   const router = useRouter();
-  const patarideCut = 2000;
+  const patarideCut = parseInt(settings.companyCut);
   const [activeProduct, setActiveProduct] = useState("");
+  const [openBooking, setOpenBooking] = useState(false);
   const [orderLoading, setOrderLoading] = useState(true);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -73,7 +75,7 @@ function Booking(props: any) {
     }
     // check if the other belongs to the user
     const checkOrderUser = async () => {
-      if (user.uid !== booking.userID) {
+      if (user.uid !== booking.userID || user.uid === booking.rental.uid) {
         router.push("/dashboard/bookings/all-bookings");
       }
       setOrderLoading(false);
@@ -129,6 +131,16 @@ function Booking(props: any) {
       return (
         <DefaultLayout>
           <div className="mx-auto">
+            <BookingColumn
+              cut={parseInt(settings.companyCut)}
+              booking={booking}
+              open={openBooking}
+              setOpen={setOpenBooking}
+              callSnackBar={(message: string) => {
+                setSnackbarMessage(message);
+                setSnackbarOpen(true);
+              }}
+            />
             <Breadcrumb pageName={booking.uid} index="Bookings" />
 
             <div className="w-full h-auto flex justify-between flex-col md:flex-row">
@@ -285,12 +297,17 @@ function Booking(props: any) {
                                   >
                                     Message Host
                                   </button> */}
-                                  <button
-                                    type="button"
-                                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                                  >
-                                    Edit Order
-                                  </button>
+                                  {user?.uid === booking.userID && (
+                                    <button
+                                      onClick={() => {
+                                        setOpenBooking(true);
+                                      }}
+                                      type="button"
+                                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                                    >
+                                      Edit Order
+                                    </button>
+                                  )}
                                 </div>
                               </dd>
                             </div>
@@ -326,6 +343,19 @@ function Booking(props: any) {
                           <dd className="mt-3 flex">
                             <PaidPill isPaid={booking.transaction.paid} />
                           </dd>
+                          {!booking.transaction.paid && (
+                            <dd className="mt-3 flex">
+                              <button
+                                onClick={() => {
+                                  router.push(booking.transaction.url);
+                                }}
+                                type="button"
+                                className="bg-primary rounded-lg font-semibold hover:scale-[1.03] transition-all ease-in-out text-white p-2"
+                              >
+                                Pay Now
+                              </button>
+                            </dd>
+                          )}
                         </div>
                       </dl>
 
@@ -384,6 +414,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const { params = {} } = ctx;
   //   console.log("params", params);
   const booking = await getDocument("bookings", params.booking);
+  const settings = await getDocument("settings", "admin");
 
   if (!booking) {
     return {
@@ -394,6 +425,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   return {
     props: {
       booking: JSON.parse(JSON.stringify(booking)),
+      settings: JSON.parse(JSON.stringify(settings)),
       //   rentalSlug: rentalSlug,
     },
   };

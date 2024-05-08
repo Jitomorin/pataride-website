@@ -12,17 +12,23 @@ import {
   GlobeAmericasIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-import { DateRangePicker } from "react-date-range";
+// import { DateRangePicker } from "react-date-range";
 import { formatNumber } from "@/utils/formatNumber";
 import styled from "styled-components";
 import {
   addData,
   addDataWithDocName,
   addProductToCart,
+  checkIfChatExists,
+  getDocument,
 } from "@/utils/firebase/firestore";
 import { useRouter } from "next/router";
 import { Navigation, Pagination } from "swiper/modules";
 import ThumbSwiper from "./ThumbSwiper";
+import Reviews from "./Reviews";
+import { DateRangePicker } from "@nextui-org/react";
+import { createDateFromObject } from "@/utils/formatDate";
+import CustomDateRangePicker from "./CustomDateRangePicker";
 // import Datepicker from "react-tailwindcss-datepicker";
 
 const product = {
@@ -113,25 +119,48 @@ function classNames(...classes: any) {
 }
 
 export default function ProductOverview({ rental, user, callSnackBar }: any) {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [host, setHost]: any = useState({});
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
   const [dateValue, setDateValue] = useState({
     startDate: new Date(),
     endDate: new Date().setMonth(11),
   });
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7),
-      key: "selection",
-    },
-  ]);
+  const [selectedDate, setSelectedDate]: any = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
+  getDocument("users", rental.userID).then((res: any) => {
+    setHost(res);
+  });
+
+  const createChat = async () => {
+    // if chat with this user exists then navigate to it if not then create it and then navigate to it
+    checkIfChatExists(host?.uid, user.uid).then((result: any) => {
+      // console.log("resuuulr", result);
+      if (result.length !== 0) {
+        router.push(`/dashboard/chats/${result[0].uid}`);
+      } else {
+        const uid = uuidv4();
+        addDataWithDocName("chats", uid, {
+          chat: [],
+          createdAt: new Date(),
+          updatedLast: new Date(),
+          userID: user.uid,
+          users: [user.uid, host?.uid],
+          uid,
+        }).then(() => {
+          router.push(`/dashboard/chats/${uid}`);
+        });
+      }
+    });
+  };
 
   const getNumberOfDays = () => {
-    console.log("selected date", selectedDate[0].startDate);
-    const startDate = new Date(selectedDate[0].startDate);
-    const endDate = new Date(selectedDate[0].endDate);
+    // console.log("selected date", selectedDate[0].startDate);
+    const startDate = new Date(selectedDate.startDate);
+    const endDate = new Date(selectedDate.endDate);
 
     const diffInTime = endDate.getTime() - startDate.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
@@ -214,6 +243,45 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                     className="prose prose-sm mt-4 text-gray-500"
                     dangerouslySetInnerHTML={{ __html: rental.description }}
                   />
+                  <div className="mt-10">
+                    <dt className="font-medium text-xl text-gray-900">
+                      Host Information
+                    </dt>
+                    <dd className="mt-3 space-y-3 text-gray-500">
+                      <div
+                        className="flex space-x-2 cursor-pointer w-auto p-2  transition-all ease-in-out rounded-lg"
+                        onClick={() => {
+                          router.push(`/dashboard/profile/${host?.uid}`);
+                        }}
+                      >
+                        <div className="w-14 h-14 rounded-full  overflow-hidden">
+                          <img
+                            className=" object-cover"
+                            src={
+                              host?.profileUrl === ""
+                                ? "/images/profile.png"
+                                : host?.profileUrl
+                            }
+                            alt="avatar"
+                          />
+                        </div>
+                        <div className="flex justify-center flex-col">
+                          <p className="font-semibold">{host?.fullName}</p>
+                          <p>{host?.email}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-4">
+                        <button
+                          onClick={createChat}
+                          type="button"
+                          className="bg-primary rounded-lg font-semibold hover:scale-[1.03] transition-all ease-in-out text-white p-2"
+                        >
+                          Message Host
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
                 </div>
 
                 <div className="mt-8 border-t border-gray-200 pt-8">
@@ -309,15 +377,36 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
             <LeftSide className=" mt-8 col-span-5 lg:col-span-5">
               <div className="w-auto overflow-x-scroll lg:overflow-x-auto">
                 {/* Date picker */}
-                <div className="flex justify-between px-5 w-full">
-                  <span className="text-2xl font-bold w-1/2 text-left">
-                    From
+                <div className="flex justify-between w-full">
+                  <span className="text-2xl font-bold text-left">
+                    Select date range
                   </span>
-                  <span className="text-2xl font-bold w-1/2 text-left">To</span>
                 </div>
-                <DateRangePicker
+                {/* <DateRangePicker
+                  label="Date range"
+                  onChange={(item: any) => {
+                    console.log(
+                      "date pickereeeeeeeeeeeeeeeeeeeeee",
+                      createDateFromObject(item)
+                    );
+                  }}
+                  isRequired={true}
+                  className="max-w-sm"
+                /> */}
+                <CustomDateRangePicker
+                  onChangeFunction={(start: any, end: any) => {
+                    setSelectedDate({
+                      startDate: start,
+                      endDate: end,
+                    });
+                  }}
+                />
+                {/* <DateRangePicker
                   val
-                  onChange={(item: any) => setSelectedDate([item.selection])}
+                  onChange={(item: any) => {
+                    setSelectedDate([item.selection]);
+                    console.log(item);
+                  }}
                   showSelectionPreview={false}
                   moveRangeOnFirstSelection={false}
                   months={1}
@@ -330,7 +419,7 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                   showPreview={false}
                   preview
                   retainEndDateOnFirstSelection={false}
-                />
+                /> */}
               </div>
 
               <div>
@@ -339,7 +428,7 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                  */}
                 <p className="text-2xl font-bold text-gray-700 mt-4">
                   {`${
-                    selectedDate[0].startDate
+                    selectedDate.startDate
                       ? ` ${getNumberOfDays()} days`
                       : "Select dates"
                   }`}
@@ -405,6 +494,9 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                     Book now
                   </button>
                 )}
+                <div className="mt-5">
+                  <Reviews reviews={rental?.reviews} />
+                </div>
                 <h2
                   id="policies-heading"
                   className="my-8 text-xl font-semibold"

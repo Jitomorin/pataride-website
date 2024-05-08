@@ -43,3 +43,8 @@ export const getNumberOfDays = (startDate: any, endDate: any) => {
 
   return diffInDays;
 };
+
+export function createDateFromObject(dateObject: any) {
+  const { year, month, day } = dateObject;
+  return new Date(year, month - 1, day);
+}

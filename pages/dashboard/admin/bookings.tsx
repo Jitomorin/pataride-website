@@ -8,6 +8,7 @@ import {
   getAllData,
   getAllSortedData,
   getData,
+  getDocument,
 } from "@/utils/firebase/firestore";
 import { Car } from "@/components/CarData";
 import CarModelCard from "@/components/CarModelCard";
@@ -42,9 +43,10 @@ const tabs = [
   },
 ];
 
-function AdminBookings() {
+function AdminBookings(props: any) {
   const [bookings, setBookings] = useState<any[]>([]);
   const router = useRouter();
+  const { settings }: any = props;
 
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
@@ -110,7 +112,7 @@ function AdminBookings() {
           {bookings.length <= 0 ? (
             <></>
           ) : (
-            <AdminBookingsTable bookings={bookings} />
+            <AdminBookingsTable settings={settings} bookings={bookings} />
           )}
         </div>
       </div>
@@ -119,6 +121,23 @@ function AdminBookings() {
 }
 
 export default AdminBookings;
+// ha
+export const getServerSideProps: GetServerSideProps<any, any> = async (ctx) => {
+  const { params = {} } = ctx;
+  const settings = await getDocument("settings", "admin");
+
+  if (!settings) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      settings: JSON.parse(JSON.stringify(settings)),
+    },
+  };
+};
 
 // export const getServerSideProps: GetServerSideProps<RentalProps> = async (
 //   ctx

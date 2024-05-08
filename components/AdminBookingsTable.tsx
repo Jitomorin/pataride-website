@@ -13,6 +13,7 @@ import ProfileColumn from "./ProfileColumn";
 import RentalColumn from "./RentalColumn";
 import { formatNumber } from "@/utils/formatNumber";
 import BookingColumn from "./BookingColumn";
+import settings from "@/sanity/schemas/settings";
 
 export function GlobalFilter({
   globalFilter,
@@ -97,7 +98,7 @@ export function ActionCell({
   );
 }
 
-const AdminBookingsTable = ({ placeholder, bookings }: any) => {
+const AdminBookingsTable = ({ placeholder, bookings, settings }: any) => {
   const [openBooking, setOpenBooking] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>(bookings[0]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -203,6 +204,7 @@ const AdminBookingsTable = ({ placeholder, bookings }: any) => {
         placeholder={placeholder}
       />
       <BookingColumn
+        cut={parseInt(settings.companyCut)}
         booking={selectedBooking}
         open={openBooking}
         setOpen={setOpenBooking}

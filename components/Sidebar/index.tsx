@@ -179,7 +179,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <Link
                   href="/dashboard/rentals"
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    "/dashboard/rentals" === router.pathname &&
+                    pathname!.includes("/dashboard/rentals") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
@@ -200,7 +200,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <Link
                   href="/dashboard/bookings/all-bookings"
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    "/dashboard/bookings/all-bookings" === router.pathname &&
+                    pathname!.includes("/dashboard/bookings/") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
@@ -277,7 +277,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <Link
                   href={`/dashboard/profile/${user?.uid}`}
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    pathname!.includes("profile") &&
+                    pathname!.includes("/dashboard/profile/") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
@@ -301,9 +301,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {user?.role === "admin" && (
                 <li>
                   <Link
-                    href={`/dashboard/admin`}
+                    href={`/dashboard/admin/users`}
                     className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                      pathname!.includes("admin") &&
+                      pathname!.includes("/dashboard/admin/") &&
                       "bg-[#F8D521] dark:bg-meta-4"
                     }`}
                   >

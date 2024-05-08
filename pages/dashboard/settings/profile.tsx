@@ -12,7 +12,7 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Switch, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
@@ -23,6 +23,7 @@ import {
   KeyIcon,
   SquaresPlusIcon,
   UserCircleIcon,
+  UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
@@ -34,6 +35,8 @@ import {
   updateUserProfile,
   updateUserProfileNoEmail,
 } from "@/utils/firebase/firestore";
+import { uploadProfileImage } from "@/utils/firebase/storage";
+import { getUrl } from "@/utils/formatString";
 
 const user = {
   name: "Debbie Lewis",
@@ -56,29 +59,35 @@ const subNavigation = [
     current: true,
   },
   {
-    name: "Account",
-    href: "/dashboard/settings/profile",
-    icon: CogIcon,
-    current: false,
+    name: "Admin",
+    href: "/dashboard/settings/admin",
+    icon: UserIcon,
+    current: true,
   },
-  {
-    name: "Password",
-    href: "/dashboard/settings/profile",
-    icon: KeyIcon,
-    current: false,
-  },
-  {
-    name: "Notifications",
-    href: "/dashboard/settings/profile",
-    icon: BellIcon,
-    current: false,
-  },
-  {
-    name: "Billing",
-    href: "/dashboard/settings/profile",
-    icon: CreditCardIcon,
-    current: false,
-  },
+  // {
+  //   name: "Account",
+  //   href: "/dashboard/settings/profile",
+  //   icon: CogIcon,
+  //   current: false,
+  // },
+  // {
+  //   name: "Password",
+  //   href: "/dashboard/settings/profile",
+  //   icon: KeyIcon,
+  //   current: false,
+  // },
+  // {
+  //   name: "Notifications",
+  //   href: "/dashboard/settings/profile",
+  //   icon: BellIcon,
+  //   current: false,
+  // },
+  // {
+  //   name: "Billing",
+  //   href: "/dashboard/settings/profile",
+  //   icon: CreditCardIcon,
+  //   current: false,
+  // },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -101,6 +110,34 @@ export default function ProfileSettings() {
   const [bio, setBio] = useState(user?.bio);
   const [t, setT] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      router.push("/login");
+    } else {
+      // useEffect function called here
+    }
+  }, [user]);
+
+  const changeProfilePicture = async () => {
+    console.log("w");
+    if (profileImage === null) {
+      setSnackbarMessage("Please select an image to upload");
+      setSnackbarOpen(true);
+      return;
+    }
+    const result = await uploadProfileImage(profileImage, user.uid);
+    if (result.status === "success") {
+      setSnackbarMessage("Profile picture updated successfully");
+      setSnackbarOpen(true);
+      router.reload();
+    } else {
+      setSnackbarMessage(result.message);
+      setSnackbarOpen(true);
+    }
+    router.reload();
+  };
 
   const changeProfileDetails = async () => {
     if (
@@ -138,16 +175,20 @@ export default function ProfileSettings() {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current
+                          getUrl(router) === item.name.toLowerCase()
                             ? "border-primary-500 bg-primary-50 text-primary-700 hover:bg-primary-50 hover:primary-primary-700"
                             : "border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900",
                           "group flex items-center border-l-4 px-3 py-2 text-sm font-medium"
                         )}
-                        aria-current={item.current ? "page" : undefined}
+                        aria-current={
+                          getUrl(router) === item.name.toLowerCase()
+                            ? "page"
+                            : undefined
+                        }
                       >
                         <item.icon
                           className={classNames(
-                            item.current
+                            getUrl(router) === item.name.toLowerCase()
                               ? "text-primary-500 group-hover:text-primary-500"
                               : "text-gray-400 group-hover:text-gray-500",
                             "-ml-1 mr-3 h-6 w-6 flex-shrink-0"
@@ -160,11 +201,7 @@ export default function ProfileSettings() {
                   </nav>
                 </aside>
 
-                <form
-                  className="divide-y divide-gray-200 lg:col-span-9"
-                  action="#"
-                  method="POST"
-                >
+                <div className="divide-y divide-gray-200 lg:col-span-9">
                   {/* Profile section */}
                   <div className="px-4 py-6 sm:p-6 lg:pb-8">
                     <div>
@@ -193,7 +230,7 @@ export default function ProfileSettings() {
                               id="fullname"
                               autoComplete="fullname"
                               className="block w-full min-w-0 flex-grow rounded-none rounded-r-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
-                              value={user?.fullName}
+                              value={fullName}
                               onChange={(e) => {
                                 setFullName(e.target.value);
                               }}
@@ -214,7 +251,7 @@ export default function ProfileSettings() {
                               name="bio"
                               rows={3}
                               className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
-                              value={user?.bio}
+                              value={bio}
                               onChange={(e) => {
                                 setBio(e.target.value);
                               }}
@@ -249,13 +286,14 @@ export default function ProfileSettings() {
                                 alt=""
                               />
                             </div>
+
                             <div className="relative ml-5">
                               <input
                                 id="mobile-user-photo"
                                 name="user-photo"
                                 type="file"
                                 className="peer absolute h-full w-full rounded-md opacity-0"
-                                onChange={(e: any) => {
+                                onChange={async (e: any) => {
                                   setProfileImage(e.target.files[0]);
                                   console.log(e.target.files[0]);
                                 }}
@@ -264,7 +302,13 @@ export default function ProfileSettings() {
                                 htmlFor="mobile-user-photo"
                                 className="pointer-events-none block rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 peer-hover:ring-gray-400 peer-focus:ring-2 peer-focus:ring-sky-500"
                               >
-                                <span>Change</span>
+                                <span
+                                  onClick={async () => {
+                                    await changeProfilePicture();
+                                  }}
+                                >
+                                  Change
+                                </span>
                                 <span className="sr-only"> user photo</span>
                               </label>
                             </div>
@@ -293,9 +337,10 @@ export default function ProfileSettings() {
                               name="user-photo"
                               accept="image/*"
                               className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
-                              onChange={(e: any) => {
+                              onChange={async (e: any) => {
                                 setProfileImage(e.target.files[0]);
                                 console.log(e.target.files[0]);
+                                // await changeProfilePicture();
                               }}
                             />
                           </label>
@@ -315,7 +360,7 @@ export default function ProfileSettings() {
                           type="text"
                           name="url"
                           id="url"
-                          value={user?.bio}
+                          value={phoneNumber}
                           onChange={(e) => {
                             const inputValue: any = e.target.value;
                             if (!isNaN(inputValue)) {
@@ -347,6 +392,18 @@ export default function ProfileSettings() {
 
                   {/* Privacy section */}
                   <div className="mt-4 flex justify-end gap-x-3 px-4 py-4 sm:px-6">
+                    {profileImage === null ? (
+                      <></>
+                    ) : (
+                      <button
+                        onClick={async () => {
+                          await changeProfilePicture();
+                        }}
+                        className="ml-5 inline-flex justify-center rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-primary hover:scale-[1.03] transition-all ease-in-out"
+                      >
+                        Save Image
+                      </button>
+                    )}
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -354,13 +411,16 @@ export default function ProfileSettings() {
                       Cancel
                     </button>
                     <button
+                      onClick={() => {
+                        changeProfileDetails();
+                      }}
                       type="submit"
                       className="inline-flex justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
                     >
                       Save
                     </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>

@@ -349,6 +349,17 @@ export async function updateUserProfile(
     return { status: "error", message: firebaseError.message };
   }
 }
+export async function updateSettings(data: any) {
+  const settingsRef = doc(db, "settings", "admin");
+
+  try {
+    await updateDoc(settingsRef, data);
+    return { status: "success", message: "Settings updated successfully." };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    return { status: "error", message: firebaseError.message };
+  }
+}
 export async function updateUserProfileNoEmail(
   userId: string,
   newFullName: string,
