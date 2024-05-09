@@ -9,29 +9,30 @@ import Link from "next/link";
 import { classNames } from "@/contexts/utils";
 import { useRouter } from "next/router";
 import { getUrl } from "@/utils/formatString";
+import OrdersTable from "@/components/OrdersTable";
 
 const tabs = [
   {
     name: "All Orders",
     slug: "all-orders",
-    href: "http://localhost:3000/dashboard/bookings/all-orders",
+    href: "http://localhost:3000/dashboard/orders/all-orders",
     current: false,
   },
   {
     name: "Completed",
     slug: "completed-orders",
-    href: "http://localhost:3000/dashboard/bookings/completed-orders",
+    href: "http://localhost:3000/dashboard/orders/completed-orders",
     current: false,
   },
   {
     name: "Pending",
     slug: "pending-orders",
-    href: "http://localhost:3000/dashboard/bookings/pending-orders",
+    href: "http://localhost:3000/dashboard/orders/pending-orders",
     current: true,
   },
 ];
-function PendingOrders() {
-  const [bookings, setBookings] = useState([]);
+function AllOrders() {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user }: any = useAuthContext();
   const router = useRouter();
@@ -39,15 +40,14 @@ function PendingOrders() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await getFilteredData("bookings", "userID", "==", user.uid).then(
+      await getFilteredData("bookings", "rental.userID", "==", user.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
           res.sort((a: any, b: any) => {
             return b.createdAt - a.createdAt;
           });
-          let result = res.filter((item: any) => item.status === "pending");
-
-          setBookings(result);
+          setOrders(res);
+          console.log(orders[2]);
         }
       );
     };
@@ -106,12 +106,12 @@ function PendingOrders() {
               </nav>
             </div>
           </div>
-          {bookings.length !== 0 ? (
-            <BookingsTable router={router} bookings={[...bookings]} />
+          {orders.length !== 0 ? (
+            <OrdersTable router={router} bookings={[...orders]} />
           ) : (
             <div className="flex h-full mt-10 justify-center">
               <h1 className="text-3xl text-gray-600 font-semibold">
-                No Bookings Found
+                No Orders Found
               </h1>
             </div>
           )}
@@ -121,4 +121,4 @@ function PendingOrders() {
   );
 }
 
-export default PendingOrders;
+export default AllOrders;

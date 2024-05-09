@@ -361,6 +361,22 @@ function Booking(props: any) {
 
                       <dl className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-7 lg:mt-0 lg:pr-8">
                         <div className="flex items-center justify-between pb-4">
+                          <dt className="text-gray-600">From</dt>
+                          <dd className="font-medium text-gray-900">
+                            {`${new Date(
+                              booking.selectedDates[0].startDate.seconds * 1000
+                            ).toLocaleDateString()}`}
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between pb-4">
+                          <dt className="text-gray-600">To</dt>
+                          <dd className="font-medium text-gray-900">
+                            {`${new Date(
+                              booking.selectedDates[0].endDate.seconds * 1000
+                            ).toLocaleDateString()}`}
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between pb-4">
                           <dt className="text-gray-600">Subtotal</dt>
                           <dd className="font-medium text-gray-900">
                             {`Ksh ${formatNumber(booking.rental.price)}`}

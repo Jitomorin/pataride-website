@@ -3,13 +3,17 @@ import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
 import Cart from "./Cart";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const scrollPosition = useScrollPosition();
   return (
-    <header className="dashboard-header sticky top-0 z-50 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+    <header
+      className={`dashboard-header sticky top-0 z-50 flex w-full bg-white drop-shadow-1 shadow-md dark:bg-boxdark dark:drop-shadow-none`}
+    >
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
           {/* <!-- Hamburger Toggle BTN --> */}

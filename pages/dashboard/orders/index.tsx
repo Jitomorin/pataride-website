@@ -4,6 +4,7 @@ import OrdersTable from "@/components/OrdersTable";
 import TableThree from "@/components/Tables/TableThree";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { getFilteredData } from "@/utils/firebase/firestore";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 export interface OrdersProps {
@@ -15,30 +16,17 @@ function Orders(props: OrdersProps) {
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const [orderLoading, setOrderLoading] = useState(true);
   const { user, loading }: any = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setOrderLoading(true);
-      await getFilteredData("orders", "user", "==", user.uid).then(
-        (res: any) => {
-          // sort orders by date in field called bookint_timestamp
-          res.sort((a: any, b: any) => {
-            return b.booking_timestamp - a.booking_timestamp;
-          });
-          setOrders(res);
-          setFilteredOrders(res);
-          setOrderLoading(false);
-        }
-      );
-    };
-    fetchData();
+    router.push("/dashboard/orders/all-orders");
   }, []);
   return (
     <DefaultLayout>
       <div className="mx-auto">
         <Breadcrumb pageName="Orders" />
         <div className="w-full h-full">
-          <OrdersTable loading={orderLoading} orders={orders} />
+          {/* <OrdersTable loading={orderLoading} orders={orders} /> */}
         </div>
       </div>
     </DefaultLayout>

@@ -118,7 +118,12 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductOverview({ rental, user, callSnackBar }: any) {
+export default function ProductOverview({
+  rental,
+  user,
+  callSnackBar,
+  disabledDates,
+}: any) {
   const [host, setHost]: any = useState({});
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
   const [dateValue, setDateValue] = useState({
@@ -375,11 +380,14 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
             </div> */}
 
             <LeftSide className=" mt-8 col-span-5 lg:col-span-5">
-              <div className="w-auto overflow-x-scroll lg:overflow-x-auto">
+              <div className="w-auto ">
                 {/* Date picker */}
-                <div className="flex justify-between w-full">
+                <div className="flex flex-col justify-between w-full">
                   <span className="text-2xl font-bold text-left">
                     Select date range
+                  </span>
+                  <span className="text-xl mt-2 font-bold text-left text-gray-600">
+                    {`You won't be able to select booked dates`}
                   </span>
                 </div>
                 {/* <DateRangePicker
@@ -394,6 +402,7 @@ export default function ProductOverview({ rental, user, callSnackBar }: any) {
                   className="max-w-sm"
                 /> */}
                 <CustomDateRangePicker
+                  disabledDates={disabledDates}
                   onChangeFunction={(start: any, end: any) => {
                     setSelectedDate({
                       startDate: start,

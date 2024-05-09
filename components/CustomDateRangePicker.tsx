@@ -17,8 +17,12 @@ import {
   getLocalTimeZone,
 } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
+import { dateToObject } from "@/utils/formatDate";
 
-export default function CustomDateRangePicker({ onChangeFunction }: any) {
+export default function CustomDateRangePicker({
+  onChangeFunction,
+  disabledDates,
+}: any) {
   let defaultDate = {
     start: today(getLocalTimeZone()),
     end: today(getLocalTimeZone()).add({ days: 7 }),
@@ -32,6 +36,12 @@ export default function CustomDateRangePicker({ onChangeFunction }: any) {
     start: startOfWeek(now.add({ weeks: 1 }), locale),
     end: endOfWeek(now.add({ weeks: 1 }), locale),
   };
+  let disabledRanges = [
+    [now, now.add({ days: 5 })],
+    [now.add({ days: 2 }), now.add({ days: 3 })],
+    [now.add({ days: 8 }), now.add({ days: 9 })],
+  ];
+
   let nextMonth = {
     start: startOfMonth(now.add({ months: 1 })),
     end: endOfMonth(now.add({ months: 1 })),
@@ -97,13 +107,34 @@ export default function CustomDateRangePicker({ onChangeFunction }: any) {
         },
       }}
       value={value}
+      isDateUnavailable={(date) =>
+        disabledDates.some(
+          (interval: any) =>
+            date.compare(interval[0]) >= 0 && date.compare(interval[1]) <= 0
+        )
+      }
+      validate={(value) =>
+        disabledDates.some(
+          (interval: any) =>
+            value &&
+            value.end.compare(interval[0]) >= 0 &&
+            value.start.compare(interval[1]) <= 0
+        )
+          ? "Selected date range may not include unavailable dates."
+          : null
+      }
+      validationBehavior="native"
       onChange={(item) => {
         setValue(item);
         onChangeFunction(
           item.start.toDate(getLocalTimeZone()),
           item.end.toDate(getLocalTimeZone())
         );
-        console.log(item);
+        console.log(
+          "itemmmm",
+          dateToObject(item.start.toDate(getLocalTimeZone()))
+        );
+        console.log("daaaaates2", disabledRanges);
       }}
       label="Event date"
     />

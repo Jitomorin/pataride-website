@@ -19,6 +19,22 @@ import { v4 as uuidv4 } from "uuid";
 import { FirebaseError } from "firebase/app";
 import { isDateInRange } from "../formatString";
 
+// function to get documents with multiple filters:
+export async function getMultipleFilteredData(
+  collectionName: string,
+  queries: { field: string; operator: any; value: any }[]
+) {
+  const q = query(
+    collection(db, collectionName),
+    ...queries.map(({ field, operator, value }) =>
+      where(field, operator, value)
+    )
+  );
+  const querySnapshot = await getDocs(q);
+  const data = querySnapshot.docs.map((doc: any) => doc.data());
+  return data;
+}
+
 // Function to fetch documents with filters
 export async function getFilteredData(
   collectionName: string,
