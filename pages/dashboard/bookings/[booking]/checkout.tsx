@@ -597,7 +597,7 @@ function BookingCheckout(props: any) {
                             <div className="min-w-0 flex-1">
                               <h4 className="text-sm">
                                 <Link
-                                  href={`/dashboard/rentals/${booking.rental.uid}`}
+                                  href={`/rentals/${booking.rental.uid}`}
                                   className="font-medium text-gray-900 text-2xl hover:text-[#F8D521] transition-all ease-in-out"
                                 >
                                   {booking.rental.name}

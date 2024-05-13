@@ -264,7 +264,7 @@ export default function Example() {
                 <h3 className="text-lg font-medium text-gray-900">
                   <a
                     className="hover:underline transition-all ease-in-out"
-                    href={`/dashboard/rentals/${booking.rental.uid}`}
+                    href={`/rentals/${booking.rental.uid}`}
                   >
                     {booking.rental.name}
                   </a>

@@ -177,9 +177,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item rental --> */}
               <li>
                 <Link
-                  href="/dashboard/rentals"
+                  href="/rentals"
                   className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
-                    pathname!.includes("/dashboard/rentals") &&
+                    pathname!.includes("/rentals") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >

@@ -9,6 +9,8 @@ import { media } from "@/utils/media";
 import { useProfileModalContext } from "@/contexts/profile-modal.context";
 import Image from "next/image";
 import DropdownUser from "./Header/DropdownUser";
+import { useScrollPosition } from "@/hooks/useScrollPosition";
+import { usePathname } from "next/navigation";
 
 const ColorSwitcherContainer = styled.div`
   width: 4rem;
@@ -29,17 +31,22 @@ const MobileNavbarDiv = styled.div<{ nav: boolean; theme: any }>`
   transition: all 0.5s ease-in-out;
   ${(props) => (props.nav ? "left: 0;" : "")}
 `;
-const NavbarDiv = styled.header`
-  max-width: 133rem;
-  position: sticky;
-  width: 100%;
-  height: auto;
-  max-height: 133px;
+const NavbarDiv = styled.header<{ scrollPosition: any }>`
+  max-width: 100%;
+  position: fixed;
+  background-color: ${(props) =>
+    props.scrollPosition > 0 ? "rgba(255, 255, 255, 0.8)" : "transparent"};
+  backdrop-filter: ${(props) =>
+    props.scrollPosition > 0 ? "blur(6px)" : "none"};
+  /* width: 100%; */
+  /* height: auto; */
+  max-height: 100px;
   display: flex;
   justify-content: space-around;
+  transition: 0.6s ease-in-out;
   align-items: center;
   padding: 2.7rem 2rem;
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   left: 0;
   right: 0;
@@ -97,37 +104,43 @@ const NavLinks = styled.div<{ theme: any }>`
   display: flex;
   list-style: none;
   gap: 2.7rem;
-  a {
-    font-size: 2rem;
-    font-family: "Oswald", sans-serif;
-    font-weight: 500;
-    color: ${(props) => (props.theme === "light" ? "#010103" : "#fff")};
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-    display: inline-block;
-    padding-bottom: 1rem;
+
+  ${media("<=tablet")} {
+    display: none;
   }
-  &:not(:nth-last-child(-n + 2)) {
-    a:hover {
-      color: #f8d521;
-    }
-    a:hover::after {
-      width: 100%;
-    }
-    a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0;
-      height: 3px;
-      background-color: #f8d521; /* Change the color as needed */
-      transition: width 0.3s ease; /* Add animation effect */
-    }
+`;
+const NavLink = styled.div<{ theme: any; pathName: any; currentPathName: any }>`
+  font-size: 2rem;
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  color: ${(props) => (props.theme === "light" ? "#010103" : "#fff")};
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  display: inline-block;
+  color: ${(props) =>
+    props.currentPathName === props.pathName ? "#f8d521" : ""};
+  padding-bottom: 1rem;
+
+  :hover {
+    color: #f8d521;
   }
 
+  :hover::after {
+    width: 100%;
+  }
+  ::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: ${(props) =>
+      props.currentPathName === props.pathName ? "100%" : "0"};
+    height: 3px;
+    background-color: #f8d521; /* Change the color as needed */
+    transition: width 0.3s ease; /* Add animation effect */
+  }
   ${media("<=tablet")} {
     display: none;
   }
@@ -221,10 +234,12 @@ function Navbar() {
   const { user }: any = useAuthContext();
   const { theme }: any = useTheme();
   const { setIsProfileModalOpened } = useProfileModalContext();
-
+  const scrollPosition = useScrollPosition();
+  const pathName = usePathname();
   const openNav = () => {
     setNav(!nav);
   };
+  console.log("path name:", pathName);
 
   return (
     <>
@@ -254,7 +269,7 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <Link onClick={openNav} href="/dashboard/rentals">
+              <Link onClick={openNav} href="/rentals">
                 Hire now
               </Link>
             </li>
@@ -322,7 +337,7 @@ function Navbar() {
 
         {/* desktop */}
 
-        <NavbarDiv>
+        <NavbarDiv scrollPosition={scrollPosition}>
           <ImageContainer>
             <Link href="/" onClick={() => window.scrollTo(0, 0)}>
               <NextImage
@@ -334,21 +349,37 @@ function Navbar() {
             </Link>
           </ImageContainer>
           <NavLinks theme={theme}>
-            <li>
+            <NavLink theme={theme} pathName={"/"} currentPathName={pathName}>
               <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/dashboard/rentals">Hire now</Link>
-            </li>
-            <li>
+            </NavLink>
+            <NavLink
+              theme={theme}
+              pathName={"/rentals"}
+              currentPathName={pathName}
+            >
+              <Link href="/rentals">Hire now</Link>
+            </NavLink>
+            <NavLink
+              theme={theme}
+              pathName={"/seller"}
+              currentPathName={pathName}
+            >
               <Link href="/seller">Become a host</Link>
-            </li>
-            <li>
+            </NavLink>
+            <NavLink
+              theme={theme}
+              pathName={"/about"}
+              currentPathName={pathName}
+            >
               <Link href="/about">About</Link>
-            </li>
-            <li>
+            </NavLink>
+            <NavLink
+              theme={theme}
+              pathName={"/contact"}
+              currentPathName={pathName}
+            >
               <Link href="/contact">Contact</Link>
-            </li>
+            </NavLink>
           </NavLinks>
 
           {user != null ? (

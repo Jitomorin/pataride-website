@@ -230,7 +230,7 @@ function CartPage() {
                                   <h3>
                                     <a
                                       className="hover:underline transition-all ease-in-out"
-                                      href={`/dashboard/rentals/${product.item.uid}`}
+                                      href={`/rentals/${product.item.uid}`}
                                     >
                                       {product.item.name}
                                     </a>
@@ -274,7 +274,7 @@ function CartPage() {
                                         // callSnackBar(res.message);
                                         setSnackbarMessage(res.message);
                                         setSnackbarOpen(true);
-                                        router.push("/dashboard/rentals");
+                                        router.push("/rentals");
                                       });
                                     }}
                                     type="button"
@@ -334,7 +334,7 @@ function CartPage() {
                       <p>
                         or
                         <button
-                          onClick={() => router.push("/dashboard/rentals")}
+                          onClick={() => router.push("/rentals")}
                           className="ml-1 hover:scale-105 transition-all ease-in-out font-medium text-indigo-600 hover:text-indigo-500"
                         >
                           Continue Shopping

@@ -121,7 +121,7 @@ const CarModelCardDashboard = (car: any) => {
 
   return (
     <Wrapper theme={theme}>
-      <Link href={`/dashboard/rentals/${car.car.uid}`}>
+      <Link href={`/rentals/${car.car.uid}`}>
         <ImageContainer>
           {/* <img src={car.car.image[0]} alt="car_img" /> */}
           <Swiper
@@ -262,7 +262,7 @@ const CarModelCardDashboard = (car: any) => {
               </Price>
             </Details>
             {/* <Button>
-            <Link href={`/dashboard/rentals/${car.car.uid}`}>Book Ride</Link>
+            <Link href={`/rentals/${car.car.uid}`}>Book Ride</Link>
 
           </Button> */}
           </Description>

@@ -7,7 +7,7 @@ export const useScrollPosition = () => {
   useEffect(() => {
     const updatePosition = () => {
       setScrollPosition(window.scrollY);
-      console.log(window.scrollY);
+      // console.log(window.scrollY);
     };
 
     window.addEventListener("scroll", updatePosition);

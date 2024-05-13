@@ -30,7 +30,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "pages/dashboard/rentals/[rental]",
+    "pages/rentals/[rental]",
     "pages/dashboard/bookings/[booking]"
   ],
   "exclude": ["node_modules"]

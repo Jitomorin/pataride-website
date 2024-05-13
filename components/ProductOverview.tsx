@@ -478,7 +478,7 @@ export default function ProductOverview({
                           //   user?.uid
                           // ).then((res) => {
                           //   callSnackBar(res!.message);
-                          //   router.push("/dashboard/rentals");
+                          //   router.push("/rentals");
                           // });
                         }}
                         type="submit"

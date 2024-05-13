@@ -21,6 +21,7 @@ import {
   parseAbsoluteToLocal,
   parseZonedDateTime,
 } from "@internationalized/date";
+import { Button } from "@nextui-org/react";
 import { GetServerSideProps } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -53,10 +54,6 @@ function Rental(props: any) {
     ];
   });
   console.log("okok", disabledDates);
-  const wueh = parseAbsoluteToLocal(
-    timestampToISOString(bookings[0].selectedDates[0].startDate.seconds * 1000)
-  );
-  console.log("daaaaates1", wueh);
 
   useEffect(() => {
     if (loading) return;
@@ -80,27 +77,46 @@ function Rental(props: any) {
     return <div className="m-auto w-full h-full text-4xl">Loading...</div>;
   }
   return (
-    <DefaultLayout>
-      <div className="mx-auto">
-        <Breadcrumb pageName={rental.name} index="Rentals" />
-        <ProductOverview
-          disabledDates={disabledDates}
-          callSnackBar={(message: any) => {
-            setSnackbarMessage(message);
-            setSnackbarOpen(true);
-          }}
-          rental={rental}
-          user={user}
-        />
-        <Snackbar
-          message={snackbarMessage}
-          isVisible={snackbarOpen}
-          onClose={() => {
-            setSnackbarOpen(false);
-          }}
-        />
-      </div>
-    </DefaultLayout>
+    <div className="mt-40 mx-auto max-w-[90%]">
+      <Button
+        className="w-14 h-14"
+        variant="light"
+        onPress={() => {
+          router.push("/rentals");
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6 text-primary"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+          />
+        </svg>
+      </Button>
+      <ProductOverview
+        disabledDates={disabledDates}
+        callSnackBar={(message: any) => {
+          setSnackbarMessage(message);
+          setSnackbarOpen(true);
+        }}
+        rental={rental}
+        user={user}
+      />
+      <Snackbar
+        message={snackbarMessage}
+        isVisible={snackbarOpen}
+        onClose={() => {
+          setSnackbarOpen(false);
+        }}
+      />
+    </div>
   );
 }
 

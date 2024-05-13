@@ -12,6 +12,7 @@ import RestAPI from "@/components/RestAPI";
 import { useEffect } from "react";
 import { auth } from "@/utils/firebase/config";
 import { sendEmailVerification } from "firebase/auth";
+import { LogoSlider } from "@/components/LogoSlider";
 
 const client = getClient();
 
@@ -24,7 +25,11 @@ export default function Homepage() {
       </Head>
       <Hero />
       {/* <RestAPI /> */}
+
       <PlanTrip />
+      <div className="mt-0 bg-white overflow-x-hidden">
+        <LogoSlider />
+      </div>
       <PickCar />
       <Banner />
       <ChooseUs />

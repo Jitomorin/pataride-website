@@ -191,9 +191,7 @@ export default function RentalColumn({
                                           <Menu.Item>
                                             {({ active }) => (
                                               <a
-                                                href={`/dashboard/rentals/${
-                                                  rental!.uid
-                                                }`}
+                                                href={`/rentals/${rental!.uid}`}
                                                 className={classNames(
                                                   active
                                                     ? "bg-gray-100 text-gray-900"

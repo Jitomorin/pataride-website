@@ -176,7 +176,7 @@ export default function CartColumn({
                                           ).then((res) => {
                                             console.log(res);
                                             callSnackBar(res.message);
-                                            router.push("/dashboard/rentals");
+                                            router.push("/rentals");
                                           });
                                         }}
                                         type="button"

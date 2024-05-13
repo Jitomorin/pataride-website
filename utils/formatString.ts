@@ -55,6 +55,11 @@ export const getTimeSince = (timestamp: any) => {
   }
 };
 
+export const setCSSVariable = (name: string, value: string) => {
+  if (typeof window !== "undefined" && window?.document?.documentElement) {
+    window.document.documentElement.style.setProperty(name, value);
+  }
+};
 export const getLatestElement = (array: any[]) => {
   // Sort the array based on the timestamps in descending order
   const sortedArray = array.slice().sort((a, b) => b.timestamp - a.timestamp);

@@ -72,7 +72,7 @@ const actions = [
   {
     icon: TruckIcon,
     name: "Rentals",
-    href: "/dashboard/rentals",
+    href: "/rentals",
     description: "View available rentals",
   },
   {

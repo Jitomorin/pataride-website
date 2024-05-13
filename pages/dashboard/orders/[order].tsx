@@ -218,7 +218,7 @@ function Order(props: any) {
             <div className="w-full h-screen flex justify-center flex-col md:flex-row">
               <h1 className="text-3xl m-auto font-bold text-gray-700 text-center w-full p-4 h-full bg-white">
                 This order has expired.{" "}
-                <Link className="text-blue-500" href="/dashboard/rentals">
+                <Link className="text-blue-500" href="/rentals">
                   Find new rentals
                 </Link>
               </h1>
@@ -306,7 +306,7 @@ function Order(props: any) {
                                       <h3>
                                         <a
                                           className="hover:underline transition-all ease-in-out"
-                                          href={`/dashboard/rentals/${product.item.uid}`}
+                                          href={`/rentals/${product.item.uid}`}
                                         >
                                           {product.item.name}
                                         </a>
@@ -513,7 +513,7 @@ function Order(props: any) {
                                   <h3>
                                     <a
                                       className="hover:underline transition-all ease-in-out"
-                                      href={`/dashboard/rentals/${product.item.uid}`}
+                                      href={`/rentals/${product.item.uid}`}
                                     >
                                       {product.item.name}
                                     </a>

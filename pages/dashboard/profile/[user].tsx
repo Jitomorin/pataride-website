@@ -219,7 +219,7 @@ function Profile(props: any) {
                     {rentals.map((rental: any) => (
                       <div
                         onClick={() => {
-                          router.push(`/dashboard/rentals/${rental.uid}`);
+                          router.push(`/rentals/${rental.uid}`);
                         }}
                         key={rental.uid}
                         className="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-offset-2 hover:border-gray-400"
