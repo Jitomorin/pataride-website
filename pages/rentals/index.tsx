@@ -200,7 +200,7 @@ function RentalsPage(props: RentalProps) {
               <button
                 type="button"
                 className="m-2 ml-4 p-2 text-xl text-right text-[#F8D521] font-bold transition-all ease-in-out hover:scale-105 sm:ml-6 rouded-md"
-                onClick={() => router.push("/dashboard/register-rentals")}
+                onClick={() => router.push("/register-rentals")}
               >
                 + Upload rental
               </button>
