@@ -42,14 +42,10 @@ function Rental(props: any) {
   const disabledDates = bookings.map((booking: any) => {
     return [
       parseAbsoluteToLocal(
-        timestampToISOString(
-          bookings[0].selectedDates[0].startDate.seconds * 1000
-        )
+        timestampToISOString(bookings[0].selectedDates.startDate.seconds * 1000)
       ),
       parseAbsoluteToLocal(
-        timestampToISOString(
-          bookings[0].selectedDates[0].endDate.seconds * 1000
-        )
+        timestampToISOString(bookings[0].selectedDates.endDate.seconds * 1000)
       ),
     ];
   });

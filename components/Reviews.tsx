@@ -82,7 +82,7 @@ const Reviews = ({ reviews }: any) => {
                     {users && users![index].fullName}
                   </p> */}
                   {users && (
-                    <div className="mt-10">
+                    <div className="">
                       <dd className="mt-3 space-y-3 text-gray-500">
                         <div className="flex space-x-2 cursor-pointer w-auto py-2  transition-all ease-in-out rounded-lg">
                           <div className="w-14 h-14 rounded-full  overflow-hidden">

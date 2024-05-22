@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Chart from "@/components/Charts/page";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { GetServerSideProps } from "next";
-import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody, Button } from "@nextui-org/react";
 import {
   checkRentalAvailability,
   getAllData,
@@ -35,8 +35,8 @@ function RentalsPage(props: RentalProps) {
   const unavailableItems = bookings.filter((booking) => {
     if (
       isDateInRange(
-        booking.selectedDates[0].startDate.seconds * 1000,
-        booking.selectedDates[0].endDate.seconds * 1000
+        booking.selectedDates.startDate.seconds * 1000,
+        booking.selectedDates.endDate.seconds * 1000
       ) &&
       booking.transaction.paid
     ) {
@@ -142,13 +142,13 @@ function RentalsPage(props: RentalProps) {
         setSelectedType={setSelectedCategory}
       /> */}
 
-      <div className="min-w-[100vw]">
-        <div className="mx-auto p-10 w-full flex justify-between ">
+      <div className="w-[90%]">
+        <div className="mx-auto p-10 shadow-xl w-full flex flex-col md:flex-row justify-between bg-gray-800 rounded-xl">
           <div className="flex flex-col space-y-3 w-full justify-center align-middle items-start">
             <div className="flex space-x-2 w-full">
               <input
                 type="text"
-                className="p-2 w-full lg:w-1/2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                className="p-2 w-full lg:w-1/2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-[#f2f2f2]"
                 placeholder="Search for name or number plate..."
                 onChange={(e: any) => {
                   setSearchValue(e.target.value.toLowerCase());
@@ -197,18 +197,29 @@ function RentalsPage(props: RentalProps) {
 
           {user?.role === "host" ||
             (user?.role === "admin" && (
-              <button
+              <Button
+                variant="light"
                 type="button"
-                className="m-2 ml-4 p-2 text-xl text-right text-[#F8D521] font-bold transition-all ease-in-out hover:scale-105 sm:ml-6 rouded-md"
+                className="m-2 ml-4 rounded-lg text-xl text-right text-[#F8D521] font-bold transition-all ease-in-out sm:ml-6 rouded-md"
                 onClick={() => router.push("/register-rentals")}
               >
                 + Upload rental
-              </button>
+              </Button>
             ))}
         </div>
 
         <div className="flex flex-col mx-auto">
-          <Tabs aria-label="Grid Order" className="mx-auto">
+          <Tabs
+            aria-label="Grid Order"
+            color="primary"
+            variant="bordered"
+            classNames={{
+              tabList: "mx-auto mt-10 bg-white text-[#fff] bg-gray-800",
+              tab: "text-xl font-medium hover:opacity-1 text-[#fff]",
+              tabContent: "text-[#fff]",
+            }}
+            // className="mx-auto mt-10"
+          >
             <Tab key="newest" title="Newest">
               <div className="grid gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 p-10 text-center py-12 px-auto mx-auto">
                 {carData.length > 0 ? (

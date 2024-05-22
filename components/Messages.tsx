@@ -8,6 +8,7 @@ import { Menu, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 
 const Messages = ({
+  router,
   users,
   selectedChat,
   setSelectedChat,
@@ -105,6 +106,7 @@ const Messages = ({
                         onClick={async () => {
                           await deleteDocument("chats", selectedChat.uid).then(
                             () => {
+                              router.push("/dashboard/chats");
                               setSelectedChat({});
                             }
                           );

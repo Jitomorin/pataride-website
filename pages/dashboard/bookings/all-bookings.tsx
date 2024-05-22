@@ -45,14 +45,14 @@ const tabs = [
 
 function AllBookings() {
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user }: any = useAuthContext();
+  const [orderLoading, setOrderLoading] = useState(true);
+  const { user, loading }: any = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      await getFilteredData("bookings", "userID", "==", user.uid).then(
+      setOrderLoading(true);
+      await getFilteredData("bookings", "userID", "==", user?.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
           res.sort((a: any, b: any) => {
@@ -63,7 +63,13 @@ function AllBookings() {
         }
       );
     };
-    fetchData();
+    if (loading) return;
+    else {
+      if (!user) {
+        router.push("/login");
+      }
+      fetchData();
+    }
   }, [user]);
 
   return (
@@ -119,10 +125,7 @@ function AllBookings() {
             </div>
           </div>
           {bookings.length !== 0 ? (
-            <BookingsTable
-              router={router}
-              bookings={[...bookings, ...bookings, ...bookings, ...bookings]}
-            />
+            <BookingsTable router={router} bookings={[...bookings]} />
           ) : (
             <div className="flex h-full mt-10 justify-center">
               <h1 className="text-3xl text-gray-600 font-semibold">

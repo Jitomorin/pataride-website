@@ -85,7 +85,7 @@ const PickBoxButton = styled.button<{ theme: any; active: boolean }>`
 function PickCar() {
   const [active, setActive] = useState("");
   const [colorBtn, setColorBtn] = useState("");
-  const [topCarList, setTopCarList] = useState([]);
+  const [topCarList, setTopCarList]: any = useState([]);
   const { theme }: any = useTheme();
 
   const btnID = (id: any) => {
@@ -95,6 +95,12 @@ function PickCar() {
   const coloringButton = (id: any) => {
     return colorBtn !== id;
   };
+  const isActive = (uid: string) => {
+    if (active !== uid) {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     const client = getClient();
@@ -102,6 +108,8 @@ function PickCar() {
       const cars: any = await getAllTopCars(client);
       console.log("cars: ", cars);
       setTopCarList(cars);
+      setActive(cars[0].uid);
+      coloringButton(cars[0].uid);
     };
     fetchCars();
   }, []);
@@ -122,10 +130,10 @@ function PickCar() {
             <CarContent>
               {/* pick car */}
               <PickBox theme={theme}>
-                {topCarList.map((car: any, id) => (
+                {topCarList.map((car: any, id: any) => (
                   <PickBoxButton
                     theme={theme}
-                    active={coloringButton(car.uid)}
+                    active={isActive(car.uid)}
                     // className={`${coloringButton("btn1")}`}
                     onClick={() => {
                       setActive(car.uid);
@@ -193,7 +201,7 @@ function PickCar() {
               </PickBox>
               {topCarList
                 .filter((doc: any) => doc?.uid === active)
-                .map((car: any, id) => (
+                .map((car: any, id: any) => (
                   <CarBox theme={theme} car={car} carID={id} />
                 ))}
               {/* {active === "FirstCar" && (

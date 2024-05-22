@@ -15,6 +15,17 @@ module.exports = {
       oswald: ["Oswald", "sans-serif"],
     },
     extend: {
+      backdropFilter: {
+        'none': 'none',
+        'blur': 'blur(10px)',
+      },
+      backgroundColor: {
+        'white-alpha': 'rgba(255, 255, 255, 0.3)',
+      },
+      backgroundImage: {
+        'gradient-to-r': 'linear-gradient(to right, #6D28D9, #EC4899)',
+        'gradient-to-b': 'linear-gradient(to bottom, #1E40AF, #FBBF24)',
+      },
       spacing: {
         4.5: "1.125rem",
         5.5: "1.375rem",
@@ -186,6 +197,10 @@ module.exports = {
         cyan: '#79FFE1',
         'blue-500': '#2276FC',
         'yellow-100': '#fef7da',
+        'custom-blue': '#1E40AF',
+        'custom-yellow': '#FBBF24',
+        'custom-purple': '#6D28D9',
+        'custom-pink': '#EC4899',
       },
       spacing: {
         28: '7rem',

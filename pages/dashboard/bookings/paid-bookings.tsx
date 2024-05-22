@@ -45,13 +45,13 @@ const tabs = [
 
 function PaidBookings() {
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user }: any = useAuthContext();
+  const [orderLoading, setOrderLoading] = useState(true);
+  const { user, loading }: any = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setOrderLoading(true);
       await getFilteredData("bookings", "userID", "==", user.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
@@ -64,7 +64,13 @@ function PaidBookings() {
         }
       );
     };
-    fetchData();
+    if (loading) return;
+    else {
+      if (!user) {
+        router.push("/login");
+      }
+      fetchData();
+    }
   }, [user]);
 
   return (

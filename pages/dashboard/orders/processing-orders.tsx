@@ -9,74 +9,72 @@ import Link from "next/link";
 import { classNames } from "@/contexts/utils";
 import { useRouter } from "next/router";
 import { getUrl } from "@/utils/formatString";
+import OrdersTable from "@/components/OrdersTable";
+import { usePathname } from "next/navigation";
 
 const tabs = [
   {
-    name: "All Bookings",
-    slug: "all-bookings",
-    href: "http://localhost:3000/dashboard/bookings/all-bookings",
+    name: "All Orders",
+    slug: "all-orders",
+    href: "/dashboard/orders/all-orders",
     current: false,
   },
   {
     name: "Completed",
-    slug: "completed-bookings",
-    href: "http://localhost:3000/dashboard/bookings/completed-bookings",
+    slug: "completed-orders",
+    href: "/dashboard/orders/completed-orders",
     current: false,
   },
   {
     name: "Pending",
-    slug: "pending-bookings",
-    href: "http://localhost:3000/dashboard/bookings/pending-bookings",
+    slug: "pending-orders",
+    href: "/dashboard/orders/pending-orders",
     current: true,
   },
   {
-    name: "Paid",
-    slug: "paid-bookings",
-    href: "http://localhost:3000/dashboard/bookings/paid-bookings",
-    current: true,
-  },
-  {
-    name: "Unpaid",
-    slug: "unpaid-bookings",
-    href: "http://localhost:3000/dashboard/bookings/unpaid-bookings",
+    name: "Processing",
+    slug: "processing-orders",
+    href: "/dashboard/orders/processing-orders",
     current: true,
   },
 ];
 
-function CompletedBookings() {
-  const [bookings, setBookings] = useState([]);
+function ProcessingOrders() {
+  const [orders, setOrders] = useState([]);
   const [orderLoading, setOrderLoading] = useState(true);
   const { user, loading }: any = useAuthContext();
   const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const fetchData = async () => {
       setOrderLoading(true);
-      await getFilteredData("bookings", "userID", "==", user.uid).then(
+      await getFilteredData("orders", "rental.userID", "==", user.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
           res.sort((a: any, b: any) => {
             return b.createdAt - a.createdAt;
           });
-          let result = res.filter((item: any) => item.status === "completed");
+          let result = res.filter((item: any) => item.status === "processing");
 
-          setBookings(result);
+          setOrders(result);
         }
       );
     };
     if (loading) return;
     else {
-      if (!user) {
+      if (user) {
+        fetchData();
+      } else {
         router.push("/login");
       }
-      fetchData();
     }
   }, [user]);
 
   return (
     <DefaultLayout>
       <div className="mx-auto">
-        <Breadcrumb pageName="Bookings" />
+        <Breadcrumb pageName="Orders" />
         <div className="w-full h-full flex-col justify-center">
           <div>
             <div className="sm:hidden">
@@ -90,7 +88,7 @@ function CompletedBookings() {
                 className="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500"
                 placeholder="Tabs"
                 defaultValue={tabs
-                  .find((tab) => getUrl(router) === tab.slug)
+                  .find((tab) => pathName === tab.href)
                   ?.toString()}
               >
                 {tabs.map((tab: any) => (
@@ -112,7 +110,7 @@ function CompletedBookings() {
                     key={tab.name}
                     href={tab.href}
                     className={classNames(
-                      getUrl(router) === tab.slug.toLowerCase()
+                      pathName === tab.href
                         ? "bg-primary-100 text-primary-700"
                         : "text-gray-500 hover:text-gray-700",
                       "rounded-md px-3 py-2 text-sm font-medium"
@@ -125,12 +123,12 @@ function CompletedBookings() {
               </nav>
             </div>
           </div>
-          {bookings.length !== 0 ? (
-            <BookingsTable router={router} bookings={[...bookings]} />
+          {orders.length !== 0 ? (
+            <OrdersTable router={router} bookings={[...orders]} />
           ) : (
             <div className="flex h-full mt-10 justify-center">
               <h1 className="text-3xl text-gray-600 font-semibold">
-                No Bookings Found
+                No Orders Found
               </h1>
             </div>
           )}
@@ -140,4 +138,4 @@ function CompletedBookings() {
   );
 }
 
-export default CompletedBookings;
+export default ProcessingOrders;

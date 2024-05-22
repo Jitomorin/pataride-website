@@ -31,10 +31,20 @@ const MobileNavbarDiv = styled.div<{ nav: boolean; theme: any }>`
   transition: all 0.5s ease-in-out;
   ${(props) => (props.nav ? "left: 0;" : "")}
 `;
-const NavbarDiv = styled.header<{ scrollPosition: any }>`
+const NavbarDiv = styled.header<{ scrollPosition: any; theme: any }>`
   max-width: 100%;
   position: fixed;
-  background-color: ${(props) =>
+  /* ${(props) =>
+    props.theme === "light"
+      ? `background-color: ${(props: any) =>
+          props.scrollPosition > 0
+            ? "rgba(255, 255, 255, 0.8)"
+            : "transparent"};`
+      : `background-color: ${(props: any) =>
+          props.scrollPosition > 0
+            ? "rgba(255, 255, 255, 0.8)"
+            : "transparent"};`}; */
+  background-color: ${(props: any) =>
     props.scrollPosition > 0 ? "rgba(255, 255, 255, 0.8)" : "transparent"};
   backdrop-filter: ${(props) =>
     props.scrollPosition > 0 ? "blur(6px)" : "none"};
@@ -322,7 +332,7 @@ function Navbar() {
               </>
             )}
 
-            <li
+            {/* <li
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -331,13 +341,13 @@ function Navbar() {
               }}
             >
               <ColorSwitcher />
-            </li>
+            </li> */}
           </MobileNavLinks>
         </MobileNavbarDiv>
 
         {/* desktop */}
 
-        <NavbarDiv scrollPosition={scrollPosition}>
+        <NavbarDiv scrollPosition={scrollPosition} theme={theme}>
           <ImageContainer>
             <Link href="/" onClick={() => window.scrollTo(0, 0)}>
               <NextImage
@@ -396,9 +406,9 @@ function Navbar() {
               >
                 Log out
               </div> */}
-              <ColorSwitcherContainer>
+              {/* <ColorSwitcherContainer>
                 <ColorSwitcher />
-              </ColorSwitcherContainer>
+              </ColorSwitcherContainer> */}
             </NavButtons>
           ) : (
             <NavButtons theme={theme}>

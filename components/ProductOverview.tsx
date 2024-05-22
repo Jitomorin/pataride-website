@@ -464,8 +464,11 @@ export default function ProductOverview({
                             selectedDates: selectedDate,
                             userID: user?.uid,
                             uid,
+                            confirmed: false,
                             createdAt: new Date(),
+                            confirmationCode: "",
                             status: "pending",
+                            placed: false,
                           }).then((res: any) => {
                             callSnackBar(
                               "Booking made, redirecting to checkout..."

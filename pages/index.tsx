@@ -27,9 +27,9 @@ export default function Homepage() {
       {/* <RestAPI /> */}
 
       <PlanTrip />
-      <div className="mt-0 bg-white overflow-x-hidden">
+      {/* <div className="mt-0 bg-white overflow-x-hidden">
         <LogoSlider />
-      </div>
+      </div> */}
       <PickCar />
       <Banner />
       <ChooseUs />

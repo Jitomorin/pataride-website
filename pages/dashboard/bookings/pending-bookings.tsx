@@ -12,33 +12,45 @@ import { getUrl } from "@/utils/formatString";
 
 const tabs = [
   {
-    name: "All Orders",
-    slug: "all-orders",
-    href: "http://localhost:3000/dashboard/bookings/all-orders",
+    name: "All Bookings",
+    slug: "all-bookings",
+    href: "http://localhost:3000/dashboard/bookings/all-bookings",
     current: false,
   },
   {
     name: "Completed",
-    slug: "completed-orders",
-    href: "http://localhost:3000/dashboard/bookings/completed-orders",
+    slug: "completed-bookings",
+    href: "http://localhost:3000/dashboard/bookings/completed-bookings",
     current: false,
   },
   {
     name: "Pending",
-    slug: "pending-orders",
-    href: "http://localhost:3000/dashboard/bookings/pending-orders",
+    slug: "pending-bookings",
+    href: "http://localhost:3000/dashboard/bookings/pending-bookings",
+    current: true,
+  },
+  {
+    name: "Paid",
+    slug: "paid-bookings",
+    href: "http://localhost:3000/dashboard/bookings/paid-bookings",
+    current: true,
+  },
+  {
+    name: "Unpaid",
+    slug: "unpaid-bookings",
+    href: "http://localhost:3000/dashboard/bookings/unpaid-bookings",
     current: true,
   },
 ];
 function PendingOrders() {
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user }: any = useAuthContext();
+  const [orderLoading, setOrderLoading] = useState(true);
+  const { user, loading }: any = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setOrderLoading(true);
       await getFilteredData("bookings", "userID", "==", user.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
@@ -51,13 +63,19 @@ function PendingOrders() {
         }
       );
     };
-    fetchData();
+    if (loading) return;
+    else {
+      if (!user) {
+        router.push("/login");
+      }
+      fetchData();
+    }
   }, [user]);
 
   return (
     <DefaultLayout>
       <div className="mx-auto">
-        <Breadcrumb pageName="Orders" />
+        <Breadcrumb pageName="Bookings" />
         <div className="w-full h-full flex-col justify-center">
           <div>
             <div className="sm:hidden">

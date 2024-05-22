@@ -33,7 +33,7 @@ const Snackbar = ({ message, isVisible, onClose }: any) => {
       // Automatically close the Snackbar after 3000 milliseconds (adjust as needed)
       const timeoutId = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 3000);
 
       // Clear the timeout when the component unmounts or when the Snackbar is closed manually
       return () => clearTimeout(timeoutId);

@@ -16,6 +16,7 @@ import {
   setPickupAndDropoffLocations,
   setProductStatus,
   setRentalAvailability,
+  updateBookingInformation,
   updateOrderStatus,
   updateOrderTransaction,
 } from "@/utils/firebase/firestore";
@@ -40,6 +41,12 @@ import { StatusPill } from "@/components/StatusPill";
 import ProgressBar from "@/components/ProgressBar";
 import { PaidPill } from "@/components/PaidPill";
 import BookingColumn from "@/components/BookingColumn";
+import { Button } from "@nextui-org/react";
+import ConfirmationCodeFormModal from "@/components/ConfirmationCodeFormModal";
+import ConfirmationCodeOrderModal from "@/components/ConfirmationCodeOrderModal";
+import { generateConfirmationCode } from "@/utils/formatString";
+import ConfirmationCodeBookingModal from "@/components/ConfirmationCodeBookingModal";
+import ReviewModal from "@/components/ReviewModal";
 
 const defaultPosition = {
   lat: 27.9878,
@@ -70,12 +77,12 @@ function Booking(props: any) {
 
   useEffect(() => {
     if (loading) return;
-    if (!user) {
+    if (!user || user == null) {
       router.push("/login");
     }
     // check if the other belongs to the user
     const checkOrderUser = async () => {
-      if (user.uid !== booking.userID || user.uid === booking.rental.uid) {
+      if (user?.uid !== booking.userID) {
         router.push("/dashboard/bookings/all-bookings");
       }
       setOrderLoading(false);
@@ -207,13 +214,13 @@ function Booking(props: any) {
                         <div className="mt-6 sm:col-span-7 sm:mt-0 md:row-end-1">
                           <h3 className="text-lg font-medium text-gray-900">
                             <a
-                              className="hover:underline transition-all ease-in-out"
+                              className="hover:underline transition-all text-2xl font-semibold ease-in-out"
                               href={`/rentals/${booking.rental.uid}`}
                             >
                               {booking.rental.name}
                             </a>
                           </h3>
-                          <p className="mt-1 font-medium text-gray-900">
+                          <p className="mt-1 font-medium text-gray-900 text-xl">
                             {`${formatNumber(booking.rental.price)}Ksh`}
                           </p>
                           <p className="mt-3 text-gray-500">
@@ -228,7 +235,7 @@ function Booking(props: any) {
                               </dt>
                               <dd className="mt-3 space-y-3 text-gray-500">
                                 <div
-                                  className="flex space-x-2 cursor-pointer w-auto p-2 hover:scale-[1.03] transition-all ease-in-out rounded-lg"
+                                  className="flex space-x-2 cursor-pointer w-auto py-2 hover:scale-[1.03] transition-all ease-in-out rounded-lg"
                                   onClick={() => {
                                     router.push(
                                       `/dashboard/profile/${host?.uid}`
@@ -255,13 +262,14 @@ function Booking(props: any) {
                                 </div>
 
                                 <div className="flex space-x-4">
-                                  <button
+                                  <Button
+                                    variant="light"
                                     onClick={createChat}
                                     type="button"
-                                    className="bg-primary rounded-lg font-semibold hover:scale-[1.03] transition-all ease-in-out text-white p-2"
+                                    className="text-primary rounded-lg font-semibold transition-all ease-in-out p-2"
                                   >
                                     Message Host
-                                  </button>
+                                  </Button>
                                 </div>
                               </dd>
                             </div>
@@ -270,7 +278,14 @@ function Booking(props: any) {
                                 Client information
                               </dt>
                               <dd className="mt-3 space-y-3 text-gray-500">
-                                <div className="flex space-x-2 w-auto p-2  rounded-lg">
+                                <div
+                                  className="flex space-x-2 cursor-pointer w-auto py-2 hover:scale-[1.015] transition-all ease-in-out rounded-lg"
+                                  onClick={() => {
+                                    router.push(
+                                      `/dashboard/profile/${client?.uid}`
+                                    );
+                                  }}
+                                >
                                   <div className="w-14 h-14 rounded-full  overflow-hidden">
                                     <img
                                       className=" object-cover"
@@ -298,15 +313,16 @@ function Booking(props: any) {
                                     Message Host
                                   </button> */}
                                   {user?.uid === booking.userID && (
-                                    <button
+                                    <Button
+                                      variant="light"
                                       onClick={() => {
                                         setOpenBooking(true);
                                       }}
                                       type="button"
-                                      className="font-medium text-indigo-600 hover:text-indigo-500"
+                                      className="text-primary rounded-lg p-2 font-semibold"
                                     >
-                                      Edit Order
-                                    </button>
+                                      Edit Booking
+                                    </Button>
                                   )}
                                 </div>
                               </dd>
@@ -364,22 +380,28 @@ function Booking(props: any) {
                           <dt className="text-gray-600">From</dt>
                           <dd className="font-medium text-gray-900">
                             {`${new Date(
-                              booking.selectedDates[0].startDate.seconds * 1000
+                              booking.selectedDates.startDate.seconds * 1000
                             ).toLocaleDateString()}`}
                           </dd>
                         </div>
-                        <div className="flex items-center justify-between pb-4">
+                        <div className="flex items-center justify-between py-4">
                           <dt className="text-gray-600">To</dt>
                           <dd className="font-medium text-gray-900">
                             {`${new Date(
-                              booking.selectedDates[0].endDate.seconds * 1000
+                              booking.selectedDates.endDate.seconds * 1000
                             ).toLocaleDateString()}`}
                           </dd>
                         </div>
-                        <div className="flex items-center justify-between pb-4">
+                        <div className="flex items-center justify-between py-4">
                           <dt className="text-gray-600">Subtotal</dt>
                           <dd className="font-medium text-gray-900">
-                            {`Ksh ${formatNumber(booking.rental.price)}`}
+                            {`Ksh ${formatNumber(
+                              calculatePrice(
+                                booking.rental.price,
+                                booking.selectedDates.startDate,
+                                booking.selectedDates.endDate
+                              )
+                            )}`}
                           </dd>
                         </div>
                         <div className="flex items-center justify-between py-4">
@@ -393,15 +415,121 @@ function Booking(props: any) {
                           <dd className="font-medium text-gray-900">$6.16</dd>
                         </div> */}
                         <div className="flex items-center justify-between pt-4">
-                          <dt className="font-medium text-gray-900">
-                            Order total
-                          </dt>
+                          <dt className="font-medium text-gray-900">Total</dt>
                           <dd className="font-semibold text-lg text-indigo-600">
                             {`Ksh ${formatNumber(
-                              booking.rental.price + patarideCut
+                              calculatePrice(
+                                booking.rental.price,
+                                booking.selectedDates.startDate,
+                                booking.selectedDates.endDate
+                              ) + patarideCut
                             )}`}
                           </dd>
                         </div>
+                        {booking.status !== "completed" ? (
+                          <>
+                            {booking.confirmed ? (
+                              <div className="flex items-center justify-between pt-4">
+                                <dt className="font-medium text-gray-900"></dt>
+                                <dd className="font-semibold text-lg text-indigo-600">
+                                  <ConfirmationCodeBookingModal
+                                    user={user}
+                                    callFunction={async () => {
+                                      if (booking.confirmationCode === "") {
+                                        const code = generateConfirmationCode();
+                                        console.log(
+                                          "confirmation code is:",
+                                          code
+                                        );
+                                        updateBookingInformation(booking.uid, {
+                                          confirmationCode: code,
+                                        }).then((res) => {
+                                          router.reload();
+                                          return code;
+                                        });
+                                      } else {
+                                        return booking.confirmationCode;
+                                      }
+                                    }}
+                                    callSnackbar={(message: string) => {
+                                      setSnackbarMessage(message);
+                                      setSnackbarOpen(true);
+                                    }}
+                                    booking={booking}
+                                  />
+                                </dd>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-between pt-4">
+                                <dt className="font-medium text-gray-900"></dt>
+                                <dd className="font-semibold text-lg text-indigo-600">
+                                  <ConfirmationCodeFormModal
+                                    user={user}
+                                    callSnackbar={(message: string) => {
+                                      setSnackbarMessage(message);
+                                      setSnackbarOpen(true);
+                                    }}
+                                    booking={booking}
+                                  />
+                                </dd>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div className="flex items-center justify-between pt-4">
+                            <dt className="font-medium text-gray-900"></dt>
+                            <dd className="font-semibold text-lg text-indigo-600">
+                              <ReviewModal
+                                user={user}
+                                callSnackbar={(message: string) => {
+                                  setSnackbarMessage(message);
+                                  setSnackbarOpen(true);
+                                }}
+                                rental={booking.rental}
+                              />
+                            </dd>
+                          </div>
+                        )}
+
+                        {booking.status === "processing" &&
+                          booking.transaction.paid &&
+                          !booking.placed && (
+                            <div className="flex items-center justify-between pt-10">
+                              <dt className="font-medium text-gray-900"></dt>
+                              <dd className="font-semibold text-lg text-indigo-600">
+                                <button
+                                  onClick={async () => {
+                                    // remove confirmationCode field
+                                    const {
+                                      confirmationCode,
+                                      confirmed,
+                                      ...destructuresBookingObject
+                                    } = booking;
+                                    const uid = uuidv4();
+                                    await addDataWithDocName("orders", uid, {
+                                      ...destructuresBookingObject,
+                                      orderUID: uid,
+                                      confirmed: false,
+                                    }).then(() => {
+                                      setSnackbarMessage(
+                                        "Host has successfully recieved the order, please wait a moment"
+                                      );
+                                      setSnackbarOpen(true);
+                                      updateBookingInformation(booking.uid, {
+                                        placed: true,
+                                      }).then(() => {
+                                        router.reload();
+                                      });
+                                    });
+                                  }}
+                                  type="button"
+                                  className="bg-primary rounded-lg font-semibold hover:scale-[1.03] transition-all ease-in-out text-white p-2"
+                                >
+                                  Place Order
+                                </button>
+                              </dd>
+                            </div>
+                          )}
                       </dl>
                     </div>
                   </div>
@@ -429,8 +557,8 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
 ) => {
   const { params = {} } = ctx;
   //   console.log("params", params);
-  const booking = await getDocument("bookings", params.booking);
-  const settings = await getDocument("settings", "admin");
+  const booking: any = await getDocument("bookings", params.booking);
+  const settings: any = await getDocument("settings", "admin");
 
   if (!booking) {
     return {

@@ -120,7 +120,7 @@ function BookingCheckout(props: any) {
                 setIsPaid(true);
                 updateBookingInformation(booking.uid, {
                   transaction: result,
-                  status: "confirmed",
+                  status: "processing",
                 }).then(() => {
                   router.push(`/dashboard/bookings/${booking.uid}`);
                 });
@@ -200,8 +200,8 @@ function BookingCheckout(props: any) {
           user!.email,
           calculatePrice(
             booking.rental.price,
-            booking.selectedDates[0].startDate,
-            booking.selectedDates[0].endDate
+            booking.selectedDates.startDate,
+            booking.selectedDates.endDate
           ) + companyCut,
           user?.phoneNumber,
           `http://localhost:3000/dashboard/bookings/${booking!.uid}/checkout`
@@ -336,7 +336,7 @@ function BookingCheckout(props: any) {
                           </div>
                           <div className="flex items-center justify-between">
                             <dt className="text-lg">Payment</dt>
-                            {booking.transaction.paid ? (
+                            {isPaid ? (
                               <dd className="text-lg font-medium text-white bg-green-400 border border-green-500 py-1 px-3 rounded-lg">
                                 Payment successful
                               </dd>
@@ -353,8 +353,8 @@ function BookingCheckout(props: any) {
                               {`Ksh ${formatNumber(
                                 calculatePrice(
                                   booking.rental.price,
-                                  booking.selectedDates[0].startDate,
-                                  booking.selectedDates[0].endDate
+                                  booking.selectedDates.startDate,
+                                  booking.selectedDates.endDate
                                 ) + companyCut
                               )}`}
                             </dd>
@@ -364,11 +364,15 @@ function BookingCheckout(props: any) {
                     </div>
                   ) : (
                     <div>
-                      <h2 className="text-lg font-medium text-gray-900">
+                      <h2 className="text-lg font-semibold text-gray-900">
                         Contact information
                       </h2>
                       <div className="p-6 mt-4 rounded-lg border border-gray-200 bg-white shadow-lg w-full h-full">
-                        <div className="">
+                        <h2 className="text-lg font-medium text-gray-900">
+                          Your information
+                        </h2>
+
+                        <div className="mt-4">
                           <label
                             htmlFor="email-address"
                             className="block text-sm font-medium text-gray-700"
@@ -578,7 +582,7 @@ function BookingCheckout(props: any) {
                   </h2>
 
                   <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-lg">
-                    <h3 className="sr-only">Items in your cart</h3>
+                    <h3 className="sr-only">Rental</h3>
                     <ul role="list" className="divide-y divide-gray-200">
                       <li
                         key={booking.rental.uid}
@@ -598,7 +602,7 @@ function BookingCheckout(props: any) {
                               <h4 className="text-sm">
                                 <Link
                                   href={`/rentals/${booking.rental.uid}`}
-                                  className="font-medium text-gray-900 text-2xl hover:text-[#F8D521] transition-all ease-in-out"
+                                  className="font-semibold text-gray-900 text-2xl hover:text-[#F8D521] transition-all ease-in-out"
                                 >
                                   {booking.rental.name}
                                 </Link>
@@ -611,14 +615,12 @@ function BookingCheckout(props: any) {
                               </p>
                               <p className="mt-1 text-xl text-gray-600">
                                 {`from: ${new Date(
-                                  booking.selectedDates[0].startDate.seconds *
-                                    1000
+                                  booking.selectedDates.startDate.seconds * 1000
                                 ).toLocaleDateString()}`}
                               </p>
                               <p className="mt-1 text-xl text-gray-600">
                                 {`to: ${new Date(
-                                  booking.selectedDates[0].endDate.seconds *
-                                    1000
+                                  booking.selectedDates.endDate.seconds * 1000
                                 ).toLocaleDateString()}`}
                               </p>
                             </div>
@@ -629,8 +631,8 @@ function BookingCheckout(props: any) {
                               {`Ksh ${formatNumber(
                                 calculatePrice(
                                   booking.rental.price,
-                                  booking.selectedDates[0].startDate,
-                                  booking.selectedDates[0].endDate
+                                  booking.selectedDates.startDate,
+                                  booking.selectedDates.endDate
                                 )
                               )}`}
                             </p>
@@ -645,8 +647,8 @@ function BookingCheckout(props: any) {
                           {`Ksh ${formatNumber(
                             calculatePrice(
                               booking.rental.price,
-                              booking.selectedDates[0].startDate,
-                              booking.selectedDates[0].endDate
+                              booking.selectedDates.startDate,
+                              booking.selectedDates.endDate
                             )
                           )}`}
                         </dd>
@@ -664,8 +666,8 @@ function BookingCheckout(props: any) {
                           {`Ksh ${formatNumber(
                             calculatePrice(
                               booking.rental.price,
-                              booking.selectedDates[0].startDate,
-                              booking.selectedDates[0].endDate
+                              booking.selectedDates.startDate,
+                              booking.selectedDates.endDate
                             ) + companyCut
                           )}`}
                         </dd>
@@ -684,7 +686,7 @@ function BookingCheckout(props: any) {
                           </button>
                         ) : (
                           <>
-                            {booking.transaction.paid ? (
+                            {isPaid ? (
                               <></>
                             ) : (
                               <button

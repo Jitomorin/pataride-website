@@ -10,37 +10,46 @@ import { classNames } from "@/contexts/utils";
 import { useRouter } from "next/router";
 import { getUrl } from "@/utils/formatString";
 import OrdersTable from "@/components/OrdersTable";
+import { usePathname } from "next/navigation";
 
 const tabs = [
   {
     name: "All Orders",
     slug: "all-orders",
-    href: "http://localhost:3000/dashboard/orders/all-orders",
+    href: "/dashboard/orders/all-orders",
     current: false,
   },
   {
     name: "Completed",
     slug: "completed-orders",
-    href: "http://localhost:3000/dashboard/orders/completed-orders",
+    href: "/dashboard/orders/completed-orders",
     current: false,
   },
   {
     name: "Pending",
     slug: "pending-orders",
-    href: "http://localhost:3000/dashboard/orders/pending-orders",
+    href: "/dashboard/orders/pending-orders",
+    current: true,
+  },
+  {
+    name: "Processing",
+    slug: "processing-orders",
+    href: "/dashboard/orders/processing-orders",
     current: true,
   },
 ];
+
 function PendingOrders() {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { user }: any = useAuthContext();
+  const [orderLoading, setOrderLoading] = useState(true);
+  const { user, loading }: any = useAuthContext();
   const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      await getFilteredData("bookings", "rental.userID", "==", user.uid).then(
+      setOrderLoading(true);
+      await getFilteredData("orders", "rental.userID", "==", user.uid).then(
         (res: any) => {
           // sort deliveries by date in field called delivery_timestamp
           res.sort((a: any, b: any) => {
@@ -52,7 +61,14 @@ function PendingOrders() {
         }
       );
     };
-    fetchData();
+    if (loading) return;
+    else {
+      if (user) {
+        fetchData();
+      } else {
+        router.push("/login");
+      }
+    }
   }, [user]);
 
   return (
@@ -72,7 +88,7 @@ function PendingOrders() {
                 className="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500"
                 placeholder="Tabs"
                 defaultValue={tabs
-                  .find((tab) => getUrl(router) === tab.slug)
+                  .find((tab) => pathName === tab.href)
                   ?.toString()}
               >
                 {tabs.map((tab: any) => (
@@ -94,7 +110,7 @@ function PendingOrders() {
                     key={tab.name}
                     href={tab.href}
                     className={classNames(
-                      getUrl(router) === tab.slug.toLowerCase()
+                      pathName === tab.href
                         ? "bg-primary-100 text-primary-700"
                         : "text-gray-500 hover:text-gray-700",
                       "rounded-md px-3 py-2 text-sm font-medium"

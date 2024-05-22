@@ -70,7 +70,7 @@ export function ActionCell({ value, column, row, router }: any) {
     <div className="flex items-center">
       <button
         onClick={() => {
-          router.push(`/dashboard/bookings/${value.row.original.uid}`);
+          router.push(`/dashboard/orders/${value.row.original.orderUID}`);
         }}
         className="text-indigo-600 hover:text-indigo-900 hover:underline "
       >
@@ -106,13 +106,13 @@ const OrdersTable = ({ placeholder, bookings, router }: any) => {
         Header: "Excecution Time",
         accessor: (value: any) => {
           return `From ${new Date(
-            value.selectedDates[0].startDate.seconds * 1000
+            value.selectedDates.startDate.seconds * 1000
           ).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",
           })} To ${new Date(
-            value.selectedDates[0].endDate.seconds * 1000
+            value.selectedDates.endDate.seconds * 1000
           ).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",

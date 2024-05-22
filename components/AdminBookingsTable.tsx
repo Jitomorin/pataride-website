@@ -126,13 +126,13 @@ const AdminBookingsTable = ({ placeholder, bookings, settings }: any) => {
         Header: "Excecution Time",
         accessor: (value: any) => {
           return `From ${new Date(
-            value.selectedDates[0].startDate.seconds * 1000
+            value.selectedDates.startDate.seconds * 1000
           ).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",
           })} To ${new Date(
-            value.selectedDates[0].endDate.seconds * 1000
+            value.selectedDates.endDate.seconds * 1000
           ).toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",

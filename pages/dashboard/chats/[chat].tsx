@@ -167,6 +167,7 @@ function Chat(props: any) {
                   {!chatLoading ? (
                     <>
                       <Messages
+                        router={router}
                         setSelectedChat={setSelectedChat}
                         selectedChat={selectedChat}
                         users={users}

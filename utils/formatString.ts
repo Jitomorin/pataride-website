@@ -1,3 +1,5 @@
+import { customAlphabet } from "nanoid";
+
 export function processImageString(imageString: string) {
   if (imageString.includes("-jpg")) {
     // Remove "image-" and replace "-jpg" with ".jpg" for JPG images
@@ -53,6 +55,21 @@ export const getTimeSince = (timestamp: any) => {
     }
     return "Just now";
   }
+};
+
+export const hasDatePassed = (timestampInSeconds: number): boolean => {
+  const currentDateInSeconds = Math.floor(Date.now() / 1000);
+  return currentDateInSeconds > timestampInSeconds;
+};
+
+export const generateConfirmationCode = () => {
+  const nanoid = customAlphabet(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    6
+  );
+
+  const shortId = nanoid();
+  return shortId;
 };
 
 export const setCSSVariable = (name: string, value: string) => {

@@ -240,8 +240,8 @@ export async function checkRentalAvailability(rentals: any[]) {
           if (
             !booking.transaction.paid ||
             !isDateInRange(
-              booking.selectedDates[0].startDate,
-              booking.selectedDates[0].endDate
+              booking.selectedDates.startDate,
+              booking.selectedDates.endDate
             )
           ) {
             // console.log("we got one", item);
@@ -274,6 +274,22 @@ export async function AddMessageToChat(docId: string, element: any) {
     return { status: "error", message: firebaseError.message };
   }
 }
+export async function AddRating(docId: string, element: any) {
+  const docRef = doc(db, "rentals", docId);
+
+  try {
+    await updateDoc(docRef, {
+      reviews: arrayUnion(element),
+    });
+    return {
+      status: "success",
+      message: "Sent.",
+    };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    return { status: "error", message: firebaseError.message };
+  }
+}
 
 export const startChatListener = (
   docId: string,
@@ -286,6 +302,21 @@ export const startChatListener = (
     if (doc.exists()) {
       const chatData = doc.data();
       callback(chatData); // Call the callback function with updated chat data
+    }
+  });
+};
+export const documentListener = (
+  collectionName: string,
+  docId: string,
+  callback: (data: any) => void
+) => {
+  const docRef = doc(db, collectionName, docId);
+
+  // Listen to changes in the document
+  onSnapshot(docRef, (doc) => {
+    if (doc.exists()) {
+      const data = doc.data();
+      callback(data); // Call the callback function with updated chat data
     }
   });
 };
@@ -308,6 +339,18 @@ export async function updateBookingInformation(bookingID: string, data: any) {
   try {
     await updateDoc(orderRef, data);
     result = { status: "success", message: "Booking updated successfully." };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    result = { status: "error", message: firebaseError.message };
+  }
+  return result;
+}
+export async function updateOrderInformation(OrderID: string, data: any) {
+  const orderRef = doc(db, "orders", OrderID);
+  let result;
+  try {
+    await updateDoc(orderRef, data);
+    result = { status: "success", message: "Order updated successfully." };
   } catch (error) {
     const firebaseError = error as FirebaseError;
     result = { status: "error", message: firebaseError.message };
