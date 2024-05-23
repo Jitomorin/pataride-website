@@ -30,7 +30,7 @@ export default function ConfirmationCodeBookingModal({
     <>
       <Button
         onPress={async () => {
-          if (!hasDatePassed(booking.selectedDates.endDate.seconds)) {
+          if (hasDatePassed(booking.selectedDates.endDate.seconds)) {
             await callFunction()
               .then((code: string) => {
                 console.log("coooode", code);
