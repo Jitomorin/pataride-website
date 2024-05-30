@@ -143,7 +143,7 @@ function RentalsPage(props: RentalProps) {
       /> */}
 
       <div className="w-[90%]">
-        <div className="mx-auto p-10 shadow-xl w-full flex flex-col md:flex-row justify-between bg-gray-800 rounded-xl">
+        <div className="mx-auto p-10 shadow-xl w-full flex flex-col md:flex-row justify-between bg-gray-600 rounded-xl">
           <div className="flex flex-col space-y-3 w-full justify-center align-middle items-start">
             <div className="flex space-x-2 w-full">
               <input
@@ -214,7 +214,7 @@ function RentalsPage(props: RentalProps) {
             color="primary"
             variant="bordered"
             classNames={{
-              tabList: "mx-auto mt-10 bg-white text-[#fff] bg-gray-800",
+              tabList: "mx-auto mt-10 bg-white text-[#fff] bg-gray-600",
               tab: "text-xl font-medium hover:opacity-1 text-[#fff]",
               tabContent: "text-[#fff]",
             }}

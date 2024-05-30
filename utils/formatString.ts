@@ -12,6 +12,29 @@ export function processImageString(imageString: string) {
     return imageString;
   }
 }
+
+export function getMonthFromTimestamp(timestamp: number): string {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const date = new Date(timestamp);
+  const monthIndex = date.getMonth(); // getMonth() returns a zero-based index (0-11)
+
+  return months[monthIndex];
+}
+
 // Function to generate a slug based on the title
 export function generateSlug(title: string) {
   return title.toLowerCase().replace(/\s+/g, "-");

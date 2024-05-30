@@ -509,7 +509,10 @@ function Booking(props: any) {
                                     await addDataWithDocName("orders", uid, {
                                       ...destructuresBookingObject,
                                       orderUID: uid,
+                                      timestamp: new Date(),
+                                      confirmationCode: "",
                                       confirmed: false,
+                                      cashedOut: false,
                                     }).then(() => {
                                       setSnackbarMessage(
                                         "Host has successfully recieved the order, please wait a moment"

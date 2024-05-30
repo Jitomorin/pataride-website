@@ -240,7 +240,7 @@ function Footer() {
     async function fetchLinks() {
       const client = getClient();
       const res: any = await getAllLinks(client);
-      console.log("Links: ", res);
+      // console.log("Links: ", res);
       setLinks(res);
     }
     fetchLinks();

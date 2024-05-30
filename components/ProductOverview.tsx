@@ -380,7 +380,7 @@ export default function ProductOverview({
             </div> */}
 
             <LeftSide className=" mt-8 col-span-5 lg:col-span-5">
-              <div className="w-auto ">
+              <div className="w-auto">
                 {/* Date picker */}
                 <div className="flex flex-col justify-between w-full">
                   <span className="text-2xl font-bold text-left">
@@ -390,17 +390,6 @@ export default function ProductOverview({
                     {`You won't be able to select booked dates`}
                   </span>
                 </div>
-                {/* <DateRangePicker
-                  label="Date range"
-                  onChange={(item: any) => {
-                    console.log(
-                      "date pickereeeeeeeeeeeeeeeeeeeeee",
-                      createDateFromObject(item)
-                    );
-                  }}
-                  isRequired={true}
-                  className="max-w-sm"
-                /> */}
                 <CustomDateRangePicker
                   disabledDates={disabledDates}
                   onChangeFunction={(start: any, end: any) => {

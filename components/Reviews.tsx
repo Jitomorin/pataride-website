@@ -14,7 +14,6 @@ const Reviews = ({ reviews }: any) => {
     };
     const tempUsers: any = [];
     reviews.map(async (rev: any) => {
-      console.log("review", rev);
       await getDocument("users", rev.userID).then((userRes) => {
         // Add the fetched user to a new array with the previous users
         tempUsers.push(userRes);

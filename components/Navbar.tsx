@@ -249,7 +249,7 @@ function Navbar() {
   const openNav = () => {
     setNav(!nav);
   };
-  console.log("path name:", pathName);
+  // console.log("path name:", pathName);
 
   return (
     <>

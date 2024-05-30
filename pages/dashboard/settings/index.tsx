@@ -31,9 +31,8 @@ const SaveButton = styled.div`
   }
 `;
 export const metadata: Metadata = {
-  title: "Next.js Settings | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Settings page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+  title: "Next.js Settings",
+  description: "This is Next.js Settings page",
 };
 
 function Settings() {

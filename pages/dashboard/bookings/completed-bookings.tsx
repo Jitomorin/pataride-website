@@ -9,36 +9,37 @@ import Link from "next/link";
 import { classNames } from "@/contexts/utils";
 import { useRouter } from "next/router";
 import { getUrl } from "@/utils/formatString";
+import { usePathname } from "next/navigation";
 
 const tabs = [
   {
     name: "All Bookings",
     slug: "all-bookings",
-    href: "http://localhost:3000/dashboard/bookings/all-bookings",
+    href: "/dashboard/bookings/all-bookings",
     current: false,
   },
   {
     name: "Completed",
     slug: "completed-bookings",
-    href: "http://localhost:3000/dashboard/bookings/completed-bookings",
+    href: "/dashboard/bookings/completed-bookings",
     current: false,
   },
   {
     name: "Pending",
     slug: "pending-bookings",
-    href: "http://localhost:3000/dashboard/bookings/pending-bookings",
+    href: "/dashboard/bookings/pending-bookings",
     current: true,
   },
   {
     name: "Paid",
     slug: "paid-bookings",
-    href: "http://localhost:3000/dashboard/bookings/paid-bookings",
+    href: "/dashboard/bookings/paid-bookings",
     current: true,
   },
   {
     name: "Unpaid",
     slug: "unpaid-bookings",
-    href: "http://localhost:3000/dashboard/bookings/unpaid-bookings",
+    href: "/dashboard/bookings/unpaid-bookings",
     current: true,
   },
 ];
@@ -48,6 +49,7 @@ function CompletedBookings() {
   const [orderLoading, setOrderLoading] = useState(true);
   const { user, loading }: any = useAuthContext();
   const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,7 +92,7 @@ function CompletedBookings() {
                 className="block w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500"
                 placeholder="Tabs"
                 defaultValue={tabs
-                  .find((tab) => getUrl(router) === tab.slug)
+                  .find((tab) => pathName === tab.href)
                   ?.toString()}
               >
                 {tabs.map((tab: any) => (
@@ -112,7 +114,7 @@ function CompletedBookings() {
                     key={tab.name}
                     href={tab.href}
                     className={classNames(
-                      getUrl(router) === tab.slug.toLowerCase()
+                      pathName === tab.href
                         ? "bg-primary-100 text-primary-700"
                         : "text-gray-500 hover:text-gray-700",
                       "rounded-md px-3 py-2 text-sm font-medium"

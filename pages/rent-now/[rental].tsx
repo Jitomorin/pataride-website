@@ -27,6 +27,7 @@ import Snackbar from "@/components/Snackbar";
 import Tooltip from "@/components/Tooltip";
 import Partners from "@/views/HomePage/Partners";
 import ImageSliderComponent from "@/components/ImageSliderComponent";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 // interface pageProps extends SharedPageProps {
 //     service: Service;
@@ -156,6 +157,7 @@ export default function carSlugRoute(props: CarProps) {
   const [links, setLinks] = useState<any[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
+  const { user, loading }: any = useAuthContext();
   const { car }: any = props;
   if (router.isFallback) {
     return <Loading />;
@@ -165,7 +167,7 @@ export default function carSlugRoute(props: CarProps) {
     async function fetchLinks() {
       const client = getClient();
       const res: any = await getAllLinks(client);
-      console.log("Links: ", res);
+      // console.log("Links: ", res);
       setLinks(res);
     }
     if (loading) return;

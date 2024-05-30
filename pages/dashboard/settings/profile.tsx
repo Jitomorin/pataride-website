@@ -1,18 +1,4 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Disclosure, Menu, Switch, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import {
@@ -51,44 +37,7 @@ const navigation = [
   { name: "Applicants", href: "#", current: false },
   { name: "Company", href: "#", current: false },
 ];
-const subNavigation = [
-  {
-    name: "Profile",
-    href: "/dashboard/settings/profile",
-    icon: UserCircleIcon,
-    current: true,
-  },
-  {
-    name: "Admin",
-    href: "/dashboard/settings/admin",
-    icon: UserIcon,
-    current: true,
-  },
-  // {
-  //   name: "Account",
-  //   href: "/dashboard/settings/profile",
-  //   icon: CogIcon,
-  //   current: false,
-  // },
-  // {
-  //   name: "Password",
-  //   href: "/dashboard/settings/profile",
-  //   icon: KeyIcon,
-  //   current: false,
-  // },
-  // {
-  //   name: "Notifications",
-  //   href: "/dashboard/settings/profile",
-  //   icon: BellIcon,
-  //   current: false,
-  // },
-  // {
-  //   name: "Billing",
-  //   href: "/dashboard/settings/profile",
-  //   icon: CreditCardIcon,
-  //   current: false,
-  // },
-];
+
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
@@ -110,6 +59,80 @@ export default function ProfileSettings() {
   const [bio, setBio] = useState(user?.bio);
   const [t, setT] = useState(true);
   const router = useRouter();
+  let subNavigation = [];
+  if (user?.role === "admin") {
+    subNavigation = [
+      {
+        name: "Profile",
+        href: "/dashboard/settings/profile",
+        icon: UserCircleIcon,
+        current: true,
+      },
+      {
+        name: "Admin",
+        href: "/dashboard/settings/admin",
+        icon: UserIcon,
+        current: true,
+      },
+      // {
+      //   name: "Account",
+      //   href: "/dashboard/settings/profile",
+      //   icon: CogIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Password",
+      //   href: "/dashboard/settings/profile",
+      //   icon: KeyIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Notifications",
+      //   href: "/dashboard/settings/profile",
+      //   icon: BellIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Billing",
+      //   href: "/dashboard/settings/profile",
+      //   icon: CreditCardIcon,
+      //   current: false,
+      // },
+    ];
+  } else {
+    subNavigation = [
+      {
+        name: "Profile",
+        href: "/dashboard/settings/profile",
+        icon: UserCircleIcon,
+        current: true,
+      },
+      // {
+      //   name: "Account",
+      //   href: "/dashboard/settings/profile",
+      //   icon: CogIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Password",
+      //   href: "/dashboard/settings/profile",
+      //   icon: KeyIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Notifications",
+      //   href: "/dashboard/settings/profile",
+      //   icon: BellIcon,
+      //   current: false,
+      // },
+      // {
+      //   name: "Billing",
+      //   href: "/dashboard/settings/profile",
+      //   icon: CreditCardIcon,
+      //   current: false,
+      // },
+    ];
+  }
 
   useEffect(() => {
     if (loading) return;

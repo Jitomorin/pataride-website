@@ -39,17 +39,18 @@ function Rental(props: any) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(true);
   const [cart, setCart] = useState<any>({});
+
   const disabledDates = bookings.map((booking: any) => {
     return [
       parseAbsoluteToLocal(
-        timestampToISOString(bookings[0].selectedDates.startDate.seconds * 1000)
+        timestampToISOString(booking.selectedDates.startDate.seconds * 1000)
       ),
       parseAbsoluteToLocal(
-        timestampToISOString(bookings[0].selectedDates.endDate.seconds * 1000)
+        timestampToISOString(booking.selectedDates.endDate.seconds * 1000)
       ),
     ];
   });
-  console.log("okok", disabledDates);
+  // console.log("okok", disabledDates);
 
   useEffect(() => {
     if (loading) return;
@@ -85,9 +86,9 @@ function Rental(props: any) {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={1.5}
+          strokeWidth={2}
           stroke="currentColor"
-          className="w-6 h-6 text-primary"
+          className="w-14 h-14 text-black"
         >
           <path
             strokeLinecap="round"
@@ -126,9 +127,8 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const rental = await getDocument("rentals", params.rental);
   const bookings = await getMultipleFilteredData("bookings", [
     { field: "transaction.paid", operator: "==", value: true },
-    { field: "rental.uid", operator: "==", value: rental.uid },
   ]);
-  console.log("bookings", bookings);
+  // console.log("bookings", bookings);
   const rentalSlug = params.user as string;
 
   if (!rental) {
