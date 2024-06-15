@@ -7,6 +7,7 @@ const ConversationItem = ({
   name,
   message,
   profileURL,
+  isAdmin,
 }: any) => {
   const _class = active ? "bg-gray-100" : "bg-white";
   return (
@@ -26,6 +27,9 @@ const ConversationItem = ({
             />
           </div>
           <div className="flex-grow p-2">
+            {isAdmin && (
+              <div className="text-xs font-semibold text-red-600">Admin</div>
+            )}
             <div className="flex justify-between text-md ">
               <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 {name}
@@ -34,6 +38,7 @@ const ConversationItem = ({
                 {time}
               </div>
             </div>
+
             <div className="text-sm text-gray-500 dark:text-gray-400  w-40 truncate">
               {message}
             </div>

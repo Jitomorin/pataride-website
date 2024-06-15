@@ -25,13 +25,19 @@ function Seller() {
         {/* <div className="container"></div> */}
         <Instructions />
         <InstructionsGrid />
-        <ButtonWrapper>
+        {/* <ButtonWrapper>
           {user != null ? (
-            <HeroButton name={"Enlist your car"} link="/register-car" />
+            <>
+              {user.role === "client" ? (
+                <HeroButton name={"Request to become a host"} link="/register-car" />
+              ) : (
+                <HeroButton name={"Enlist your car"} link="/register-car" />
+              )}
+            </>
           ) : (
-            <HeroButton name={"Become a host"} link="/signup" />
+            <></>
           )}
-        </ButtonWrapper>
+        </ButtonWrapper> */}
       </Wrapper>
     </>
   );

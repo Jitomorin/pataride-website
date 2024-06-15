@@ -152,12 +152,32 @@ function Instructions() {
               </Box>
               <Box theme={theme}>
                 <Question
+                  active={getClassQuestion("q4")}
+                  id="q4"
+                  onClick={() => openQ("q4")}
+                  // className={`faq-box__question  ${getClassQuestion("q1")}`}
+                >
+                  <p>2. Request to be made a host</p>
+                  <i className="fa-solid fa-angle-down"></i>
+                </Question>
+                <Answer
+                  active={getClassAnswer("q4")}
+                  id="q4"
+                  onClick={() => openQ("q4")}
+                  // className={`faq-box__answer ${getClassAnswer("q1")}`}
+                >
+                  From the dashboard send a host request to the Admin and wait
+                  up to 24 hours for approval.
+                </Answer>
+              </Box>
+              <Box theme={theme}>
+                <Question
                   active={getClassQuestion("q2")}
                   id="q2"
                   onClick={() => openQ("q2")}
                   // className={`faq-box__question ${getClassQuestion("q2")}`}
                 >
-                  <p>2. List your car</p>
+                  <p>3. List your car</p>
                   <i className="fa-solid fa-angle-down"></i>
                 </Question>
                 <Answer
@@ -179,7 +199,7 @@ function Instructions() {
                   onClick={() => openQ("q3")}
                   // className={`faq-box__question ${getClassQuestion("q3")}`}
                 >
-                  <p>3. Set your daily rates</p>
+                  <p>4. Set your daily rates</p>
                   <i className="fa-solid fa-angle-down"></i>
                 </Question>
                 <Answer

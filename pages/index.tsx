@@ -17,6 +17,7 @@ import { LogoSlider } from "@/components/LogoSlider";
 const client = getClient();
 
 export default function Homepage() {
+  console.log("homeeee", auth.currentUser);
   return (
     <>
       <Head>

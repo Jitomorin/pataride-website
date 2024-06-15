@@ -14,6 +14,7 @@ const Conversation = ({ chats, users, router, currentUser, pathName }: any) => {
         return (
           <ConversationItem
             // uid={chat.uid}
+            isAdmin={reciever.role === "admin"}
             message={
               chat.chat.length > 0 ? getLatestElement(chat.chat).message : ""
             }

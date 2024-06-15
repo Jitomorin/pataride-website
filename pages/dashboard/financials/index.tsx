@@ -16,13 +16,16 @@ import EarningsChart from "@/components/DoughnutChart";
 import DoughnutChart from "@/components/DoughnutChart";
 import LineChart from "@/components/LineChart";
 import { Button, Spinner } from "@nextui-org/react";
-import { calculatePrice } from "@/utils/formatNumber";
+import { calculatePrice, formatNumber } from "@/utils/formatNumber";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import BarChart from "@/components/BarChart";
 import RequestPaymentModal from "@/components/RequestPaymentModal";
+import Snackbar from "@/components/Snackbar";
 
 function Financials() {
   const [orders, setOrders] = useState([]);
+  const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [orderLoading, setOrderLoading] = useState(true);
   const { user, loading }: any = useAuthContext();
   const [lineChartData, setLineChartData]: any = useState([]);
@@ -38,7 +41,7 @@ function Financials() {
   ]);
   const [data, setData]: any = useState([]);
   const [checkedoutData, setCheckedoutData]: any = useState([]);
-
+  const [admins, setAdmins] = useState([]);
   const doughnutDataAll = {
     labels: data.map((res: any) => {
       return res.name;
@@ -105,6 +108,11 @@ function Financials() {
   };
 
   useEffect(() => {
+    async function getListOfAdmins() {
+      await getFilteredData("users", "role", "==", "admin").then((res: any) => {
+        setAdmins(res);
+      });
+    }
     function processData(transactions: any[]) {
       const monthsSet = new Set<string>();
       transactions.forEach((transaction) => {
@@ -139,14 +147,14 @@ function Financials() {
         const timestampSort = res.sort((a: any, b: any) => {
           return a.timestamp - b.timestamp;
         });
-        console.log("timestamp sort:", timestampSort);
+        // console.log("timestamp sort:", timestampSort);
         setData(processData(timestampSort));
         setCheckedoutData(
           processData(timestampSort.filter((item: any) => item.checkedOut))
         );
-        console.log("heeeaaad", checkedoutData);
+        // console.log("heeeaaad", checkedoutData);
         setOrderLoading(false);
-        console.log("res: ", res);
+        // console.log("res: ", res);
       });
     };
     if (loading) return;
@@ -155,6 +163,7 @@ function Financials() {
         router.push("/login");
       }
       fetchData();
+      getListOfAdmins();
     }
   }, [user]);
 
@@ -198,7 +207,7 @@ function Financials() {
                     <>
                       <div className="flex flex-col w-full h-full">
                         <h1 className="text-2xl font-semibold my-4">
-                          {`Total: Ksh ${addUpTotal(orders)}`}
+                          {`Total: Ksh ${formatNumber(addUpTotal(orders))}`}
                         </h1>
                         <BarChart text="All earnings" data={doughnutDataAll} />
                       </div>
@@ -208,8 +217,10 @@ function Financials() {
                     <>
                       <div className="flex flex-col w-full h-full">
                         <h1 className="text-2xl font-semibold my-4">
-                          {`Total: Ksh ${addUpTotal(
-                            orders.filter((order: any) => order.checkedOut)
+                          {`Total: Ksh ${formatNumber(
+                            addUpTotal(
+                              orders.filter((order: any) => order.checkedOut)
+                            )
                           )}`}
                         </h1>
                         <BarChart
@@ -222,11 +233,28 @@ function Financials() {
                 </Tabs>
               </div>
               <div className="my-8">
-                <RequestPaymentModal />
+                <RequestPaymentModal
+                  user={user}
+                  availableAmount={addUpTotal(
+                    orders.filter((order: any) => !order.checkedOut)
+                  )}
+                  callSnackbar={(message: string) => {
+                    setSnackbarMessage(message);
+                    setSnackbarOpen(true);
+                  }}
+                  admins={admins}
+                />
               </div>
             </div>
           )}
         </div>
+        <Snackbar
+          message={snackbarMessage}
+          isVisible={snackbarOpen}
+          onClose={() => {
+            setSnackbarOpen(false);
+          }}
+        />
       </div>
     </DefaultLayout>
   );

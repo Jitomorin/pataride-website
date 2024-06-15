@@ -29,10 +29,10 @@ const DropdownUser = () => {
       value: "Bookings",
       href: `/dashboard/bookings`,
     },
-    {
-      value: "Change password",
-      href: `/dashboard/change-password`,
-    },
+    // {
+    //   value: "Change password",
+    //   href: `/dashboard/change-password`,
+    // },
   ];
 
   // close on click outside

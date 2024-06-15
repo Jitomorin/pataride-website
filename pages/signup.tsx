@@ -234,8 +234,10 @@ function SignUp() {
               coverImageURL: "",
               phoneNumber,
             }).then((res) => {
-              addNewCart(uid).then((res) => {
-                sendEmailVerification(userCredential, {
+              console.log("created user:");
+              userCredential !== null &&
+                auth &&
+                sendEmailVerification(auth.currentUser!, {
                   handleCodeInApp: true,
                   url: "http://localhost:3000/login",
                 }).then(() => {
@@ -245,17 +247,8 @@ function SignUp() {
                   setSnackbarOpen(true);
                   logout().then(() => {
                     console.log("User logged out");
-
-                    // sendSignInLinkToEmail(auth, email, {
-                    //   handleCodeInApp: true,
-                    //   url: "http://localhost:3000/login",
-                    // }).then((res: any) => {
-                    //   console.log(res);
-                    //   router.push("/login");
-                    // });
                   });
                 });
-              });
             });
           }
         })
