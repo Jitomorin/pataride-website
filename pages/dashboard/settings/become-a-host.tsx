@@ -1,62 +1,38 @@
-import { useEffect, useState } from "react";
-import { Disclosure, Menu, Switch, Transition } from "@headlessui/react";
-import { MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/20/solid";
-import {
-  Bars3Icon,
-  BellIcon,
-  CogIcon,
-  CreditCardIcon,
-  KeyIcon,
-  SquaresPlusIcon,
-  UserCircleIcon,
-  UserIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+"use client";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import Snackbar from "@/components/Snackbar";
+import Image from "next/image";
+import { Metadata } from "next";
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import styled from "styled-components";
+import Avatar from "@/components/Avatar";
 import { useAuthContext } from "@/contexts/AuthContext";
+import Loading from "@/components/Loading";
+import { useEffect, useState } from "react";
+import {
+  deleteProfileDirectory,
+  uploadProfileImage,
+} from "@/utils/firebase/storage";
+import Snackbar from "@/components/Snackbar";
+import { updateUserProfile } from "@/utils/firebase/firestore";
 import { useRouter } from "next/router";
 import {
-  updateUserProfile,
-  updateUserProfileNoEmail,
-} from "@/utils/firebase/firestore";
-import { uploadProfileImage } from "@/utils/firebase/storage";
+  UserCircleIcon,
+  UserIcon,
+  UserPlusIcon,
+} from "@heroicons/react/20/solid";
 import { getUrl } from "@/utils/formatString";
+import { classNames } from "@/contexts/utils";
 
-const user = {
-  name: "Debbie Lewis",
-  handle: "deblewis",
-  email: "debbielewis@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=320&h=320&q=80",
-};
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Jobs", href: "#", current: false },
-  { name: "Applicants", href: "#", current: false },
-  { name: "Company", href: "#", current: false },
-];
-
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function ProfileSettings() {
+function BecomeHostPage() {
   const { user, loading }: any = useAuthContext();
+  const [IDFront, setIDFront] = useState<any>(null);
+  const [IDBack, setIDBack] = useState<any>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
-  const [profileImage, setProfileImage] = useState<any>(null);
   const [email, setEmail] = useState(!user?.email ? "" : user?.email);
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
   const [fullName, setFullName] = useState(user?.fullName);
   const [bio, setBio] = useState(user?.bio);
+  const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [t, setT] = useState(true);
   const router = useRouter();
   let subNavigation = [];
@@ -108,7 +84,7 @@ export default function ProfileSettings() {
         current: true,
       },
       {
-        name: "Host",
+        name: "Become a host",
         href: "/dashboard/settings/become-a-host",
         icon: UserPlusIcon,
         current: true,
@@ -139,59 +115,14 @@ export default function ProfileSettings() {
       // },
     ];
   }
-
   useEffect(() => {
-    if (loading) return;
-    if (!user) {
-      router.push("/login");
-    } else {
-      // useEffect function called here
-    }
+    // router.push("/dashboard/settings/profile");
   }, [user]);
-
-  const changeProfilePicture = async () => {
-    if (profileImage === null) {
-      setSnackbarMessage("Please select an image to upload");
-      setSnackbarOpen(true);
-      return;
-    }
-    const result = await uploadProfileImage(profileImage, user.uid);
-    if (result.status === "success") {
-      setSnackbarMessage("Profile picture updated successfully");
-      setSnackbarOpen(true);
-      router.reload();
-    } else {
-      setSnackbarMessage(result.message);
-      setSnackbarOpen(true);
-    }
-    router.reload();
-  };
-
-  const changeProfileDetails = async () => {
-    if (
-      user?.phoneNumber === phoneNumber &&
-      user?.fullName === fullName &&
-      user?.bio === bio
-    ) {
-      setSnackbarMessage("No changes made");
-      setSnackbarOpen(true);
-      return;
-    }
-    const result = await updateUserProfileNoEmail(
-      user.uid,
-      fullName,
-      phoneNumber,
-      bio
-    );
-    setSnackbarMessage(result.message);
-    setSnackbarOpen(true);
-    router.reload();
-  };
 
   return (
     <DefaultLayout>
       <div className="mx-auto">
-        <Breadcrumb index="Settings" pageName="Profile" />
+        <Breadcrumb pageName="Become a host" index="Settings" />
         <main className="">
           <div className="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8 lg:pb-16 rounded-lg">
             <div className="overflow-hidden rounded-lg bg-white shadow-lg">
@@ -237,69 +168,22 @@ export default function ProfileSettings() {
                   <div className="px-4 py-6 sm:p-6 lg:pb-8">
                     <div>
                       <h2 className="text-lg font-medium leading-6 text-gray-900">
-                        Profile
+                        Become a host
                       </h2>
                       <p className="mt-1 text-sm text-gray-500">
-                        This information will be displayed publicly so be wary
-                        of what you share.
+                        {user.role === "client"
+                          ? "Provide the following details and await approval."
+                          : "You are already a host."}
                       </p>
                     </div>
 
                     <div className="mt-6 flex flex-col lg:flex-row">
-                      <div className="flex-grow space-y-6">
-                        <div>
-                          <label
-                            htmlFor="username"
-                            className="block text-sm font-medium leading-6 text-gray-900"
-                          >
-                            Full Name
-                          </label>
-                          <div className="mt-2 flex rounded-md shadow-sm">
-                            <input
-                              type="text"
-                              name="fullname"
-                              id="fullname"
-                              autoComplete="fullname"
-                              className="block w-full min-w-0 flex-grow rounded-none rounded-r-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
-                              value={fullName}
-                              onChange={(e) => {
-                                setFullName(e.target.value);
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label
-                            htmlFor="about"
-                            className="block text-sm font-medium leading-6 text-gray-900"
-                          >
-                            Bio
-                          </label>
-                          <div className="mt-2">
-                            <textarea
-                              id="bio"
-                              name="bio"
-                              rows={3}
-                              className="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
-                              value={bio}
-                              onChange={(e) => {
-                                setBio(e.target.value);
-                              }}
-                            />
-                          </div>
-                          <p className="mt-2 text-sm text-gray-500">
-                            Brief description for your profile.
-                          </p>
-                        </div>
-                      </div>
-
                       <div className="mt-6 flex-grow lg:ml-6 lg:mt-0 lg:flex-shrink-0 lg:flex-grow-0">
                         <p
                           className="text-sm font-medium leading-6 text-gray-900"
                           aria-hidden="true"
                         >
-                          Photo
+                          Photo of National ID (front)
                         </p>
                         <div className="mt-2 lg:hidden">
                           <div className="flex items-center">
@@ -325,7 +209,7 @@ export default function ProfileSettings() {
                                 type="file"
                                 className="peer absolute h-full w-full rounded-md opacity-0"
                                 onChange={async (e: any) => {
-                                  setProfileImage(e.target.files[0]);
+                                  setIDFront(e.target.files[0]);
                                   console.log(e.target.files[0]);
                                 }}
                               />
@@ -335,7 +219,7 @@ export default function ProfileSettings() {
                               >
                                 <span
                                   onClick={async () => {
-                                    await changeProfilePicture();
+                                    // await changeProfilePicture();
                                   }}
                                 >
                                   Change
@@ -349,11 +233,7 @@ export default function ProfileSettings() {
                         <div className="relative hidden overflow-hidden rounded-full lg:block">
                           <img
                             className="relative h-40 w-40 rounded-full object-cover"
-                            src={
-                              user?.profileUrl === ""
-                                ? "/images/profile.png"
-                                : user?.profileUrl
-                            }
+                            src={!IDFront ? "/images/profile.png" : IDFront}
                             alt=""
                           />
                           <label
@@ -369,7 +249,7 @@ export default function ProfileSettings() {
                               accept="image/*"
                               className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
                               onChange={async (e: any) => {
-                                setProfileImage(e.target.files[0]);
+                                setIDFront(e.target.files[0]);
                                 console.log(e.target.files[0]);
                                 // await changeProfilePicture();
                               }}
@@ -385,7 +265,7 @@ export default function ProfileSettings() {
                           htmlFor="url"
                           className="block text-sm font-medium leading-6 text-gray-900"
                         >
-                          Phone Number
+                          Mpesa Number
                         </label>
                         <input
                           type="text"
@@ -402,33 +282,17 @@ export default function ProfileSettings() {
                           className="mt-2 block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-0 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
                         />
                       </div>
-
-                      {/* <div className="col-span-12 sm:col-span-6">
-                        <label
-                          htmlFor="company"
-                          className="block text-sm font-medium leading-6 text-gray-900"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="text"
-                          name="company"
-                          id="company"
-                          autoComplete="organization"
-                          className="mt-2 block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:border-0 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6"
-                        />
-                      </div> */}
                     </div>
                   </div>
 
                   {/* Privacy section */}
                   <div className="mt-4 flex justify-end gap-x-3 px-4 py-4 sm:px-6">
-                    {profileImage === null ? (
+                    {IDFront === null ? (
                       <></>
                     ) : (
                       <button
                         onClick={async () => {
-                          await changeProfilePicture();
+                          //   await changeProfilePicture();
                         }}
                         className="ml-5 inline-flex justify-center rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-primary hover:scale-[1.03] transition-all ease-in-out"
                       >
@@ -443,7 +307,7 @@ export default function ProfileSettings() {
                     </button>
                     <button
                       onClick={() => {
-                        changeProfileDetails();
+                        // changeProfileDetails();
                       }}
                       type="submit"
                       className="inline-flex justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
@@ -467,3 +331,5 @@ export default function ProfileSettings() {
     </DefaultLayout>
   );
 }
+
+export default BecomeHostPage;

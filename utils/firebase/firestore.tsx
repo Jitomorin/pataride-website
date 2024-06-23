@@ -226,6 +226,25 @@ export async function removeAllProductsFromCart(userID: string) {
 //     email: newEmail,
 //   });
 // }
+export async function getRentalsBasedOnRating() {
+  const q = query(collection(db, "rentals"));
+  const querySnapshot = await getDocs(q);
+  const data = querySnapshot.docs.map((doc: any) => doc.data());
+  return data.map((rental: any) => {
+    const reviews = rental.reviews;
+    if (reviews.length > 0) {
+      const totalRating = reviews.reduce(
+        (sum: any, review: any) => sum + review.rating,
+        0
+      );
+      const averageRating = totalRating / reviews.length;
+      return { ...rental, averageRating };
+    } else {
+      return { ...rental, averageRating: 0 };
+    }
+  });
+}
+
 export async function checkRentalAvailability(rentals: any[]) {
   let result: any;
   let data: any = [];

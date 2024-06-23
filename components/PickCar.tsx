@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Container from "./Container";
 import { useTheme } from "./Theme";
 import { getAllTopCars, getClient } from "@/sanity/lib/client";
+import { getRentalsBasedOnRating } from "@/utils/firebase/firestore";
 
 const Wrapper = styled.section<{ theme: any }>`
   padding: 10rem 0;
@@ -105,11 +106,13 @@ function PickCar() {
   useEffect(() => {
     const client = getClient();
     const fetchCars = async () => {
-      const cars: any = await getAllTopCars(client);
-      console.log("cars: ", cars);
-      setTopCarList(cars);
-      setActive(cars[0].uid);
-      coloringButton(cars[0].uid);
+      getRentalsBasedOnRating().then((res: any) => {
+        setTopCarList(res.slice(0, 5));
+        setActive(res[0].uid);
+        coloringButton(res[0].uid);
+      });
+      // const cars: any = await getAllTopCars(client);
+      // console.log("cars: ", cars);
     };
     fetchCars();
   }, []);

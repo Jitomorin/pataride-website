@@ -123,7 +123,7 @@ function PlanTrip() {
 
             <BoxContainer>
               <Box theme={theme}>
-                <Link href="/rent-now">
+                <Link href="/rentals">
                   <img src={"/images/plan/first-icon.png"} alt="icon_img" />
                 </Link>
                 {/* <img src={"/images/plan/first-icon.png"} alt="icon_img" /> */}
@@ -136,7 +136,7 @@ function PlanTrip() {
               </Box>
 
               <Box theme={theme}>
-                <Link href="/rent-now">
+                <Link href="/rentals">
                   <img src={"/images/plan/second-icon.png"} alt="icon_img" />
                 </Link>
 
@@ -150,7 +150,7 @@ function PlanTrip() {
               </Box>
 
               <Box theme={theme}>
-                <Link href="/rent-now">
+                <Link href="/rentals">
                   <img src={"/images/plan/third-icon.png"} alt="icon_img" />
                 </Link>
                 {/* <img src={"/images/plan/third-icon.png"} alt="icon_img" /> */}
