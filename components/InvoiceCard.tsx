@@ -80,14 +80,14 @@ const InvoiceCard: React.FC<InvoiceProps> = ({ booking, patarideCut }) => {
               booking.rental.price,
               booking.selectedDates.startDate,
               booking.selectedDates.endDate
-            )
+            ) + patarideCut
           )}
         </div>
       </div>
-      <div className="flex justify-end mb-8">
+      {/* <div className="flex justify-end mb-8">
         <div className="text-gray-700 mr-2">Pata-ride cut:</div>
         <div className="text-gray-700">Ksh{formatNumber(patarideCut)}</div>
-      </div>
+      </div> */}
       <div className="flex justify-end mb-8">
         <div className="text-gray-700 mr-2">Total:</div>
         <div className="text-gray-700 font-bold text-xl">

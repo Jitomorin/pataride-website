@@ -400,16 +400,16 @@ function Booking(props: any) {
                                 booking.rental.price,
                                 booking.selectedDates.startDate,
                                 booking.selectedDates.endDate
-                              )
+                              ) + patarideCut
                             )}`}
                           </dd>
                         </div>
-                        <div className="flex items-center justify-between py-4">
+                        {/* <div className="flex items-center justify-between py-4">
                           <dt className="text-gray-600">Pata-ride cut</dt>
                           <dd className="font-medium text-gray-900">{`Ksh ${formatNumber(
                             patarideCut
                           )}`}</dd>
-                        </div>
+                        </div> */}
                         {/* <div className="flex items-center justify-between py-4">
                           <dt className="text-gray-600">Tax</dt>
                           <dd className="font-medium text-gray-900">$6.16</dd>

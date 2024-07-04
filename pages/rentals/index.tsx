@@ -131,7 +131,7 @@ function RentalsPage(props: RentalProps) {
       //
     };
     fetchData();
-    checkRentalAvailability(cars).then((res: any) => {});
+    // checkRentalAvailability(cars).then((res: any) => {});
     // console.log("selected category", selectedCategory);
   }, [selectedSort, selectedCategory]);
 

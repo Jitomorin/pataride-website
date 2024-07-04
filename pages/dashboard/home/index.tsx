@@ -42,32 +42,39 @@ import {
 import { AnyAaaaRecord } from "dns";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { getDataLength, getFilteredData } from "@/utils/firebase/firestore";
+import {
+  getAllData,
+  getDataLength,
+  getFilteredData,
+} from "@/utils/firebase/firestore";
 import { useRouter } from "next/router";
+import { Button } from "@nextui-org/react";
+import AnnouncementsModal from "@/components/AnnouncementsModal";
+import { announcements } from "./temp";
 
-const announcements = [
-  {
-    id: 1,
-    title: "Office closed on July 2nd",
-    href: "#",
-    preview:
-      "Cum qui rem deleniti. Suscipit in dolor veritatis sequi aut. Vero ut earum quis deleniti. Ut a sunt eum cum ut repudiandae possimus. Nihil ex tempora neque cum consectetur dolores.",
-  },
-  {
-    id: 2,
-    title: "New password policy",
-    href: "#",
-    preview:
-      "Alias inventore ut autem optio voluptas et repellendus. Facere totam quaerat quam quo laudantium cumque eaque excepturi vel. Accusamus maxime ipsam reprehenderit rerum id repellendus rerum. Culpa cum vel natus. Est sit autem mollitia.",
-  },
-  {
-    id: 3,
-    title: "Office closed on July 2nd",
-    href: "#",
-    preview:
-      "Tenetur libero voluptatem rerum occaecati qui est molestiae exercitationem. Voluptate quisquam iure assumenda consequatur ex et recusandae. Alias consectetur voluptatibus. Accusamus a ab dicta et. Consequatur quis dignissimos voluptatem nisi.",
-  },
-];
+// const announcements = [
+//   {
+//     id: 1,
+//     title: "Office closed on July 2nd",
+//     href: "#",
+//     preview:
+//       "Cum qui rem deleniti. Suscipit in dolor veritatis sequi aut. Vero ut earum quis deleniti. Ut a sunt eum cum ut repudiandae possimus. Nihil ex tempora neque cum consectetur dolores.",
+//   },
+//   {
+//     id: 2,
+//     title: "New password policy",
+//     href: "#",
+//     preview:
+//       "Alias inventore ut autem optio voluptas et repellendus. Facere totam quaerat quam quo laudantium cumque eaque excepturi vel. Accusamus maxime ipsam reprehenderit rerum id repellendus rerum. Culpa cum vel natus. Est sit autem mollitia.",
+//   },
+//   {
+//     id: 3,
+//     title: "Office closed on July 2nd",
+//     href: "#",
+//     preview:
+//       "Tenetur libero voluptatem rerum occaecati qui est molestiae exercitationem. Voluptate quisquam iure assumenda consequatur ex et recusandae. Alias consectetur voluptatibus. Accusamus a ab dicta et. Consequatur quis dignissimos voluptatem nisi.",
+//   },
+// ];
 const actions = [
   {
     icon: TruckIcon,
@@ -103,6 +110,7 @@ function Home() {
   const { user, loading }: any = useAuthContext();
   const [rentalsLength, setRentalsLength] = useState(0);
   const [bookings, setBookings] = useState([]);
+  const [announcements, setAnnouncements]: any = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -117,6 +125,10 @@ function Home() {
 
           getDataLength("rentals", user?.uid).then((rentalsRes) => {
             setRentalsLength(rentalsRes);
+            getAllData("announcements").then((res: any) => {
+              setAnnouncements(res);
+              console.log(res);
+            });
           });
         }
       );
@@ -281,7 +293,7 @@ function Home() {
                         className="-my-5 divide-y divide-gray-200"
                       >
                         {announcements.map((announcement: any) => (
-                          <li key={announcement.id} className="py-5">
+                          <li key={announcement.uid} className="py-5">
                             <div className="relative focus-within:ring-2 focus-within:ring-cyan-500">
                               <h3 className="text-sm font-semibold text-gray-800">
                                 <a
@@ -297,7 +309,7 @@ function Home() {
                                 </a>
                               </h3>
                               <p className="mt-1 line-clamp-2 text-sm text-gray-600">
-                                {announcement.preview}
+                                {announcement.message}
                               </p>
                             </div>
                           </li>
@@ -306,7 +318,7 @@ function Home() {
                     </div>
                     <div className="mt-6">
                       <a
-                        href="#"
+                        href="/dashboard/home/announcements"
                         className="flex w-full items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white transition-all ease-in-out hover:scale-[1.03]"
                       >
                         View all
@@ -350,12 +362,17 @@ function Home() {
                                 </p>
                               </div>
                               <div>
-                                <a
-                                  href={`/dashboard/bookings/${booking.uid}`}
-                                  className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
+                                <Button
+                                  onClick={() => {
+                                    router.push(
+                                      `/dashboard/bookings/${booking.uid}`
+                                    );
+                                  }}
+                                  variant="light"
+                                  // className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
                                 >
                                   View
-                                </a>
+                                </Button>
                               </div>
                             </div>
                           </li>

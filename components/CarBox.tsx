@@ -223,9 +223,6 @@ function CarBox({ car, carID, theme }: any) {
         <ButtonContainer>
           <BookButton
             onClick={() => {
-              // setShowLinks(!showLinks);
-              // setSnackbarMessage("Feature not available yet");
-              // setSnackbarOpen(true);
               router.push(`/rentals/${car.uid}`);
             }}
             theme={theme}

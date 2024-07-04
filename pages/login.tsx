@@ -54,8 +54,8 @@ const Box = styled.div<{ theme: any }>`
     font-family: "Oswald", sans-serif;
     font-size: 38px;
   }
-  @media (max-width: 768px) {
-    width: 100%;
+  @media (max-width: 1030px) {
+    width: 90%;
   }
 `;
 const InputContainer = styled.div<{ theme: any }>`
@@ -301,7 +301,7 @@ function LogIn() {
               <p>Don't have an account?</p>
               <Link href="/signup">Sign up</Link>
             </AuthLink>
-            <OrDivider />
+            {/* <OrDivider />
             <AltSigninContianer theme={theme}>
               <div>
                 <button
@@ -349,7 +349,7 @@ function LogIn() {
                   <img src={"../images/logo/apple_icon.png"} alt="apple-icon" />
                 </button>
               </div>
-            </AltSigninContianer>
+            </AltSigninContianer> */}
           </Box>
         </SignupContainer>
         <Snackbar

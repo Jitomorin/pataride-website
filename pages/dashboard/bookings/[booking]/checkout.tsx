@@ -649,16 +649,16 @@ function BookingCheckout(props: any) {
                               booking.rental.price,
                               booking.selectedDates.startDate,
                               booking.selectedDates.endDate
-                            )
+                            ) + companyCut
                           )}`}
                         </dd>
                       </div>
-                      <div className="flex items-center justify-between">
+                      {/* <div className="flex items-center justify-between">
                         <dt className="text-lg">Pata-ride cut</dt>
                         <dd className="text-lg font-medium text-gray-900">
                           {`Ksh ${formatNumber(companyCut)}`}
                         </dd>
-                      </div>
+                      </div> */}
 
                       <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                         <dt className="text-2xl font-bold">Total</dt>

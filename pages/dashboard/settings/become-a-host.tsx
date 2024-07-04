@@ -10,10 +10,14 @@ import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
 import {
   deleteProfileDirectory,
+  uploadID,
   uploadProfileImage,
 } from "@/utils/firebase/storage";
 import Snackbar from "@/components/Snackbar";
-import { updateUserProfile } from "@/utils/firebase/firestore";
+import {
+  updateHostInformation,
+  updateUserProfile,
+} from "@/utils/firebase/firestore";
 import { useRouter } from "next/router";
 import {
   UserCircleIcon,
@@ -22,6 +26,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { getUrl } from "@/utils/formatString";
 import { classNames } from "@/contexts/utils";
+import { wait } from "@/utils/usefulFunctions";
 
 function BecomeHostPage() {
   const { user, loading }: any = useAuthContext();
@@ -30,10 +35,11 @@ function BecomeHostPage() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [email, setEmail] = useState(!user?.email ? "" : user?.email);
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
-  const [fullName, setFullName] = useState(user?.fullName);
+  const [previewFront, setPreviewFront]: any = useState();
+  const [previewBack, setPreviewBack]: any = useState();
   const [bio, setBio] = useState(user?.bio);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
-  const [t, setT] = useState(true);
+  const [isFilled, setIsFilled] = useState(false);
   const router = useRouter();
   let subNavigation = [];
   if (user?.role === "admin") {
@@ -116,8 +122,17 @@ function BecomeHostPage() {
     ];
   }
   useEffect(() => {
-    // router.push("/dashboard/settings/profile");
+    if (loading) return;
+    if (!user) {
+      router.push("/login");
+    }
   }, [user]);
+
+  const fieldCheck = () => {
+    if (IDFront && IDBack && phoneNumber) {
+      return true;
+    } else return false;
+  };
 
   return (
     <DefaultLayout>
@@ -171,7 +186,7 @@ function BecomeHostPage() {
                         Become a host
                       </h2>
                       <p className="mt-1 text-sm text-gray-500">
-                        {user.role === "client"
+                        {user?.role === "client"
                           ? "Provide the following details and await approval."
                           : "You are already a host."}
                       </p>
@@ -187,20 +202,27 @@ function BecomeHostPage() {
                         </p>
                         <div className="mt-2 lg:hidden">
                           <div className="flex items-center">
-                            <div
-                              className="inline-block h-12 w-12 flex-shrink-0 overflow-hidden rounded-full"
-                              aria-hidden="true"
-                            >
-                              <img
-                                className="h-full w-full  rounded-full"
-                                src={
-                                  user?.profileUrl === ""
-                                    ? "/images/profile.png"
-                                    : user?.profileUrl
-                                }
-                                alt=""
-                              />
-                            </div>
+                            {previewFront ? (
+                              <div
+                                className="inline-block h-12 w-12 flex-shrink-0 overflow-hidden rounded-full"
+                                aria-hidden="true"
+                              >
+                                <img
+                                  className="h-full w-full  rounded-full"
+                                  src={previewFront}
+                                  alt=""
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                className="inline-block h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gray-400"
+                                aria-hidden="true"
+                              >
+                                <h4 className="p-1 text-xs text-white">
+                                  No image selected
+                                </h4>
+                              </div>
+                            )}
 
                             <div className="relative ml-5">
                               <input
@@ -209,8 +231,18 @@ function BecomeHostPage() {
                                 type="file"
                                 className="peer absolute h-full w-full rounded-md opacity-0"
                                 onChange={async (e: any) => {
-                                  setIDFront(e.target.files[0]);
-                                  console.log(e.target.files[0]);
+                                  const file = e.target.files[0];
+                                  setIDFront(file);
+
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      setPreviewFront(reader.result);
+                                    };
+                                    reader.readAsDataURL(file);
+                                  } else {
+                                    setPreviewFront(null);
+                                  }
                                 }}
                               />
                               <label
@@ -222,7 +254,7 @@ function BecomeHostPage() {
                                     // await changeProfilePicture();
                                   }}
                                 >
-                                  Change
+                                  Set
                                 </span>
                                 <span className="sr-only"> user photo</span>
                               </label>
@@ -230,28 +262,158 @@ function BecomeHostPage() {
                           </div>
                         </div>
 
-                        <div className="relative hidden overflow-hidden rounded-full lg:block">
-                          <img
-                            className="relative h-40 w-40 rounded-full object-cover"
-                            src={!IDFront ? "/images/profile.png" : IDFront}
-                            alt=""
-                          />
+                        <div className="relative hidden overflow-hidden rounded-lg lg:block">
+                          {previewFront ? (
+                            <img
+                              className="relative h-40 w-full object-cover"
+                              src={previewFront}
+                              alt=""
+                            />
+                          ) : (
+                            <div className="relative h-40 w-full rounded-none object-cover bg-gray-400">
+                              <h1 className="p-1 text-white">
+                                No image selected
+                              </h1>
+                            </div>
+                          )}
                           <label
                             htmlFor="desktop-user-photo"
-                            className="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100"
+                            className="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100 transition-all ease-in-out"
                           >
-                            <span>Change</span>
+                            <span>Set</span>
                             <span className="sr-only"> user photo</span>
                             <input
                               type="file"
                               id="desktop-user-photo"
                               name="user-photo"
                               accept="image/*"
-                              className="absolute inset-0 h-full w-full cursor-pointer rounded-md border-gray-300 opacity-0"
+                              className="absolute inset-0 h-full w-full cursor-pointer rounded-none border-gray-300 opacity-0"
                               onChange={async (e: any) => {
-                                setIDFront(e.target.files[0]);
-                                console.log(e.target.files[0]);
-                                // await changeProfilePicture();
+                                const file = e.target.files[0];
+                                setIDFront(file);
+
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setPreviewFront(reader.result);
+                                  };
+                                  reader.readAsDataURL(file);
+                                } else {
+                                  setPreviewFront(null);
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div className="mt-6 flex-grow lg:ml-6 lg:mt-0 lg:flex-shrink-0 lg:flex-grow-0">
+                        <p
+                          className="text-sm font-medium leading-6 text-gray-900"
+                          aria-hidden="true"
+                        >
+                          Photo of National ID (back)
+                        </p>
+                        <div className="mt-2 lg:hidden">
+                          <div className="flex items-center">
+                            {previewBack ? (
+                              <div
+                                className="inline-block h-12 w-12 flex-shrink-0 overflow-hidden rounded-full"
+                                aria-hidden="true"
+                              >
+                                <img
+                                  className="h-full w-full  rounded-full"
+                                  src={previewBack}
+                                  alt=""
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                className="inline-block h-12 w-12 flex-shrink-0 overflow-hidden rounded-full bg-gray-400"
+                                aria-hidden="true"
+                              >
+                                <h4 className="p-1 text-xs text-white">
+                                  No image selected
+                                </h4>
+                              </div>
+                            )}
+
+                            <div className="relative ml-5">
+                              <input
+                                id="mobile-user-photo"
+                                name="user-photo"
+                                type="file"
+                                className="peer absolute h-full w-full rounded-md opacity-0"
+                                onChange={async (e: any) => {
+                                  const file = e.target.files[0];
+                                  setIDBack(file);
+
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      setPreviewBack(reader.result);
+                                    };
+                                    reader.readAsDataURL(file);
+                                  } else {
+                                    setPreviewBack(null);
+                                  }
+                                }}
+                              />
+                              <label
+                                htmlFor="mobile-user-photo"
+                                className="pointer-events-none block rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 peer-hover:ring-gray-400 peer-focus:ring-2 peer-focus:ring-sky-500"
+                              >
+                                <span
+                                  onClick={async () => {
+                                    // await changeProfilePicture();
+                                  }}
+                                >
+                                  Set
+                                </span>
+                                <span className="sr-only"> user photo</span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="relative hidden overflow-hidden rounded-lg lg:block">
+                          {previewBack ? (
+                            <img
+                              className="relative h-40 w-full object-cover"
+                              src={previewBack}
+                              alt=""
+                            />
+                          ) : (
+                            <div className="relative h-40 w-full rounded-none object-cover bg-gray-400">
+                              <h1 className="p-1 text-white">
+                                No image selected
+                              </h1>
+                            </div>
+                          )}
+                          <label
+                            htmlFor="desktop-user-photo"
+                            className="absolute inset-0 flex h-full w-full items-center justify-center bg-black bg-opacity-75 text-sm font-medium text-white opacity-0 focus-within:opacity-100 hover:opacity-100 transition-all ease-in-out"
+                          >
+                            <span>Set</span>
+                            <span className="sr-only"> user photo</span>
+                            <input
+                              type="file"
+                              id="desktop-user-photo"
+                              name="user-photo"
+                              accept="image/*"
+                              className="absolute inset-0 h-full w-full cursor-pointer rounded-none border-gray-300 opacity-0"
+                              onChange={async (e: any) => {
+                                const file = e.target.files[0];
+                                setIDBack(file);
+
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    setPreviewBack(reader.result);
+                                  };
+                                  reader.readAsDataURL(file);
+                                } else {
+                                  setPreviewBack(null);
+                                }
                               }}
                             />
                           </label>
@@ -287,33 +449,65 @@ function BecomeHostPage() {
 
                   {/* Privacy section */}
                   <div className="mt-4 flex justify-end gap-x-3 px-4 py-4 sm:px-6">
-                    {IDFront === null ? (
-                      <></>
-                    ) : (
-                      <button
-                        onClick={async () => {
-                          //   await changeProfilePicture();
-                        }}
-                        className="ml-5 inline-flex justify-center rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-primary hover:scale-[1.03] transition-all ease-in-out"
-                      >
-                        Save Image
-                      </button>
-                    )}
-                    <button
+                    {/* <button
+                      onClick={() => {
+                        console.log(user.hostInformation);
+                      }}
                       type="button"
                       className="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                     >
                       Cancel
-                    </button>
-                    <button
-                      onClick={() => {
-                        // changeProfileDetails();
-                      }}
-                      type="submit"
-                      className="inline-flex justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
-                    >
-                      Save
-                    </button>
+                    </button> */}
+                    {phoneNumber !== "" && IDFront && IDBack ? (
+                      <button
+                        onClick={async () => {
+                          if (fieldCheck()) {
+                            if (
+                              user?.role === "client" &&
+                              user?.hostInformation === undefined
+                            ) {
+                              setSnackbarMessage("loading...");
+                              setSnackbarOpen(true);
+                              await uploadID([IDFront, IDBack], user?.uid).then(
+                                (URLs: any) => {
+                                  updateHostInformation(
+                                    user?.uid,
+                                    URLs.front,
+                                    URLs.back,
+                                    phoneNumber
+                                  ).then(() => {
+                                    setSnackbarMessage(
+                                      "Request sent, reloading..."
+                                    );
+                                    setSnackbarOpen(true);
+                                    wait(3).then(() => {
+                                      router.reload();
+                                    });
+                                  });
+                                }
+                              );
+                            } else {
+                              setSnackbarMessage(
+                                "You have already sent a request"
+                              );
+                              setSnackbarOpen(true);
+                            }
+                          }
+                        }}
+                        type="submit"
+                        className="inline-flex justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
+                      >
+                        Send request
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        type="submit"
+                        className="inline-flex justify-center rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-all ease-in-out"
+                      >
+                        Send request
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

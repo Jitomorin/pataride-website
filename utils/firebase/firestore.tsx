@@ -579,6 +579,30 @@ export async function verifyRental(userId: string, isApproved: boolean) {
   }
 }
 
+export async function updateHostInformation(
+  userID: string,
+  frontID: string,
+  backID: string,
+  mpesaNum: any
+) {
+  const userRef = doc(db, "users", userID);
+  try {
+    await updateDoc(userRef, {
+      hostInformation: {
+        frontID,
+        backID,
+        mpesaNum,
+      },
+    });
+    return {
+      status: "success",
+      message: "Role updated successfully.",
+    };
+  } catch (error) {
+    const firebaseError = error as FirebaseError;
+    return { status: "error", message: firebaseError.message };
+  }
+}
 // Function to check if chat exists
 export async function checkIfChatExists(recieverUID: any, senderUID: any) {
   let data: any = [];

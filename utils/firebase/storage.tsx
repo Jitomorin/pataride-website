@@ -88,9 +88,28 @@ export const uploadCoverImage = async (file: any, userID: any) => {
   const storageRef = ref(storage, `${userID}/cover/${file.name}`);
   const uploadTask = await uploadBytesResumable(storageRef, file);
   const downloadURL = await getDownloadURL(uploadTask.ref);
-  console.log("File available at", downloadURL);
+  // console.log("File available at", downloadURL);
 
   return await updateUserCoverPicture(userID, downloadURL);
+};
+export const uploadID = async (files: any[], userID: any) => {
+  const storage = getStorage();
+  const downloadURLs: any = {};
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const storageRef = ref(storage, `${userID}/NationalID/${file.name}`);
+    const uploadTask = await uploadBytesResumable(storageRef, file);
+    const downloadURL = await getDownloadURL(uploadTask.ref);
+
+    // Identify front or back based on index
+    const label = i === 0 ? "front" : "back";
+    downloadURLs[label] = downloadURL;
+
+    // console.log(`File (${label}) available at`, downloadURL);
+  }
+
+  return downloadURLs;
 };
 export const deleteProfileDirectory = async (userID: any) => {
   const storage = getStorage();
