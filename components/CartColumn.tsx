@@ -40,7 +40,7 @@ export default function CartColumn({
   };
 
   const payHandler = async (event: any) => {
-    console.log("user: ", user);
+    // console.log("user: ", user);
     event.preventDefault();
     setButtonText("Processing");
 
@@ -60,10 +60,10 @@ export default function CartColumn({
         // router.push(res.data.url);
         // open link in new tab
         window.open(res.data.url, "_blank");
-        console.log("Result: ", res);
+        // console.log("Result: ", res);
       })
       .catch((error: any) => {
-        console.log(error);
+        // console.log(error);
         setButtonText("Error");
       });
   };

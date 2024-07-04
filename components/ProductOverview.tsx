@@ -29,6 +29,7 @@ import Reviews from "./Reviews";
 import { DateRangePicker } from "@nextui-org/react";
 import { createDateFromObject } from "@/utils/formatDate";
 import CustomDateRangePicker from "./CustomDateRangePicker";
+import { GetServerSideProps } from "next";
 // import Datepicker from "react-tailwindcss-datepicker";
 
 const product = {
@@ -123,8 +124,10 @@ export default function ProductOverview({
   user,
   callSnackBar,
   disabledDates,
+  patarideCut,
 }: any) {
   const [host, setHost]: any = useState({});
+
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
   const [dateValue, setDateValue] = useState({
     startDate: new Date(),
@@ -433,7 +436,7 @@ export default function ProductOverview({
                 </p>
                 <p className="text-2xl font-bold text-gray-900 mt-4">
                   {`Total: ${formatNumber(
-                    calculateTotalPrice(rental.price)
+                    calculateTotalPrice(rental.price) + patarideCut
                   )}Ksh`}
                 </p>
               </div>
@@ -539,3 +542,17 @@ export default function ProductOverview({
     </div>
   );
 }
+export const getServerSideProps: GetServerSideProps<any> = async (ctx: any) => {
+  const { draftMode = false, params = {} } = ctx;
+  // const client = getClient(draftMode ? { token: readToken } : undefined);
+  const settings: any = await getDocument("settings", "admin");
+  // console.log("Server Side Props: ", JSON.parse(JSON.stringify(cars)));
+
+  return {
+    props: {
+      settings: JSON.parse(JSON.stringify(settings)),
+      draftMode,
+      // token: draftMode ? readToken : "",
+    },
+  };
+};

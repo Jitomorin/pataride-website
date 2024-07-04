@@ -1,18 +1,26 @@
 import React, { useState } from "react";
 import Pagination from "./Pagination";
 import CarModelCardDashboard from "./CarModelCarDashboard";
+import { getDocument } from "@/utils/firebase/firestore";
 
-const RentalsGrid = (carData: any) => {
+const RentalsGrid = (props: any) => {
+  const { carData, settings }: any = props;
   const [currentPage, setCurrentPage] = useState(1);
+  const patarideCut = parseInt(settings.companyCut);
   const [data, setData] = useState(carData.carData);
-  console.log("car data:", carData);
+  console.log("car data:", settings);
   return (
     <>
       <div className="grid gap-4 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 p-10 text-center py-12 px-auto mx-auto">
         {data !== null ? (
           <>
             {data.map((car: any) => {
-              return <CarModelCardDashboard car={car} />;
+              return (
+                <CarModelCardDashboard
+                  car={car}
+                  patarideCut={settings.companyCut}
+                />
+              );
             })}
           </>
         ) : (
@@ -35,3 +43,22 @@ const RentalsGrid = (carData: any) => {
 };
 
 export default RentalsGrid;
+
+export const getServerSideProps: any = async (ctx: any) => {
+  const { params = {} } = ctx;
+  //   console.log("params", params);
+  const settings: any = await getDocument("settings", "admin");
+
+  if (!settings) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      settings: JSON.parse(JSON.stringify(settings)),
+      //   rentalSlug: rentalSlug,
+    },
+  };
+};

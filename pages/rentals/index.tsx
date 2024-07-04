@@ -9,6 +9,7 @@ import {
   getAllData,
   getAllSortedData,
   getData,
+  getDocument,
 } from "@/utils/firebase/firestore";
 import { Car } from "@/components/CarData";
 import CarModelCard from "@/components/CarModelCard";
@@ -26,24 +27,26 @@ import FilterModal from "@/components/FilterModal";
 
 export interface RentalProps {
   cars: any[];
-  bookings: any[];
+  settings: any;
 }
 const filterOptions = ["Make", "Model", "Year", "Price", "Seats", "Fuel"]; // Add more options as needed
 
 function RentalsPage(props: RentalProps) {
-  let { cars, bookings } = props;
-  const unavailableItems = bookings.filter((booking) => {
-    if (
-      isDateInRange(
-        booking.selectedDates.startDate.seconds * 1000,
-        booking.selectedDates.endDate.seconds * 1000
-      ) &&
-      booking.transaction.paid
-    ) {
-      // console.log(booking)
-      return "booking.rental.uid;";
-    }
-  });
+  let { cars, settings }: any = props;
+  const patarideCut = parseInt(settings.companyCut);
+  console.log("Yooooo", patarideCut);
+  // const unavailableItems = bookings.filter((booking) => {
+  //   if (
+  //     isDateInRange(
+  //       booking.selectedDates.startDate.seconds * 1000,
+  //       booking.selectedDates.endDate.seconds * 1000
+  //     ) &&
+  //     booking.transaction.paid
+  //   ) {
+  //     // console.log(booking)
+  //     return "booking.rental.uid;";
+  //   }
+  // });
   // console.log("unavailable rentals", unavailableItems);
   // console.log("cars", cars);
   const router = useRouter();
@@ -60,6 +63,7 @@ function RentalsPage(props: RentalProps) {
     name: "All",
     value: "all",
   });
+
   const [filter, setFilter] = useState({
     category: { value: "", label: "All", checked: true },
     make: { value: "", label: "All", checked: true },
@@ -161,7 +165,7 @@ function RentalsPage(props: RentalProps) {
                 onClick={() => {
                   console.log("caaaaaars", cars);
                   const res = cars.filter(
-                    (car) =>
+                    (car: any) =>
                       car.name.toLowerCase().includes(searchValue) ||
                       car.numberPlate.toLowerCase().includes(searchValue)
                   );
@@ -226,7 +230,7 @@ function RentalsPage(props: RentalProps) {
                   <>
                     {carData
                       .filter(
-                        (car) =>
+                        (car: any) =>
                           car.make.includes(filter.make.value) &&
                           car.fuel.includes(filter.fuelType.value) &&
                           car.category.includes(filter.category.value)
@@ -237,7 +241,12 @@ function RentalsPage(props: RentalProps) {
                         return dateB.getTime() - dateA.getTime();
                       })
                       .map((car: any) => {
-                        return <CarModelCardDashboard car={car} />;
+                        return (
+                          <CarModelCardDashboard
+                            car={car}
+                            patarideCut={settings.companyCut}
+                          />
+                        );
                       })}
                   </>
                 ) : (
@@ -264,14 +273,19 @@ function RentalsPage(props: RentalProps) {
                   <>
                     {carData
                       .filter(
-                        (car) =>
+                        (car: any) =>
                           car.make.includes(filter.make.value) &&
                           car.fuel.includes(filter.fuelType.value) &&
                           car.category.includes(filter.category.value)
                       )
                       .sort((a: any, b: any) => a.price - b.price)
                       .map((car: any) => {
-                        return <CarModelCardDashboard car={car} />;
+                        return (
+                          <CarModelCardDashboard
+                            car={car}
+                            patarideCut={settings.companyCut}
+                          />
+                        );
                       })}
                   </>
                 ) : (
@@ -298,14 +312,19 @@ function RentalsPage(props: RentalProps) {
                   <>
                     {carData
                       .filter(
-                        (car) =>
+                        (car: any) =>
                           car.make.includes(filter.make.value) &&
                           car.fuel.includes(filter.fuelType.value) &&
                           car.category.includes(filter.category.value)
                       )
                       .sort((a: any, b: any) => b.price - a.price)
                       .map((car: any) => {
-                        return <CarModelCardDashboard car={car} />;
+                        return (
+                          <CarModelCardDashboard
+                            car={car}
+                            patarideCut={settings.companyCut}
+                          />
+                        );
                       })}
                   </>
                 ) : (
@@ -342,7 +361,7 @@ export const getServerSideProps: GetServerSideProps<RentalProps> = async (
   const { draftMode = false, params = {} } = ctx;
   // const client = getClient(draftMode ? { token: readToken } : undefined);
   const cars = await getData("rentals");
-  const bookings = await getData("bookings");
+  const settings: any = await getDocument("settings", "admin");
   // console.log("Server Side Props: ", JSON.parse(JSON.stringify(cars)));
 
   if (!cars) {
@@ -354,7 +373,7 @@ export const getServerSideProps: GetServerSideProps<RentalProps> = async (
   return {
     props: {
       cars: JSON.parse(JSON.stringify(cars)),
-      bookings: JSON.parse(JSON.stringify(bookings)),
+      settings: JSON.parse(JSON.stringify(settings)),
       draftMode,
       // token: draftMode ? readToken : "",
     },

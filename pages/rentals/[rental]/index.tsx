@@ -33,8 +33,9 @@ interface Query {
 
 function Rental(props: any) {
   const { user, loading }: any = useAuthContext();
-  const { rental, bookings }: any = props;
+  const { rental, bookings, settings }: any = props;
   const router = useRouter();
+  const patarideCut = parseInt(settings.companyCut);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(true);
@@ -99,6 +100,7 @@ function Rental(props: any) {
       </Button>
       <ProductOverview
         disabledDates={disabledDates}
+        patarideCut={patarideCut}
         callSnackBar={(message: any) => {
           setSnackbarMessage(message);
           setSnackbarOpen(true);
@@ -125,6 +127,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const { params = {} } = ctx;
   //   console.log("params", params);
   const rental = await getDocument("rentals", params.rental);
+  const settings: any = await getDocument("settings", "admin");
   const bookings = await getMultipleFilteredData("bookings", [
     { field: "transaction.paid", operator: "==", value: true },
   ]);
@@ -141,6 +144,8 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
     props: {
       rental: JSON.parse(JSON.stringify(rental)),
       bookings: JSON.parse(JSON.stringify(bookings)),
+      settings: JSON.parse(JSON.stringify(settings)),
+
       //   rentalSlug: rentalSlug,
     },
   };

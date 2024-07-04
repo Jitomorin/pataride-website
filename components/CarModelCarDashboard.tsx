@@ -116,14 +116,16 @@ const Details = styled.div`
   }
 `;
 
-const CarModelCardDashboard = (car: any) => {
+const CarModelCardDashboard = (props: any) => {
   const { theme }: any = useTheme();
+  const { car, patarideCut }: any = props;
+  // console.log("urgh", patarideCut);
 
   return (
     <Wrapper theme={theme}>
-      <Link href={`/rentals/${car.car.uid}`}>
+      <Link href={`/rentals/${car.uid}`}>
         <ImageContainer>
-          {/* <img src={car.car.image[0]} alt="car_img" /> */}
+          {/* <img src={car.image[0]} alt="car_img" /> */}
           <Swiper
             className="w-[30rem] z-0 md:w-full"
             style={{
@@ -152,7 +154,7 @@ const CarModelCardDashboard = (car: any) => {
             navigation={false}
             loop={true}
           >
-            {car.car.image.map((img: any, index: any) => (
+            {car.image.map((img: any, index: any) => (
               <SwiperSlide key={index}>
                 <div className="w-full flex flex-col align-middle items-center">
                   <img key={index} src={img} alt="" />
@@ -163,7 +165,7 @@ const CarModelCardDashboard = (car: any) => {
           <Description theme={theme}>
             <PriceContainer>
               <Name>
-                <p>{car.car.name}</p>
+                <p>{car.name}</p>
               </Name>
             </PriceContainer>
             <Details>
@@ -182,7 +184,7 @@ const CarModelCardDashboard = (car: any) => {
                     d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
                   />
                 </svg>
-                <p>{car.car.make}</p>
+                <p>{car.make}</p>
               </span>
               <span className="flex space-x-2" style={{ textAlign: "left" }}>
                 <svg
@@ -199,7 +201,7 @@ const CarModelCardDashboard = (car: any) => {
                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
                   />
                 </svg>
-                <p>{car.car.year}</p>
+                <p>{car.year}</p>
               </span>
               <span className="flex space-x-2">
                 <svg
@@ -216,11 +218,11 @@ const CarModelCardDashboard = (car: any) => {
                     d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
                   />
                 </svg>
-                <p>{`${car.car.seats} seats`}</p>
+                <p>{`${car.seats} seats`}</p>
               </span>
               <span className="flex space-x-2" style={{ textAlign: "left" }}>
                 <FontAwesomeIcon width={16} height={16} icon={faGasPump} />
-                <p>{car.car.fuel}</p>
+                <p>{car.fuel}</p>
               </span>
               <span className="flex space-x-2" style={{ textAlign: "left" }}>
                 <svg
@@ -243,10 +245,10 @@ const CarModelCardDashboard = (car: any) => {
                   />
                 </svg>
 
-                <p>{`${car.car.location.addressLine1}, ${car.car.location.addressLine2}`}</p>
+                <p>{`${car.location.addressLine1}, ${car.location.addressLine2}`}</p>
               </span>
 
-              {car.car.availability.toString() === "true" ? (
+              {car.availability.toString() === "true" ? (
                 <div className="mt-8 inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xl font-semibold text-green-700 ring-1 ring-inset ring-green-600/20">
                   Available
                 </div>
@@ -257,12 +259,14 @@ const CarModelCardDashboard = (car: any) => {
               )}
 
               <Price>
-                <h4>{`Ksh${formatNumber(car.car.price)}`}</h4>
+                <h4>{`Ksh${formatNumber(
+                  car.price + parseInt(patarideCut)
+                )}`}</h4>
                 <p>/per day</p>
               </Price>
             </Details>
             {/* <Button>
-            <Link href={`/rentals/${car.car.uid}`}>Book Ride</Link>
+            <Link href={`/rentals/${car.uid}`}>Book Ride</Link>
 
           </Button> */}
           </Description>
