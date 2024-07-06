@@ -144,7 +144,7 @@ function Hero() {
 
                 
               </div> */}
-              <HeroButton name={"Browse cars"} link="/rent-now" />
+              <HeroButton name={"Browse cars"} link="/rentals" />
             </HeroText>
 
             {/* NextImage */}
