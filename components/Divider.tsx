@@ -10,7 +10,7 @@ const Divider = styled.div`
   margin-right: auto;
   margin-top: 3rem;
   margin-bottom: 3rem;
-  background-color: white;
+  background-color: #a0a0a0;
 `;
 
 export default Divider;

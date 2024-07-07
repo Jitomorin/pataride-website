@@ -17,7 +17,7 @@ export default function StickySocialMediaBar() {
     async function fetchLinks() {
       const client = getClient();
       const res: any = await getAllLinks(client);
-      console.log("Links: ", res);
+      // console.log("Links: ", res);
       setLinks(res);
     }
     fetchLinks();
@@ -35,7 +35,7 @@ export default function StickySocialMediaBar() {
     };
   }, []);
   return (
-    <Wrapper>
+    <Wrapper theme={theme}>
       <ShareBar>
         <SocialmediaLink>
           {links[0]?.linkedin && (
@@ -55,7 +55,15 @@ export default function StickySocialMediaBar() {
                 height={isMobile ? 45 : 30}
               />
             )} */}
-              <LinkedinIcon size={isMobile ? 40 : 30} round={true} />
+              {/* <LinkedinIcon size={isMobile ? 40 : 30} round={true} /> */}
+              <img
+                src={
+                  theme === "light" ? "/linkedin.svg" : "/linkedin-white.svg"
+                }
+                alt="LinkedIn Link"
+                width={isMobile ? 30 : 25}
+                height={isMobile ? 30 : 25}
+              />
             </Link>
           )}
         </SocialmediaLink>
@@ -64,10 +72,12 @@ export default function StickySocialMediaBar() {
             <Link target="_blank" href={links[0]?.instagram} passHref>
               {/* <TwitterIcon size={50} round={true} /> */}
               <img
-                src="/instagram_logo.webp"
+                src={
+                  theme === "light" ? "/instagram.svg" : "/instagram-white.svg"
+                }
                 alt="Instagram Link"
-                width={isMobile ? 50 : 45}
-                height={isMobile ? 50 : 45}
+                width={isMobile ? 30 : 25}
+                height={isMobile ? 30 : 25}
               />
               {/* {theme === "light" ? (
               <img
@@ -105,34 +115,14 @@ export default function StickySocialMediaBar() {
                 height={isMobile ? 45 : 30}
               />
             )} */}
-              <FacebookIcon size={isMobile ? 40 : 30} round={true} />
-            </Link>
-          )}
-        </SocialmediaLink>
-        <SocialmediaLink>
-          {links[0]?.whatsapp && (
-            <Link target="_blank" href="#" passHref>
-              {/* <TwitterIcon size={50} round={true} /> */}
-              {/* {theme === "light" ? (
+              {/* <FacebookIcon size={isMobile ? 40 : 30} round={true} /> */}
               <img
-                src="/whatsapp-icon.png"
-                alt="Whatsapp Link"
-                width={isMobile ? 45 : 30}
-                height={isMobile ? 45 : 30}
-              />
-            ) : (
-              <img
-                src="/whatsapp-icon-white.png"
-                alt="Whatsapp Link"
-                width={isMobile ? 45 : 30}
-                height={isMobile ? 45 : 30}
-              />
-            )} */}
-              <img
-                src="/whatsapp_logo.webp"
-                alt="Whatsapp Link"
-                width={isMobile ? 50 : 45}
-                height={isMobile ? 50 : 45}
+                src={
+                  theme === "light" ? "/facebook.svg" : "/facebook-white.svg"
+                }
+                alt="Faceboook Link"
+                width={isMobile ? 30 : 25}
+                height={isMobile ? 30 : 25}
               />
             </Link>
           )}
@@ -141,13 +131,21 @@ export default function StickySocialMediaBar() {
     </Wrapper>
   );
 }
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ theme: any }>`
   position: fixed;
   bottom: 0;
   right: 0;
   transform: translateY(-20%);
   margin-right: 1rem;
   z-index: 1000;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 15px;
+  background-color: ${(props: any) =>
+    props.theme === "light" ? "rgba(255, 255, 255, 0.8)" : "transparent"};
+  backdrop-filter: blur(10px);
   ${media("<tablet")} {
     display: none;
   }
@@ -162,7 +160,7 @@ const SocialmediaLink = styled.div`
   cursor: pointer;
   padding: 0, 0.9rem;
   transition: ease-in-out 0.3s;
-
+  margin-bottom: 2rem;
   &:hover {
     scale: 1.2;
     transition: ease-in-out 0.3s;

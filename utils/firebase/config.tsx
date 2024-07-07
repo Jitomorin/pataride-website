@@ -8,6 +8,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -24,6 +25,7 @@ let firebase_app =
 export const auth = getAuth(firebase_app);
 export const db = getFirestore(firebase_app);
 export const storage = getStorage(firebase_app);
+// export const messaging = getMessaging(firebase_app);
 export const firebaseAuthErrors = [
   {
     code: "auth/invalid-email",

@@ -1,15 +1,15 @@
-import { carMakes } from "@/components/CarData";
-import HeroPages from "@/components/HeroPages";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { addRental } from "@/utils/firebase/firestore";
-import { uploadRentalImage } from "@/utils/firebase/storage";
+import { carMakes } from "../components/CarData";
+import HeroPages from "../components/HeroPages";
+import { useAuthContext } from "../contexts/AuthContext";
+import { addRental } from "../utils/firebase/firestore";
+import { uploadRentalImage } from "../utils/firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import React from "react";
-import Snackbar from "@/components/Snackbar";
+import Snackbar from "../components/Snackbar";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useTheme } from "@/components/Theme";
-import Container from "@/components/Container";
+import { useTheme } from "../components/Theme";
+import Container from "../components/Container";
 
 const Wrapper = styled.section<{ theme: any }>`
   background-color: ${(props) =>
@@ -20,13 +20,13 @@ const EnlistForm = styled.div<{ theme: any }>`
   flex-direction: column;
   padding-top: 5rem;
   padding-bottom: 5rem;
-   margin 0 20rem;
+  margin: 0 0;
   form {
     display: flex;
     flex-direction: column;
   }
   form label {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: ${(props) => (props.theme === "light" ? "#000" : "#fff")};
@@ -40,7 +40,7 @@ const EnlistForm = styled.div<{ theme: any }>`
     color: ${(props) => (props.theme === "light" ? "#272a2c" : "#fff")};
     padding: 19px 30px 19px 30px;
     border-radius: 10px;
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     border: none;
     outline: none;
     margin-bottom: 2.3rem;
@@ -53,7 +53,7 @@ const EnlistForm = styled.div<{ theme: any }>`
     color: ${(props) => (props.theme === "light" ? "#6E747C" : "#6E747C")};
     padding: 19px 30px 19px 30px;
     border-radius: 10px;
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     border: none;
     outline: none;
     margin-bottom: 2.3rem;
@@ -64,35 +64,28 @@ const EnlistForm = styled.div<{ theme: any }>`
     border-radius: 10px;
     height: 18rem;
     padding: 19px 30px 19px 30px;
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     border: none;
     outline: none;
     margin-bottom: 2.5rem;
     color: ${(props) => (props.theme === "light" ? "#272a2c" : "#fff")};
   }
-  form button {
-    background-color: #f8d521;
-    padding: 1.8rem 3rem;
-    border-radius: 10px;
-    /* box-shadow: 0 10px 15px 0 rgba(255, 83, 48, 0.35); */
-    transition: all 0.3s;
-    font-family: "Poppins", sans-serif;
-    /* border: 2px solid #ff4d30; */
-    color: white;
-    font-size: 1.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: ease-in-out 0.2s;
-  }
+
   form button:hover {
     scale: 1.02;
   } /*# sourceMappingURL=styles.css.map */
   @media (max-width: 768px) {
-    margin 0 2rem;
+    margin: 0 2rem;
   }
 `;
 
-const RegisterCar = () => {
+const RegisterCarForm = ({
+  setOpen,
+  cancelButtonRef,
+}: {
+  setOpen: any;
+  cancelButtonRef: any;
+}) => {
   const { user }: any = useAuthContext();
   const router = useRouter();
   const { theme }: any = useTheme();
@@ -100,7 +93,7 @@ const RegisterCar = () => {
   const [carMake, setCarMake] = React.useState("Toyota");
   const [carModel, setCarModel] = React.useState("");
   const [carYear, setCarYear] = React.useState(2010);
-  const [carPrice, setCarPrice] = React.useState("");
+  const [carPrice, setCarPrice] = React.useState(0);
   const [carNumberPlate, setCarNumberPlate] = React.useState("");
   const [carSeats, setCarSeats] = React.useState(5);
   const [carFuel, setCarFuel] = React.useState("Diesel");
@@ -122,7 +115,7 @@ const RegisterCar = () => {
     setCarMake("Toyota");
     setCarModel("");
     setCarYear(2010);
-    setCarPrice("");
+    setCarPrice(0);
     setCarSeats(5);
     setCarFuel("Diesel");
     setCarDescription("");
@@ -132,7 +125,7 @@ const RegisterCar = () => {
     return carName !== "";
   };
   const carPriceCheck = () => {
-    return carPrice !== "";
+    return carPrice !== 0;
   };
   const carNumberPlateCheck = () => {
     return carNumberPlate !== "";
@@ -171,7 +164,7 @@ const RegisterCar = () => {
       console.log("All fields are filled");
       const rentalUid = uuidv4();
       setLoading(true);
-      await uploadRentalImage(carImage!, rentalUid, {
+      await uploadRentalImage(user?.uid, carImage!, rentalUid, {
         carName,
         carPrice,
         carModel,
@@ -184,7 +177,9 @@ const RegisterCar = () => {
       }).then((res) => {
         if (res) {
           setLoading(false);
-          setSnackbarMessage("Car registered successfully");
+          setSnackbarMessage(
+            "Car registered successfully, Wait for approval before your car is listed"
+          );
           setSnackbarOpen(true);
           // clearFields();
         } else {
@@ -201,9 +196,9 @@ const RegisterCar = () => {
 
   return (
     <>
-      <Wrapper theme={theme}>
-        <HeroPages name="Cars" />
-        <Container>
+      <Wrapper theme={"light"}>
+        {/* <HeroPages name="Cars" /> */}
+        <div>
           <EnlistForm theme={theme}>
             <form
               onSubmit={(e) => {
@@ -438,17 +433,36 @@ const RegisterCar = () => {
                 }}
                 placeholder="Write your description here"
               ></textarea>
+              <div className="bg-gray-50 w-full  px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button
+                  className="mt-3 inline-flex lg:ml-4  w-full justify-center rounded-md bg-[#F8D521] px-3 py-2 text-sm font-semibold text-white shadow-sm  transition-all ease-in-out  hover:scale-105 sm:mt-0 sm:w-auto"
+                  onClick={async () => {
+                    await registerCar();
+                  }}
+                >
+                  {loading ? "Loading..." : "Register Car"}
+                </button>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition-all ease-in-out ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                  onClick={() => setOpen(false)}
+                  ref={cancelButtonRef}
+                >
+                  Cancel
+                </button>
+              </div>
 
-              <button
+              {/* <button
+                className="save-button"
                 onClick={() => {
                   registerCar();
                 }}
               >
                 {loading ? "Loading..." : "Register Car"}
-              </button>
+              </button> */}
             </form>
           </EnlistForm>
-        </Container>
+        </div>
         <Snackbar
           message={snackbarMessage}
           isVisible={snackbarOpen}
@@ -461,4 +475,4 @@ const RegisterCar = () => {
   );
 };
 
-export default RegisterCar;
+export default RegisterCarForm;

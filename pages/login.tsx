@@ -10,11 +10,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/router";
-import { login } from "@/utils/firebase/authentication";
+import { login, logout } from "@/utils/firebase/authentication";
 import Snackbar from "@/components/Snackbar";
 import { useTheme } from "@/components/Theme";
 import styled from "styled-components";
-import { firebaseAuthErrors } from "@/utils/firebase/config";
+import { auth, firebaseAuthErrors } from "@/utils/firebase/config";
+import { sendEmailVerification } from "firebase/auth";
 
 const Wrapper = styled.section<{ theme: any }>`
   background-color: ${(props) =>
@@ -53,8 +54,8 @@ const Box = styled.div<{ theme: any }>`
     font-family: "Oswald", sans-serif;
     font-size: 38px;
   }
-  @media (max-width: 768px) {
-    width: 100%;
+  @media (max-width: 1030px) {
+    width: 90%;
   }
 `;
 const InputContainer = styled.div<{ theme: any }>`
@@ -171,6 +172,9 @@ function LogIn() {
     const hasLetter = /[a-z]/i.test(password);
     return password.length >= 6 && hasUpperCase && hasNumber && hasLetter;
   };
+  const refreshPage = () => {
+    router.reload();
+  };
 
   const isFormValid = () => {
     if (!emailCheck() && !passwordCheck()) {
@@ -187,31 +191,50 @@ function LogIn() {
       setSnackbarOpen(true);
       return;
     } else {
-      login(email, password)
-        .then((userCredential: any) => {
-          if (userCredential) {
-            const user = userCredential.user;
-            console.log(user);
-            router.push("/");
-          } else {
-            // console.log("error:", userCredential);
-            // setSnackbarMessage("Error logging in");
-            // setSnackbarOpen(true);
-          }
-        })
-        .catch((error) => {
-          console.log("error:", error.code);
-          firebaseAuthErrors
-            .filter((doc) => doc?.code === error.code)
-            .map((doc) => {
-              setSnackbarMessage(doc?.message);
-              setSnackbarOpen(true);
-            });
-        });
+      if (user != null) {
+        setSnackbarMessage("You are already logged in");
+        setSnackbarOpen(true);
+      } else {
+        login(email, password)
+          .then((userCredential: any) => {
+            if (userCredential) {
+              if (userCredential.user.emailVerified) {
+                const user = userCredential.user;
+                console.log(user);
+                router.push("/");
+                return;
+              } else {
+                setSnackbarMessage("Please verify your email to login");
+                setSnackbarOpen(true);
+                logout().then(() => {
+                  refreshPage();
+                });
+              }
+            } else {
+              // console.log("error:", userCredential);
+              // setSnackbarMessage("Error logging in");
+              // setSnackbarOpen(true);
+            }
+          })
+          .catch((error) => {
+            console.log("error:", error.code);
+            firebaseAuthErrors
+              .filter((doc) => doc?.code === error.code)
+              .map((doc) => {
+                setSnackbarMessage(doc?.message);
+                setSnackbarOpen(true);
+              });
+          });
+      }
     }
   };
 
   useEffect(() => {
+    // wait 5 seconds
+    // setTimeout(() => {
+    //   console.log("5 seconds have passed");
+    // }, 5000);
+
     if (user != null) router.push("/");
   }, [user]);
 
@@ -278,7 +301,7 @@ function LogIn() {
               <p>Don't have an account?</p>
               <Link href="/signup">Sign up</Link>
             </AuthLink>
-            <OrDivider />
+            {/* <OrDivider />
             <AltSigninContianer theme={theme}>
               <div>
                 <button
@@ -326,7 +349,7 @@ function LogIn() {
                   <img src={"../images/logo/apple_icon.png"} alt="apple-icon" />
                 </button>
               </div>
-            </AltSigninContianer>
+            </AltSigninContianer> */}
           </Box>
         </SignupContainer>
         <Snackbar

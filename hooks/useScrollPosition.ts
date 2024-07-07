@@ -1,17 +1,19 @@
-import { useScrollPosition as originalUseScrollPosition } from '@n8tb1t/use-scroll-position';
+"use client";
+import React, { useState, useEffect } from "react";
 
-declare type ElementRef = React.MutableRefObject<HTMLElement | undefined>;
+export const useScrollPosition = () => {
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-type Axis = { x: number; y: number };
-export type ScrollPositionEffectProps = { prevPos: Axis; currPos: Axis };
+  useEffect(() => {
+    const updatePosition = () => {
+      setScrollPosition(window.scrollY);
+      // console.log(window.scrollY);
+    };
 
-export function useScrollPosition(
-  effect: (props: ScrollPositionEffectProps) => void,
-  deps?: React.DependencyList | undefined,
-  element?: ElementRef | undefined,
-  useWindow?: boolean | undefined,
-  wait?: number | undefined,
-  boundingElement?: ElementRef | undefined,
-) {
-  return originalUseScrollPosition(effect, deps, element, useWindow, wait, boundingElement);
-}
+    window.addEventListener("scroll", updatePosition);
+    updatePosition();
+    return () => window.removeEventListener("scroll", updatePosition);
+  }, []);
+
+  return scrollPosition;
+};

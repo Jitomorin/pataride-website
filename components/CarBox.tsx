@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Tooltip from "./Tooltip";
 import NextImage from "next/image";
 import { getAllLinks, getClient } from "@/sanity/lib/client";
+import { formatNumber } from "@/utils/formatNumber";
+import { useRouter } from "next/router";
 
 const Spinner = styled.div`
   @keyframes rotation {
@@ -116,8 +118,9 @@ const Table = styled.div<{ theme: any }>`
 `;
 const BookButton = styled.div<{ theme: any }>`
   background-color: #f8d521;
-  padding: 1.8rem 1rem;
-  border-radius: 0.3rem;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 2rem auto;
   transition: all 0.3s;
   font-size: 1.8rem;
   color: white;
@@ -157,12 +160,13 @@ function CarBox({ car, carID, theme }: any) {
   const [carLoad, setCarLoad] = useState(true);
   const [showLinks, setShowLinks] = useState(false);
   const [links, setLinks] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchLinks() {
       const client = getClient();
       const res: any = await getAllLinks(client);
-      console.log("Links: ", res);
+      // console.log("Links: ", res);
       setLinks(res);
     }
     fetchLinks();
@@ -175,7 +179,7 @@ function CarBox({ car, carID, theme }: any) {
         {carLoad && <Spinner />}
         <img
           style={{ display: carLoad ? "none" : "block" }}
-          src={urlForImage(car.image?.asset?._ref).url()}
+          src={car.image[0]}
           alt="car_img"
           onLoad={() => setCarLoad(false)}
         />
@@ -183,7 +187,7 @@ function CarBox({ car, carID, theme }: any) {
       {/* description */}
       <Description>
         <Price theme={theme}>
-          <span>Ksh{car.price}</span>/ per day
+          <span>Ksh{formatNumber(car.price)}</span>/ per day
         </Price>
         <Table theme={theme}>
           <Column>
@@ -217,40 +221,9 @@ function CarBox({ car, carID, theme }: any) {
         </Table>
         {/* btn cta */}
         <ButtonContainer>
-          <LinkContainer show={showLinks}>
-            {links[0]?.bookWhatsapp && (
-              <Tooltip text="Whatsapp us to hire a car">
-                <BookLink target="_blank" href={links[0]?.bookWhatsapp}>
-                  <NextImage
-                    src="/whatsapp_logo.webp"
-                    alt="Whatsapp Link"
-                    width={50}
-                    height={50}
-                  />
-                </BookLink>
-              </Tooltip>
-            )}
-            {links[0]?.bookEmail && (
-              <Tooltip text="Email us to hire a car">
-                <BookLink
-                  target="_blank"
-                  href={`mailto:${links[0]?.bookEmail}`}
-                >
-                  <NextImage
-                    src="/email-icon.webp"
-                    alt="Whatsapp Link"
-                    width={45}
-                    height={45}
-                  />
-                </BookLink>
-              </Tooltip>
-            )}
-          </LinkContainer>
           <BookButton
             onClick={() => {
-              setShowLinks(!showLinks);
-              // setSnackbarMessage("Feature not available yet");
-              // setSnackbarOpen(true);
+              router.push(`/rentals/${car.uid}`);
             }}
             theme={theme}
           >

@@ -6,6 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Divider from "../Divider";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "next/router";
+import { QueueListIcon } from "@heroicons/react/24/outline";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -14,9 +17,10 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
-
+  const { user, loading }: any = useAuthContext();
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
+  const router = useRouter();
 
   let storedSidebarExpanded = "true";
 
@@ -26,6 +30,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   // close on click outside
   useEffect(() => {
+    if (loading === false) {
+      if (!user) {
+        router.push("/login");
+      }
+    }
     const clickHandler = ({ target }: MouseEvent) => {
       if (!sidebar.current || !trigger.current) return;
       if (
@@ -119,19 +128,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <Link
                         href="/dashboard/home"
-                        className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
+                        className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
                           (pathname === "/" || pathname!.includes("home")) &&
                           "bg-[#F8D521] dark:bg-meta-4"
                         }`}
                       >
-                        <Image
-                          width={18}
-                          height={18}
-                          src={"/images/logo/dashboard_logo.svg"}
-                          alt="logo-img"
-                          priority
-                        />
-                        Dashboard
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#fff"
+                          className="size-8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                          />
+                        </svg>
+                        Home
                         {/* <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current text-white ${
                             open && "rotate-180"
@@ -162,9 +178,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item rental --> */}
               <li>
                 <Link
-                  href="/dashboard/rentals"
-                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                    pathname!.includes("rentals") &&
+                  href="/rentals"
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                    pathname!.includes("/rentals") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
@@ -183,130 +199,132 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <Link
-                  href="/dashboard/bookings"
-                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                    pathname!.includes("bookings") &&
+                  href="/dashboard/bookings/all-bookings"
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                    pathname!.includes("/dashboard/bookings/") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/booking_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 22 22"
+                    strokeWidth={1.5}
+                    stroke="#ffffff"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
+                    />
+                  </svg>
                   Bookings
                 </Link>
               </li>
+              {user?.role !== "client" && (
+                <li>
+                  <Link
+                    href="/dashboard/orders"
+                    className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                      pathname!.includes("/dashboard/orders") &&
+                      "bg-[#F8D521] dark:bg-meta-4"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 22 22"
+                      strokeWidth={1.5}
+                      stroke="#fff"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"
+                      />
+                    </svg>
+                    Orders
+                  </Link>
+                </li>
+              )}
               {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Forms --> */}
-              <SidebarLinkGroup
-                activeCondition={
-                  pathname === "/forms" || pathname!.includes("forms")
-                }
-              >
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <Link
-                        href="#"
-                        className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                          (pathname === "/forms" ||
-                            pathname!.includes("forms")) &&
-                          "bg-[#F8D521] dark:bg-meta-4"
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                        <Image
-                          width={18}
-                          height={18}
-                          src={"/images/logo/bell_logo.svg"}
-                          alt="logo-img"
-                          priority
-                        />
-                        Notifications
-                        <svg
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current text-white ${
-                            open && "rotate-180"
-                          }`}
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                            fill=""
-                          />
-                        </svg>
-                      </Link>
-                      {/* <!-- Dropdown Menu Start --> */}
-                      <div
-                        className={`translate transform overflow-hidden ${
-                          !open && "hidden"
-                        }`}
-                      >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
-                          <li>
-                            <Link
-                              href="/forms/form-elements"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-[#F8D521] ${
-                                pathname === "/forms/form-elements" &&
-                                "text-[#F8D521]"
-                              }`}
-                            >
-                              Form Elements
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/forms/form-layout"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-white duration-300 ease-in-out hover:text-[#F8D521] ${
-                                pathname === "/forms/form-layout" &&
-                                "text-[#F8D521]"
-                              } `}
-                            >
-                              Form Layout
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* <!-- Dropdown Menu End --> */}
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>
-              {/* <!-- Menu Item Forms --> */}
-
-              {/* <!-- Menu Item Tables --> */}
               <li>
                 <Link
-                  href="/dashboard/settings"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                    pathname!.includes("settings") &&
+                  href={`/dashboard/chats`}
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                    pathname!.includes("chats") && "bg-[#F8D521] "
+                  }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="#fff"
+                    className="w-7 h-7"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z"
+                    />
+                  </svg>
+                  Messages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/dashboard/profile/${user?.uid}`}
+                  className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                    pathname!.includes("/dashboard/profile/") &&
                     "bg-[#F8D521] dark:bg-meta-4"
                   }`}
                 >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/settings_logo.svg"}
-                    alt="logo-img"
-                    priority
-                  />
-                  Settings
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 22 22"
+                    strokeWidth={1.5}
+                    stroke="#ffffff"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
+                  Profile
                 </Link>
               </li>
+              {user?.role === "admin" && (
+                <li>
+                  <Link
+                    href={`/dashboard/admin/users`}
+                    className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                      pathname!.includes("/dashboard/admin/") &&
+                      "bg-[#F8D521] dark:bg-meta-4"
+                    }`}
+                  >
+                    <Image
+                      width={18}
+                      height={18}
+                      src={"/images/logo/user_logo.svg"}
+                      alt="logo-img"
+                      priority
+                    />
+                    Admin
+                  </Link>
+                </li>
+              )}
+              {/* <!-- Menu Item Forms --> */}
+
+              {/* <!-- Menu Item Tables --> */}
+
               {/* <!-- Menu Item Tables --> */}
 
               {/* <!-- Menu Item Settings --> */}
@@ -314,38 +332,64 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
-
-          {/* <!-- Others Group --> */}
-          <div>
-            <Divider />
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-white">
-              Payment
-            </h3>
-
-            <ul className="mb-6 flex flex-col gap-1.5">
-              {/* <!-- Menu Item Chart --> */}
-              <li>
-                <Link
-                  href="/chart"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-white duration-300 ease-in-out hover:bg-[#F8D521] dark:hover:bg-meta-4 ${
-                    pathname!.includes("chart") && "bg-[#F8D521] dark:bg-meta-4"
-                  }`}
+          <ul className="mb-6 flex flex-col gap-1.5 border-t border-gray-500 py-4">
+            <li>
+              <Link
+                href="/dashboard/settings"
+                className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                  pathname!.includes("settings") &&
+                  "bg-[#F8D521] dark:bg-meta-4"
+                }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="#fff"
+                  className="w-6 h-6"
                 >
-                  <Image
-                    width={18}
-                    height={18}
-                    src={"/images/logo/payment_logo.svg"}
-                    alt="logo-img"
-                    priority
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
                   />
-                  Payment Details
-                </Link>
-              </li>
-              {/* <!-- Menu Item Chart --> */}
-
-              {/* <!-- Menu Item Auth Pages --> */}
-            </ul>
-          </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                Settings
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/dashboard/financials"
+                className={`group relative flex items-center gap-2.5 rounded-md px-4 py-3 font-medium text-white duration-300 ease-in-out hover:bg-[#f8d42157] dark:hover:bg-meta-4 ${
+                  pathname!.includes("/dashboard/financials") &&
+                  "bg-[#F8D521] dark:bg-meta-4"
+                }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="#fff"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
+                  />
+                </svg>
+                Financials
+              </Link>
+            </li>
+          </ul>
+          {/* <!-- Others Group --> */}
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

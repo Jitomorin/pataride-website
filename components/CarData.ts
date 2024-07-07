@@ -11,6 +11,60 @@ export interface Car {
   transmission: string;
   fuel: string;
 }
+export const carFeatures: string[] = [
+  "Air Conditioning",
+  "Bluetooth Connectivity",
+  "GPS Navigation System",
+  "Automatic Transmission",
+  "Manual Transmission",
+  "Cruise Control",
+  "Parking Sensors",
+  "Backup Camera",
+  "Leather Seats",
+  "Heated Seats",
+  "Sunroof/Moonroof",
+  "Keyless Entry",
+  "Remote Start",
+  "USB Port",
+  "Auxiliary Input",
+  "Satellite Radio",
+  "Apple CarPlay",
+  "Android Auto",
+  "Hybrid/Electric",
+  "Four-Wheel Drive (4WD)",
+  "All-Wheel Drive (AWD)",
+  "Convertible",
+  "Towing Package",
+  "Child Safety Locks",
+  "Collision Avoidance System",
+  "Lane Departure Warning",
+  "Blind Spot Monitoring",
+  "Adaptive Cruise Control",
+  "Rear Cross-Traffic Alert",
+  "Wi-Fi Hotspot",
+  "Wireless Phone Charging",
+  "Premium Sound System",
+  "Multi-Zone Climate Control",
+  "Power Liftgate",
+  "Rain-Sensing Wipers",
+  "Heated Steering Wheel",
+  "Ventilated Seats",
+  "Smartphone Integration",
+  "Rear Seat Entertainment System",
+  "Third-Row Seating",
+  "Fold-Flat Seats",
+  "Cargo Space",
+  "Roof Rails",
+  "Tinted Windows",
+  "Sport Package",
+  "Performance Upgrades",
+  "Custom Wheels",
+  "Extended Warranty",
+  "Roadside Assistance",
+  "Rental Insurance",
+  "Unlimited Mileage",
+  "24/7 Customer Support",
+];
 
 export const carMakes = [
   { id: "toyota", name: "Toyota" },
@@ -27,6 +81,11 @@ export const carMakes = [
   { id: "mercedes-benz", name: "Mercedes-Benz" },
   { id: "bmw", name: "BMW" },
   // add more car makes as needed
+];
+export const carCategories = [
+  { id: "executives", name: "Excecutives" },
+  { id: "movers", name: "Movers" },
+  { id: "tours", name: "Tours" },
 ];
 
 export const CAR_DATA = [

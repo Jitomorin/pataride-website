@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Container from "./Container";
 import { useTheme } from "./Theme";
 import { getAllTopCars, getClient } from "@/sanity/lib/client";
+import { getRentalsBasedOnRating } from "@/utils/firebase/firestore";
 
 const Wrapper = styled.section<{ theme: any }>`
   padding: 10rem 0;
@@ -85,7 +86,7 @@ const PickBoxButton = styled.button<{ theme: any; active: boolean }>`
 function PickCar() {
   const [active, setActive] = useState("");
   const [colorBtn, setColorBtn] = useState("");
-  const [topCarList, setTopCarList] = useState([]);
+  const [topCarList, setTopCarList]: any = useState([]);
   const { theme }: any = useTheme();
 
   const btnID = (id: any) => {
@@ -95,13 +96,23 @@ function PickCar() {
   const coloringButton = (id: any) => {
     return colorBtn !== id;
   };
+  const isActive = (uid: string) => {
+    if (active !== uid) {
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     const client = getClient();
     const fetchCars = async () => {
-      const cars: any = await getAllTopCars(client);
-      console.log("cars: ", cars);
-      setTopCarList(cars);
+      getRentalsBasedOnRating().then((res: any) => {
+        setTopCarList(res.slice(0, 5));
+        setActive(res[0].uid);
+        coloringButton(res[0].uid);
+      });
+      // const cars: any = await getAllTopCars(client);
+      // console.log("cars: ", cars);
     };
     fetchCars();
   }, []);
@@ -122,10 +133,10 @@ function PickCar() {
             <CarContent>
               {/* pick car */}
               <PickBox theme={theme}>
-                {topCarList.map((car: any, id) => (
+                {topCarList.map((car: any, id: any) => (
                   <PickBoxButton
                     theme={theme}
-                    active={coloringButton(car.uid)}
+                    active={isActive(car.uid)}
                     // className={`${coloringButton("btn1")}`}
                     onClick={() => {
                       setActive(car.uid);
@@ -193,7 +204,7 @@ function PickCar() {
               </PickBox>
               {topCarList
                 .filter((doc: any) => doc?.uid === active)
-                .map((car: any, id) => (
+                .map((car: any, id: any) => (
                   <CarBox theme={theme} car={car} carID={id} />
                 ))}
               {/* {active === "FirstCar" && (

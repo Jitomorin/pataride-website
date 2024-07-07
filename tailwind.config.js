@@ -1,3 +1,5 @@
+const {nextui} = require("@nextui-org/theme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -5,6 +7,7 @@ module.exports = {
     './intro-template/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}',
     './plugins/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     fontFamily: {
@@ -12,6 +15,17 @@ module.exports = {
       oswald: ["Oswald", "sans-serif"],
     },
     extend: {
+      backdropFilter: {
+        'none': 'none',
+        'blur': 'blur(10px)',
+      },
+      backgroundColor: {
+        'white-alpha': 'rgba(255, 255, 255, 0.3)',
+      },
+      backgroundImage: {
+        'gradient-to-r': 'linear-gradient(to right, #6D28D9, #EC4899)',
+        'gradient-to-b': 'linear-gradient(to bottom, #1E40AF, #FBBF24)',
+      },
       spacing: {
         4.5: "1.125rem",
         5.5: "1.375rem",
@@ -155,9 +169,38 @@ module.exports = {
         'accent-2': '#EAEAEA',
         'accent-7': '#333',
         success: '#0070f3',
+         primary: {
+          DEFAULT: '#f8d521', // Default color
+          50: '#fef8db', // Shade 50
+          100: '#fdf4c6', // Shade 100
+          200: '#faeb99', // Shade 200
+          300: '#f7e36c', // Shade 300
+          400: '#f5db3f', // Shade 400
+          500: '#f8d521', // Shade 500 (DEFAULT)
+          600: '#f1c600', // Shade 600
+          700: '#cfa400', // Shade 700
+          800: '#9d7e00', // Shade 800
+          900: '#6b5900', // Shade 900
+          // Opacities
+          opacity: {
+            10: 'rgba(248, 213, 33, 0.1)', // Opacity 10%
+            20: 'rgba(248, 213, 33, 0.2)', // Opacity 20%
+            30: 'rgba(248, 213, 33, 0.3)', // Opacity 30%
+            40: 'rgba(248, 213, 33, 0.4)', // Opacity 40%
+            50: 'rgba(248, 213, 33, 0.5)', // Opacity 50%
+            60: 'rgba(248, 213, 33, 0.6)', // Opacity 60%
+            70: 'rgba(248, 213, 33, 0.7)', // Opacity 70%
+            80: 'rgba(248, 213, 33, 0.8)', // Opacity 80%
+            90: 'rgba(248, 213, 33, 0.9)', // Opacity 90%
+          },
+        },
         cyan: '#79FFE1',
         'blue-500': '#2276FC',
         'yellow-100': '#fef7da',
+        'custom-blue': '#1E40AF',
+        'custom-yellow': '#FBBF24',
+        'custom-purple': '#6D28D9',
+        'custom-pink': '#EC4899',
       },
       spacing: {
         28: '7rem',
@@ -180,5 +223,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+   darkMode: "class",
+  plugins: [
+    require('@tailwindcss/forms'),
+    nextui(),
+  ],
 }
