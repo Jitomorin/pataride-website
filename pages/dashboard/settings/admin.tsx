@@ -222,7 +222,7 @@ export default function AdminSettings(props: any) {
                             htmlFor="username"
                             className="block text-sm font-medium leading-6 text-gray-900"
                           >
-                            Pata ride cut
+                            Pata ride cut in percentage
                           </label>
                           <div className="mt-2 flex rounded-md shadow-sm">
                             <input

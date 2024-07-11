@@ -33,7 +33,7 @@ const filterOptions = ["Make", "Model", "Year", "Price", "Seats", "Fuel"]; // Ad
 
 function RentalsPage(props: RentalProps) {
   let { cars, settings }: any = props;
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   console.log("Yooooo", patarideCut);
   // const unavailableItems = bookings.filter((booking) => {
   //   if (

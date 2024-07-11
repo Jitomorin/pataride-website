@@ -204,7 +204,7 @@ const AdminBookingsTable = ({ placeholder, bookings, settings }: any) => {
         placeholder={placeholder}
       />
       <BookingColumn
-        cut={parseInt(settings.companyCut)}
+        cut={parseFloat(settings.companyCut)}
         booking={selectedBooking}
         open={openBooking}
         setOpen={setOpenBooking}

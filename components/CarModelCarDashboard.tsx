@@ -121,6 +121,12 @@ const CarModelCardDashboard = (props: any) => {
   const { car, patarideCut }: any = props;
   // console.log("urgh", patarideCut);
 
+  const finalPrice = (carPrice: any) => {
+    const percentage = parseFloat(patarideCut) / 100;
+    const result = carPrice + carPrice * percentage;
+    return result;
+  };
+
   return (
     <Wrapper theme={theme}>
       <Link href={`/rentals/${car.uid}`}>
@@ -259,9 +265,7 @@ const CarModelCardDashboard = (props: any) => {
               )}
 
               <Price>
-                <h4>{`Ksh${formatNumber(
-                  car.price + parseInt(patarideCut)
-                )}`}</h4>
+                <h4>{`Ksh${formatNumber(finalPrice(car.price))}`}</h4>
                 <p>/per day</p>
               </Price>
             </Details>

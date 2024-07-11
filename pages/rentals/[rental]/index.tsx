@@ -35,7 +35,7 @@ function Rental(props: any) {
   const { user, loading }: any = useAuthContext();
   const { rental, bookings, settings }: any = props;
   const router = useRouter();
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   const [snackbarMessage, setSnackbarMessage] = useState("Default Message");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(true);

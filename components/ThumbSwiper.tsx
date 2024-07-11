@@ -44,16 +44,21 @@ export default function ThumbSwiper({ images }: any) {
           swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
         }}
         modules={[FreeMode, Thumbs, Controller]}
-        className="w-full max-w-full h-[454px]"
+        className="w-full max-w-full h-[754px]"
       >
         {images.map((image: any, index: number) => (
-          <SwiperSlide className="flex justify-center items-center" key={index}>
-            <img
-              className="w-full max-w-full h-auto"
-              key={index}
-              src={image}
-              alt={"Rental Image"}
-            />
+          <SwiperSlide
+            className="flex justify-center items-center "
+            key={index}
+          >
+            <div className="flex justify-center items-center w-full bg-red-200 h-full">
+              <img
+                className="w-full max-h-full object-fill"
+                key={index}
+                src={image}
+                alt="Rental Image"
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

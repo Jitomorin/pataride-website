@@ -236,7 +236,9 @@ export default function ProductOverview({
                           key={index}
                           src={image}
                           alt={"Rental Image"}
-                          className={classNames("rounded-lg h-full")}
+                          className={classNames(
+                            "rounded-lg h-full object-fill"
+                          )}
                         />
                       </SwiperSlide>
                     ))}
@@ -436,7 +438,8 @@ export default function ProductOverview({
                 </p>
                 <p className="text-2xl font-bold text-gray-900 mt-4">
                   {`Total: ${formatNumber(
-                    calculateTotalPrice(rental.price) + patarideCut
+                    calculateTotalPrice(rental.price) +
+                      (rental.price * parseFloat(patarideCut)) / 100
                   )}Ksh`}
                 </p>
               </div>

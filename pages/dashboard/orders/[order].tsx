@@ -63,7 +63,7 @@ function Order(props: any) {
   const [currentOrder, setCurrentOrder]: any = useState(order);
   const [transaction, setTransaction] = useState<any>({});
   const router = useRouter();
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   const [activeProduct, setActiveProduct] = useState("");
   const [openBooking, setOpenBooking] = useState(false);
   const [orderLoading, setOrderLoading] = useState(true);
@@ -148,7 +148,7 @@ function Order(props: any) {
         <DefaultLayout>
           <div className="mx-auto">
             <BookingColumn
-              cut={parseInt(settings.companyCut)}
+              cut={parseFloat(settings.companyCut)}
               booking={currentOrder}
               open={openBooking}
               setOpen={setOpenBooking}
@@ -407,7 +407,8 @@ function Order(props: any) {
                                 currentOrder.rental.price,
                                 currentOrder.selectedDates.startDate,
                                 currentOrder.selectedDates.endDate
-                              ) + patarideCut
+                              ) +
+                                currentOrder.rental.price * (patarideCut / 100)
                             )}`}
                           </dd>
                         </div>

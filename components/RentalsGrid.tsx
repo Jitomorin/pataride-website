@@ -6,7 +6,7 @@ import { getDocument } from "@/utils/firebase/firestore";
 const RentalsGrid = (props: any) => {
   const { carData, settings }: any = props;
   const [currentPage, setCurrentPage] = useState(1);
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   const [data, setData] = useState(carData.carData);
   console.log("car data:", settings);
   return (
