@@ -80,7 +80,8 @@ const InvoiceCard: React.FC<InvoiceProps> = ({ booking, patarideCut }) => {
               booking.rental.price,
               booking.selectedDates.startDate,
               booking.selectedDates.endDate
-            ) + patarideCut
+            ) +
+              booking.rental.price * (patarideCut / 100)
           )}
         </div>
       </div>
@@ -97,7 +98,8 @@ const InvoiceCard: React.FC<InvoiceProps> = ({ booking, patarideCut }) => {
               booking.rental.price,
               booking.selectedDates.startDate,
               booking.selectedDates.endDate
-            ) + patarideCut
+            ) +
+              booking.rental.price * (patarideCut / 100)
           )}
         </div>
       </div>

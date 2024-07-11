@@ -208,7 +208,7 @@ const tabData = [
 const StyledTabs: React.FC = () => {
   const [active, setActive] = useState(0);
   const handleClick = (e: any) => {
-    const index = parseInt(e.target.id, 0);
+    const index = parseFloat(e.target.id, 0);
     if (index !== active) {
       setActive(index);
     }

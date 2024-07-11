@@ -56,7 +56,7 @@ function Chat(props: any) {
   const { chat, users, pathName, settings }: any = props;
   const [transaction, setTransaction] = useState<any>({});
   const router = useRouter();
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   const [chats, setChats] = useState();
   const [activeProduct, setActiveProduct] = useState("");
   const [chatLoading, setChatLoading] = useState(true);

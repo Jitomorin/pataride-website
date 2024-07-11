@@ -80,9 +80,9 @@ const paymentMethods = [
 
 function BookingCheckout(props: any) {
   const { user, loading }: any = useAuthContext();
-  const { booking }: any = props;
+  const { booking, settings }: any = props;
   const [transaction, setTransaction] = useState<any>({});
-  const companyCut = 2000;
+  const companyCut = parseFloat(settings.companyCut);
   const router = useRouter();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(true);
@@ -202,7 +202,8 @@ function BookingCheckout(props: any) {
             booking.rental.price,
             booking.selectedDates.startDate,
             booking.selectedDates.endDate
-          ) + companyCut,
+          ) +
+            booking.rental.price * (companyCut / 100),
           user?.phoneNumber,
           `http://localhost:3000/dashboard/bookings/${booking!.uid}/checkout`
         )
@@ -633,7 +634,8 @@ function BookingCheckout(props: any) {
                                   booking.rental.price,
                                   booking.selectedDates.startDate,
                                   booking.selectedDates.endDate
-                                )
+                                ) +
+                                  booking.rental.price * (companyCut / 100)
                               )}`}
                             </p>
                           </div>
@@ -649,7 +651,8 @@ function BookingCheckout(props: any) {
                               booking.rental.price,
                               booking.selectedDates.startDate,
                               booking.selectedDates.endDate
-                            ) + companyCut
+                            ) +
+                              booking.rental.price * (companyCut / 100)
                           )}`}
                         </dd>
                       </div>
@@ -668,7 +671,8 @@ function BookingCheckout(props: any) {
                               booking.rental.price,
                               booking.selectedDates.startDate,
                               booking.selectedDates.endDate
-                            ) + companyCut
+                            ) +
+                              booking.rental.price * (companyCut / 100)
                           )}`}
                         </dd>
                       </div>
@@ -731,7 +735,7 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   const { params = {} } = ctx;
   //   console.log("params", params);
   const booking = await getDocument("bookings", params.booking);
-  console.log("booook", booking);
+  const settings: any = await getDocument("settings", "admin");
 
   if (!booking) {
     return {
@@ -742,6 +746,8 @@ export const getServerSideProps: GetServerSideProps<any, Query> = async (
   return {
     props: {
       booking: JSON.parse(JSON.stringify(booking)),
+      settings: JSON.parse(JSON.stringify(settings)),
+
       //   rentalSlug: rentalSlug,
     },
   };

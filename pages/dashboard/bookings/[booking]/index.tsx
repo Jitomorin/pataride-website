@@ -62,7 +62,7 @@ function Booking(props: any) {
   const { booking, settings }: any = props;
   const [transaction, setTransaction] = useState<any>({});
   const router = useRouter();
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
   const [activeProduct, setActiveProduct] = useState("");
   const [openBooking, setOpenBooking] = useState(false);
   const [orderLoading, setOrderLoading] = useState(true);
@@ -139,7 +139,7 @@ function Booking(props: any) {
         <DefaultLayout>
           <div className="mx-auto">
             <BookingColumn
-              cut={parseInt(settings.companyCut)}
+              cut={parseFloat(settings.companyCut)}
               booking={booking}
               open={openBooking}
               setOpen={setOpenBooking}

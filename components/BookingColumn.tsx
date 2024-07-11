@@ -364,7 +364,8 @@ export default function BookingColumn({
                               <dt className="text-gray-600">Subtotal</dt>
                               <dd className="font-medium text-gray-900">
                                 {`Ksh ${formatNumber(
-                                  booking.rental.price + patarideCut
+                                  booking.rental.price +
+                                    booking.rental.price * (patarideCut / 100)
                                 )}`}
                               </dd>
                             </div>
@@ -384,7 +385,8 @@ export default function BookingColumn({
                               </dt>
                               <dd className="font-semibold text-lg text-indigo-600">
                                 {`Ksh ${formatNumber(
-                                  booking.rental.price + patarideCut
+                                  booking.rental.price +
+                                    booking.rental.price * (patarideCut / 100)
                                 )}`}
                               </dd>
                             </div>

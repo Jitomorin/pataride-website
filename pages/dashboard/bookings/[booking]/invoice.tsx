@@ -17,7 +17,7 @@ const InvoicePage: FC = (props: any) => {
   const [orderLoading, setOrderLoading] = useState(true);
   const [client, setClient]: any = useState({});
   const router = useRouter();
-  const patarideCut = parseInt(settings.companyCut);
+  const patarideCut = parseFloat(settings.companyCut);
 
   useEffect(() => {
     if (loading) return;
