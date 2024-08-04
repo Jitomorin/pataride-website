@@ -400,7 +400,13 @@ function Booking(props: any) {
                                 booking.rental.price,
                                 booking.selectedDates.startDate,
                                 booking.selectedDates.endDate
-                              ) + patarideCut
+                              ) +
+                                calculatePrice(
+                                  booking.rental.price,
+                                  booking.selectedDates.startDate,
+                                  booking.selectedDates.endDate
+                                ) *
+                                  (patarideCut / 100)
                             )}`}
                           </dd>
                         </div>
@@ -422,7 +428,13 @@ function Booking(props: any) {
                                 booking.rental.price,
                                 booking.selectedDates.startDate,
                                 booking.selectedDates.endDate
-                              ) + patarideCut
+                              ) +
+                                calculatePrice(
+                                  booking.rental.price,
+                                  booking.selectedDates.startDate,
+                                  booking.selectedDates.endDate
+                                ) *
+                                  (patarideCut / 100)
                             )}`}
                           </dd>
                         </div>

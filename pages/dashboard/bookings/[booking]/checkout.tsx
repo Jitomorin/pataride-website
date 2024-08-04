@@ -635,7 +635,12 @@ function BookingCheckout(props: any) {
                                   booking.selectedDates.startDate,
                                   booking.selectedDates.endDate
                                 ) +
-                                  booking.rental.price * (companyCut / 100)
+                                  calculatePrice(
+                                    booking.rental.price,
+                                    booking.selectedDates.startDate,
+                                    booking.selectedDates.endDate
+                                  ) *
+                                    (companyCut / 100)
                               )}`}
                             </p>
                           </div>
@@ -652,7 +657,12 @@ function BookingCheckout(props: any) {
                               booking.selectedDates.startDate,
                               booking.selectedDates.endDate
                             ) +
-                              booking.rental.price * (companyCut / 100)
+                              calculatePrice(
+                                booking.rental.price,
+                                booking.selectedDates.startDate,
+                                booking.selectedDates.endDate
+                              ) *
+                                (companyCut / 100)
                           )}`}
                         </dd>
                       </div>
@@ -672,7 +682,12 @@ function BookingCheckout(props: any) {
                               booking.selectedDates.startDate,
                               booking.selectedDates.endDate
                             ) +
-                              booking.rental.price * (companyCut / 100)
+                              calculatePrice(
+                                booking.rental.price,
+                                booking.selectedDates.startDate,
+                                booking.selectedDates.endDate
+                              ) *
+                                (companyCut / 100)
                           )}`}
                         </dd>
                       </div>
