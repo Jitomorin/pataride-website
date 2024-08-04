@@ -439,7 +439,9 @@ export default function ProductOverview({
                 <p className="text-2xl font-bold text-gray-900 mt-4">
                   {`Total: ${formatNumber(
                     calculateTotalPrice(rental.price) +
-                      (rental.price * parseFloat(patarideCut)) / 100
+                      (calculateTotalPrice(rental.price) *
+                        parseFloat(patarideCut)) /
+                        100
                   )}Ksh`}
                 </p>
               </div>

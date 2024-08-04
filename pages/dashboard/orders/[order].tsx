@@ -408,7 +408,12 @@ function Order(props: any) {
                                 currentOrder.selectedDates.startDate,
                                 currentOrder.selectedDates.endDate
                               ) +
-                                currentOrder.rental.price * (patarideCut / 100)
+                                calculatePrice(
+                                  currentOrder.rental.price,
+                                  currentOrder.selectedDates.startDate,
+                                  currentOrder.selectedDates.endDate
+                                ) *
+                                  (patarideCut / 100)
                             )}`}
                           </dd>
                         </div>
@@ -430,7 +435,13 @@ function Order(props: any) {
                                 currentOrder.rental.price,
                                 currentOrder.selectedDates.startDate,
                                 currentOrder.selectedDates.endDate
-                              ) + patarideCut
+                              ) +
+                                calculatePrice(
+                                  currentOrder.rental.price,
+                                  currentOrder.selectedDates.startDate,
+                                  currentOrder.selectedDates.endDate
+                                ) *
+                                  (patarideCut / 100)
                             )}`}
                           </dd>
                         </div>

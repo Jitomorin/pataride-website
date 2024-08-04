@@ -22,7 +22,7 @@ export default function ThumbSwiper({ images }: any) {
   }, []);
 
   return (
-    <div className="h-[550px] hidden md:block">
+    <div className="h-[550px] hidden md:block mb-[10rem] xl:mb-[30rem]">
       <Swiper
         onSwiper={(swiper) => {
           if (swiper1Ref.current !== null) {
@@ -51,7 +51,7 @@ export default function ThumbSwiper({ images }: any) {
             className="flex justify-center items-center "
             key={index}
           >
-            <div className="flex justify-center items-center w-full bg-red-200 h-full">
+            <div className="flex justify-center items-center w-full h-full">
               <img
                 className="w-full max-h-full object-fill"
                 key={index}

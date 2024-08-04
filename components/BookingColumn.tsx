@@ -363,10 +363,7 @@ export default function BookingColumn({
                             <div className="flex items-center justify-between pb-4">
                               <dt className="text-gray-600">Subtotal</dt>
                               <dd className="font-medium text-gray-900">
-                                {`Ksh ${formatNumber(
-                                  booking.rental.price +
-                                    booking.rental.price * (patarideCut / 100)
-                                )}`}
+                                {`Kshe ${formatNumber(booking.rental.price)}`}
                               </dd>
                             </div>
                             {/* <div className="flex items-center justify-between py-4">
